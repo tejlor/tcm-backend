@@ -1,0 +1,16 @@
+##### Directories #####
+
+.classpath
+.project
+.settings
+.idea
+
+*~
+
+target
+
+##### Files #####
+
+*.iml
+*.log
+
