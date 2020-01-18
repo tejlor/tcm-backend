@@ -17,7 +17,7 @@ import pl.olawa.telech.tcm.model.entity.AbstractEntity;
 /*
  * Baowa implementacja Repozytorium dla wszystkich klas. Dodaje metody pomocne przy używaniu specyfikacji i grafów encyjnych.
  */
-public class TRepositoryImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, Long> implements TRepository<T> {
+public class TRepositoryImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, Integer> implements TRepository<T> {
 
 	private EntityManager entityManager;
 

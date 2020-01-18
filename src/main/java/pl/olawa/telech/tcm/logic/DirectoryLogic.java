@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
-import pl.olawa.telech.tcm.model.entity.Directory;
+import pl.olawa.telech.tcm.model.entity.element.Directory;
 import pl.olawa.telech.tcm.repository.DirectoryRepository;
 
 @Slf4j
@@ -14,13 +14,16 @@ import pl.olawa.telech.tcm.repository.DirectoryRepository;
 @Transactional
 public class DirectoryLogic extends AbstractLogic<Directory> {
 	
+	private DirectoryRepository repository;
+	
 	
 	public DirectoryLogic(DirectoryRepository repository) {
 		super(repository);
+		this.repository = repository;
 	}
 	
 	public Directory loadByRef(UUID ref) {
-		repository.findByRef(ref);
+		return repository.findByRef(ref);
 	}
 
 

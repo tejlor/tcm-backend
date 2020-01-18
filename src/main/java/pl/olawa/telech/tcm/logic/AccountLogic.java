@@ -64,7 +64,7 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 	 * Pobiera zalogowanego użytkownika z sesji.
 	 * Obiekt nie jest podłączony do sesji Hibernate'owej, nie zawiera podobiektów.
 	 */
-	public User getCurrentUser() {
+	public static User getCurrentUser() {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			Object principal = authentication.getPrincipal();
@@ -84,7 +84,7 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 		return repository.findById(getCurrentUser().getId()).get();
 	}
 		
-	public ResponseEntity<OAuth2AccessToken> loginAs(long userId){
+	public ResponseEntity<OAuth2AccessToken> loginAs(int userId){
 		User user = loadById(userId);
 		return generateTokenForUser(user);
 	}

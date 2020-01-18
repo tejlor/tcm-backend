@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import pl.olawa.telech.tcm.model.entity.Element;
+import pl.olawa.telech.tcm.model.entity.element.Element;
 
 
 public interface ElementRepository extends TRepository<Element>, JpaSpecificationExecutor<Element> {

@@ -36,7 +36,7 @@ public class AccountController extends AbstractController {
 	@RolesAllowed("ADMIN")
 	@RequestMapping(value = "/LoginAs", method = RequestMethod.POST)
 	public ResponseEntity<OAuth2AccessToken> loginAs(
-			@RequestParam(required = true) long userId) {
+			@RequestParam(required = true) int userId) {
 		
 		return accountLogic.loginAs(userId);
 	}

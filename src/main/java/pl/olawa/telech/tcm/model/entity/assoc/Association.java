@@ -1,18 +1,19 @@
-package pl.olawa.telech.tcm.model.entity;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
+package pl.olawa.telech.tcm.model.entity.assoc;
 
 import javax.persistence.*;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.olawa.telech.tcm.model.entity.AbstractEntity;
+import pl.olawa.telech.tcm.model.entity.element.Element;
 
 /*
  * Połączenie pomiędzy dwoma elementami repozytorium. Klasa bazowa.
  */
 @Entity
 @Getter @Setter
+@NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Association extends AbstractEntity {
 
@@ -32,11 +33,7 @@ public class Association extends AbstractEntity {
 	private Element childElement;
 	
 	
-	public Association() {
-		
-	}
-	
-	public Association(Long id) {
+	public Association(Integer id) {
 		super(id);
 	}
 }

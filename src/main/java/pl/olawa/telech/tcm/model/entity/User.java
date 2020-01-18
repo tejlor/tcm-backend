@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /*
@@ -19,9 +20,9 @@ import lombok.Setter;
  */
 @Entity
 @Getter @Setter
+@NoArgsConstructor
 public class User extends AbstractEntity implements UserDetails {
 		
-	
 	@Column
 	private String firstName;				// imię
 	
@@ -47,11 +48,7 @@ public class User extends AbstractEntity implements UserDetails {
 	private LocalDateTime modifiedTime;		// czas ostatniej modyfikacji
 		
 
-	public User(){
-		super();
-	}
-
-	public User(Long id) {
+	public User(Integer id) {
 		super(id);
 	}
 

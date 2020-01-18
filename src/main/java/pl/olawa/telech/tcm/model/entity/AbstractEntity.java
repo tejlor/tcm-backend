@@ -8,8 +8,10 @@ import java.util.List;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.olawa.telech.tcm.utils.TUtils;
 
@@ -17,16 +19,14 @@ import pl.olawa.telech.tcm.utils.TUtils;
  * Klasa nadrzędna dla wszystkich obiektów encyjnych.
  */
 @Getter @Setter
+@NoArgsConstructor
+@MappedSuperclass
 public abstract class AbstractEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected Integer id;							// id obiektu
 	
-	
-	public AbstractEntity() {
-		
-	}
 	
 	public AbstractEntity(Integer id) {
 		this.id = id;

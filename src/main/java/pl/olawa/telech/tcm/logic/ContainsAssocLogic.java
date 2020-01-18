@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
-import pl.olawa.telech.tcm.model.entity.ContainsAssoc;
-import pl.olawa.telech.tcm.model.entity.Element;
+import pl.olawa.telech.tcm.model.entity.element.Element;
+import pl.olawa.telech.tcm.model.entity.assoc.ContainsAssoc;
 import pl.olawa.telech.tcm.repository.ContainsAssocRepository;
 
 @Slf4j

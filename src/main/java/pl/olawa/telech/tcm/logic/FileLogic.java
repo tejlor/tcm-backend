@@ -10,10 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
-import pl.olawa.telech.tcm.model.entity.Directory;
-import pl.olawa.telech.tcm.model.entity.File;
+import pl.olawa.telech.tcm.model.entity.element.Directory;
+import pl.olawa.telech.tcm.model.entity.element.File;
 import pl.olawa.telech.tcm.model.exception.TcmException;
-import pl.olawa.telech.tcm.repository.DirectoryRepository;
 import pl.olawa.telech.tcm.repository.FileRepository;
 
 @Slf4j
@@ -21,6 +20,8 @@ import pl.olawa.telech.tcm.repository.FileRepository;
 @Transactional
 public class FileLogic extends AbstractLogic<File> {
 
+	private FileRepository repository;
+	
 	@Autowired
 	private DiskService diskService;
 	
@@ -33,26 +34,22 @@ public class FileLogic extends AbstractLogic<File> {
 	
 	public FileLogic(FileRepository repository) {
 		super(repository);
+		this.repository = repository;
 	}
 	
 	public void upload(MultipartFile uploadedFile, UUID dirRef) {
-		UUID ref = UUID.randomUUID();
-		File file = new File();
+		File file = File.create();
 		file.setName(uploadedFile.getOriginalFilename());
 		file.setMimeType(uploadedFile.getContentType());
-		file.setRef(ref);
-		file.setCreatedBy(accountLogic.getCurrentUser());
-		file.setCreatedTime(LocalDateTime.now());
 		try {
-			diskService.saveFile(uploadedFile, ref);
+			diskService.saveFile(uploadedFile, file.getRef());
 		} 
 		catch (IOException e) {
 			throw new TcmException("Cannot write file on disk.", e);
 		}
 		repository.save(file);
 		
-		Directory dir = directoryLogic.loadById(dirId);
-		
+		Directory dir = directoryLogic.loadByRef(dirRef);	
 		containsAssocLogic.create(dir, file);
 	}
 	

@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.model.entity;
+package pl.olawa.telech.tcm.model.entity.element;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -6,13 +6,17 @@ import java.util.UUID;
 import javax.persistence.*;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.olawa.telech.tcm.model.entity.AbstractEntity;
+import pl.olawa.telech.tcm.model.entity.User;
 
 /*
  * Element repozytoriom. Klasa bazowa dla wszystkich typów.
  */
 @Entity
 @Getter @Setter
+@NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Element extends AbstractEntity {
 
@@ -44,11 +48,7 @@ public class Element extends AbstractEntity {
 	
 	
 	
-	public Element() {
-		createdTime = LocalDateTime.now();
-	}
-	
-	public Element(Long id) {
+	public Element(Integer id) {
 		super(id);
 	}
 	
