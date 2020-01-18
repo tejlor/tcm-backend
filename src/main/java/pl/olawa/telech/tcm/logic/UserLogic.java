@@ -13,12 +13,9 @@ import pl.olawa.telech.tcm.repository.UserRepository;
 @Transactional
 public class UserLogic extends AbstractLogic<User> {
 
-	private UserRepository userRepository;
 
-	
 	public UserLogic(UserRepository userRepository) {
 		super(userRepository);
-		this.userRepository = userRepository;
 	}
 	
 

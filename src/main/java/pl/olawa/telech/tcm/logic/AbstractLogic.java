@@ -21,7 +21,7 @@ public abstract class AbstractLogic<T extends AbstractEntity> {
 		this.repository = repository;
 	}
 
-	public T loadById(Long id) {
+	public T loadById(Integer id) {
 		if(id == null)
 			throw new NullPointerException();
 		

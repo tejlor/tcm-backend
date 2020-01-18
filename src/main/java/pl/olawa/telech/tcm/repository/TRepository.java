@@ -11,7 +11,7 @@ import org.springframework.data.repository.NoRepositoryBean;
  * Interfejs dla bazowej implementacji Repozytorium.
  */
 @NoRepositoryBean
-public interface TRepository<T> extends JpaRepository<T, Long> {
+public interface TRepository<T> extends JpaRepository<T, Integer> {
 
 	@SuppressWarnings("unchecked")
 	T findOne(Specification<T> ...spec);

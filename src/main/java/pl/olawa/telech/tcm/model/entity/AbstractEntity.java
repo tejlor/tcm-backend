@@ -21,13 +21,14 @@ public abstract class AbstractEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	protected Long id;							// id obiektu
+	protected Integer id;							// id obiektu
+	
 	
 	public AbstractEntity() {
 		
 	}
 	
-	public AbstractEntity(Long id) {
+	public AbstractEntity(Integer id) {
 		this.id = id;
 	}
 	

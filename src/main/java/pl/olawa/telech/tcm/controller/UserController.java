@@ -7,25 +7,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import pl.olawa.telech.tcm.dto.entity.EmployeeDto;
+import pl.olawa.telech.tcm.dto.entity.UserDto;
 import pl.olawa.telech.tcm.logic.UserLogic;
 
 
 @RestController
-@RequestMapping("/Employees")
-public class EmployeeController extends AbstractController {
+@RequestMapping("/users")
+public class UserController extends AbstractController {
 
 	@Autowired
-	private UserLogic employeeLogic;
+	private UserLogic userLogic;
 
 	
 	/*
-	 * Wczytuje wszystkiech pracowników na listę Pracownicy
+	 * Wczytuje wszystkiech użytkowników.
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public List<EmployeeDto> getAll() {
-		
-		return EmployeeDto.toDtoList(employeeLogic.loadAll());
+	public List<UserDto> getAll() {
+		return UserDto.toDtoList(userLogic.loadAll());
 	}
 
 

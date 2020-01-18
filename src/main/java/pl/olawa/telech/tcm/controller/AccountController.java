@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.*;
 
 import pl.olawa.telech.tcm.dto.PassChangeDto;
-import pl.olawa.telech.tcm.dto.entity.EmployeeDto;
+import pl.olawa.telech.tcm.dto.entity.UserDto;
 import pl.olawa.telech.tcm.logic.AccountLogic;
 
 
@@ -25,9 +25,9 @@ public class AccountController extends AbstractController {
 	 * Zwraca aktualnie zalogowane użytkownika celem sprawdzania uprawnień i wczytywania danych.
 	 */
 	@RequestMapping(value = "/Current", method = RequestMethod.GET)
-	public EmployeeDto getCurrentUser() {
+	public UserDto getCurrentUser() {
 		
-		return new EmployeeDto(accountLogic.loadCurrentUser());
+		return new UserDto(accountLogic.loadCurrentUser());
 	}
 	
 	/*
