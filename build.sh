@@ -14,7 +14,7 @@ function deploy {
 		exit
 	fi
 
-	java -jar target/tcm.jar --spring.profiles.active=dev
+	/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -jar target/tcm.jar --spring.profiles.active=dev
 }
 
 function test {

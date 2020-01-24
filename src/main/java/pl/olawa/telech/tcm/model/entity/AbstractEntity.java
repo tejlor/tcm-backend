@@ -25,7 +25,7 @@ public abstract class AbstractEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	protected Integer id;							// id obiektu
+	private Integer id;							// id obiektu
 	
 	
 	public AbstractEntity(Integer id) {

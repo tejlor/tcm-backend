@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,7 @@ import lombok.Setter;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@Table(name = "user", schema = "public")
 public class User extends AbstractEntity implements UserDetails {
 		
 	@Column

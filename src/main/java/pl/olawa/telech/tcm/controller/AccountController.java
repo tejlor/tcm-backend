@@ -14,7 +14,7 @@ import pl.olawa.telech.tcm.logic.AccountLogic;
 
 
 @RestController
-@RequestMapping("/Accounts")
+@RequestMapping("/accounts")
 public class AccountController extends AbstractController {
 
 	@Autowired
@@ -24,7 +24,7 @@ public class AccountController extends AbstractController {
 	/*
 	 * Zwraca aktualnie zalogowane użytkownika celem sprawdzania uprawnień i wczytywania danych.
 	 */
-	@RequestMapping(value = "/Current", method = RequestMethod.GET)
+	@RequestMapping(value = "/current", method = RequestMethod.GET)
 	public UserDto getCurrentUser() {
 		
 		return new UserDto(accountLogic.loadCurrentUser());
@@ -34,7 +34,7 @@ public class AccountController extends AbstractController {
 	 * Loguje użytkownika jako wybrany pracownik.
 	 */
 	@RolesAllowed("ADMIN")
-	@RequestMapping(value = "/LoginAs", method = RequestMethod.POST)
+	@RequestMapping(value = "/loginAs", method = RequestMethod.POST)
 	public ResponseEntity<OAuth2AccessToken> loginAs(
 			@RequestParam(required = true) int userId) {
 		
@@ -44,7 +44,7 @@ public class AccountController extends AbstractController {
 	/*
 	 * Zmienia hasło dla bieżącego użytkownika.
 	 */
-	@RequestMapping(value = "/ChangePassword", method = RequestMethod.POST)
+	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void changePass(
 			@RequestBody(required = true) PassChangeDto passChange) {

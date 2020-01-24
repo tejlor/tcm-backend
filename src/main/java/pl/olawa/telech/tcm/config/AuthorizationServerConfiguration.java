@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
+import lombok.extern.slf4j.Slf4j;
 import pl.olawa.telech.tcm.logic.AccountLogic;
 
 /*

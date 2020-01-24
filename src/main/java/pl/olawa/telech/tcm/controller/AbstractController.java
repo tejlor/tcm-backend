@@ -26,7 +26,7 @@ import pl.olawa.telech.tcm.utils.aop.AppLogOmit;
 @RestController
 public class AbstractController {
 
-	@Value("${ttrack.environment}")
+	@Value("${tcm.environment}")
 	private String environment;
 
 	/*
@@ -46,7 +46,7 @@ public class AbstractController {
 
 	@AppLogOmit
 	@ExceptionHandler(TcmException.class)
-	public ResponseEntity<ApiError> handleTTrackException(HttpServletRequest request, TcmException e) {
+	public ResponseEntity<ApiError> handleTcmException(HttpServletRequest request, TcmException e) {
 		ApiError apiError = new ApiError();
 		apiError.setPath(request.getRequestURI());
 		apiError.setStatusCode(HttpStatus.BAD_REQUEST);
