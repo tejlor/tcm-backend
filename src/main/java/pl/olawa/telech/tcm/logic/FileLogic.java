@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,7 @@ import pl.olawa.telech.tcm.model.entity.element.Directory;
 import pl.olawa.telech.tcm.model.entity.element.File;
 import pl.olawa.telech.tcm.model.exception.TcmException;
 import pl.olawa.telech.tcm.repository.FileRepository;
+import pl.olawa.telech.tcm.utils.TUtils;
 
 @Slf4j
 @Service
@@ -45,6 +47,7 @@ public class FileLogic extends AbstractLogic<File> {
 			diskService.saveFile(uploadedFile, file.getRef());
 		} 
 		catch (IOException e) {
+			log.debug(e.getMessage());
 			throw new TcmException("Cannot write file on disk.", e);
 		}
 		repository.save(file);
@@ -53,15 +56,12 @@ public class FileLogic extends AbstractLogic<File> {
 		containsAssocLogic.create(dir, file);
 	}
 	
-	public byte[] download(UUID ref) {
-		byte[] bytes;
-		try {
-			bytes = diskService.readFile(ref);
-		} 
-		catch (IOException e) {
-			throw new TcmException("Cannot read file from disk.", e);
-		}
-		return bytes;
+	public Resource download(UUID ref) {
+		File file = repository.findByRef(ref);
+		TUtils.assertEntityExists(file);
+				
+		Resource resource = diskService.readFileAsResource(ref);
+		return resource;
 	}
 
 }
