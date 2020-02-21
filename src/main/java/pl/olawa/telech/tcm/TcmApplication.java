@@ -5,12 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import pl.olawa.telech.tcm.repository.TRepositoryImpl;
+import pl.olawa.telech.tcm.dao.DAOImpl;
 
 
 @SpringBootApplication
 @EnableScheduling
-@EnableJpaRepositories(basePackages = "pl.olawa.telech.tcm.repository", repositoryBaseClass = TRepositoryImpl.class)
+@EnableJpaRepositories(basePackages = "pl.olawa.telech.tcm.dao", repositoryBaseClass = DAOImpl.class)
 public class TcmApplication {
 
 	public static void main(String[] args) {

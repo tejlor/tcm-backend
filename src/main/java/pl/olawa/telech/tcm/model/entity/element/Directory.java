@@ -21,7 +21,7 @@ public class Directory extends Element {
 	private String icon;
 	
 	
-	public Directory(Integer id) {
+	public Directory(int id) {
 		super(id);
 	}
 	

@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.repository.config;
+package pl.olawa.telech.tcm.dao.config;
 
 
 import org.hibernate.boot.model.naming.Identifier;

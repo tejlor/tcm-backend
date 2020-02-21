@@ -1,28 +1,43 @@
 package pl.olawa.telech.tcm.logic;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.extern.slf4j.Slf4j;
-import pl.olawa.telech.tcm.model.entity.element.Element;
+import pl.olawa.telech.tcm.dao.ContainsAssocDAO;
 import pl.olawa.telech.tcm.model.entity.assoc.ContainsAssoc;
-import pl.olawa.telech.tcm.repository.ContainsAssocRepository;
+import pl.olawa.telech.tcm.model.entity.element.Directory;
+import pl.olawa.telech.tcm.model.entity.element.Element;
 
-@Slf4j
 @Service
 @Transactional
 public class ContainsAssocLogic extends AbstractLogic<ContainsAssoc> {
 
+	private ContainsAssocDAO dao;
+	
+	@Autowired
+	private DirectoryLogic directoryLogic;
+	
 
-	public ContainsAssocLogic(ContainsAssocRepository repository) {
-		super(repository);
+	public ContainsAssocLogic(ContainsAssocDAO dao) {
+		super(dao);
+		this.dao = dao;
 	}
 	
+	public void create(UUID parentRef, Element child) {
+		Directory parentDir = directoryLogic.loadByRef(parentRef);	
+		create(parentDir, child);
+	}
+
 	public void create(Element parent, Element child) {
 		ContainsAssoc assoc = new ContainsAssoc();
 		assoc.setParentElement(parent);
 		assoc.setChildElement(child);
-		repository.save(assoc);
+		assoc.setCreatedTime(LocalDateTime.now());
+		assoc.setCreatedBy(accountLogic.getCurrentUser());
+		save(assoc);
 	}
-
 }

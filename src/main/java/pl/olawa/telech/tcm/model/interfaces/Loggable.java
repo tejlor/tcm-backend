@@ -6,16 +6,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import javassist.Modifier;
-import pl.olawa.telech.tcm.utils.TUtils;
+import pl.olawa.telech.tcm.utils.TConstants;
 
 /*
- * Interfejs dla obiektów Dto, których zawartosć ma być logowana.
+ * Interface for dto objects which contets should be logged.
  */
 public interface Loggable {
 
 	public default String toFullString(int depth) {
 		if(depth == 3)
-			return TUtils.indent[depth] + "...\n";
+			return TConstants.INDENT[depth] + "...\n";
 		
 		StringBuilder sb = new StringBuilder();
 		List<Field> fields = new ArrayList<Field>();
@@ -33,15 +33,15 @@ public interface Loggable {
 				field.setAccessible(true);
 				Object obj = field.get(this);
 				if (obj instanceof Loggable) {
-					sb.append(TUtils.indent[depth] + field.getName() + ":\n");
+					sb.append(TConstants.INDENT[depth] + field.getName() + ":\n");
 					sb.append(((Loggable) obj).toFullString(depth + 1));
 				}
 				else if(obj instanceof List){
-					sb.append(TUtils.indent[depth] + field.getName() + ": ");
+					sb.append(TConstants.INDENT[depth] + field.getName() + ": ");
 					sb.append("list of " + ((List<?>)obj).size() + " elements\n");
 				}
 				else {
-					sb.append(TUtils.indent[depth] + field.getName() + ": " + obj + "\n");
+					sb.append(TConstants.INDENT[depth] + field.getName() + ": " + obj + "\n");
 				}
 			}
 			catch (IllegalArgumentException | IllegalAccessException e) {

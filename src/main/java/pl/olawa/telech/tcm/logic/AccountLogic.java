@@ -24,9 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 import lombok.extern.slf4j.Slf4j;
+import pl.olawa.telech.tcm.dao.UserDAO;
 import pl.olawa.telech.tcm.model.entity.User;
 import pl.olawa.telech.tcm.model.exception.TcmException;
-import pl.olawa.telech.tcm.repository.UserRepository;
 import pl.olawa.telech.tcm.utils.TUtils;
 
 @Slf4j
@@ -40,20 +40,20 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 	@Value("${tcm.auth.clientPass}")
 	private String clientPass;
 	
-	private UserRepository repository;
+	private UserDAO dao;
 	
 	@Autowired
 	private TokenEndpoint tokenEndpoint;
 
 	
-	public AccountLogic(UserRepository repository) {
-		super(repository);
-		this.repository = repository;
+	public AccountLogic(UserDAO dao) {
+		super(dao);
+		this.dao = dao;
 	}
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = repository.findByEmail(username);
+		User user = dao.findByEmail(username);
 		if(user == null)
 			throw new UsernameNotFoundException(username);
 		
@@ -64,7 +64,7 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 	 * Pobiera zalogowanego użytkownika z sesji.
 	 * Obiekt nie jest podłączony do sesji Hibernate'owej, nie zawiera podobiektów.
 	 */
-	public static User getCurrentUser() {
+	public User getCurrentUser() {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			Object principal = authentication.getPrincipal();
@@ -72,16 +72,18 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 			if (principal instanceof User)
 				return (User) principal;
 			else
-				return null;
+				//return null;
+				return new User(1); 
 		}
 		catch (Exception e) {
 			log.warn("Principal is null: " + e.getMessage());
-			return null;
+			//return null;
+			return new User(1); 
 		}
 	}
 	
 	public User loadCurrentUser() {
-		return repository.findById(getCurrentUser().getId()).get();
+		return dao.findById(getCurrentUser().getId()).get();
 	}
 		
 	public ResponseEntity<OAuth2AccessToken> loginAs(int userId){
@@ -99,7 +101,7 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 		
 		if(user.getPassword().compareToIgnoreCase(encodedOldPassword) == 0){
 			user.setPassword(encodedNewPassword);
-			repository.save(user);
+			dao.save(user);
 		}
 		else {
 			throw new TcmException("Stare hasło jest niepoprawne.");

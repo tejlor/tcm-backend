@@ -1,25 +1,42 @@
 package pl.olawa.telech.tcm.logic;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.extern.slf4j.Slf4j;
+import pl.olawa.telech.tcm.dao.ElementDAO;
 import pl.olawa.telech.tcm.model.entity.element.Element;
-import pl.olawa.telech.tcm.repository.ElementRepository;
+import pl.olawa.telech.tcm.model.shared.TableParams;
 
-@Slf4j
+
 @Service
 @Transactional
 public class ElementLogic extends AbstractLogic<Element> {
 
-	private ElementRepository repository;
+	private ElementDAO dao;
 	
 	
-	public ElementLogic(ElementRepository repository) {
-		super(repository);
-		this.repository = repository;
+	public ElementLogic(ElementDAO dao) {
+		super(dao);
+		this.dao = dao;
 	}
 	
-
+	public Element loadByRef(UUID ref) {
+		return dao.findByRef(ref);
+	}
+	
+	public List<Element> loadByParent(UUID ref, TableParams tableParams){
+		Integer parentId = dao.findByRef(ref).getId();
+		return dao.findByParent(parentId, tableParams);
+	}
+	
+	public void fillNew(Element element) {
+		element.setRef(UUID.randomUUID());
+		element.setCreatedTime(LocalDateTime.now());
+		element.attachCreatedBy(accountLogic.loadCurrentUser());
+	}
 
 }

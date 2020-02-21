@@ -1,6 +1,7 @@
 package pl.olawa.telech.tcm.utils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 
@@ -21,6 +22,9 @@ public class TUtilsBean extends BeanUtilsBean {
 	public Object convert(Object value, Class clazz) {
 		if (clazz.isEnum())  			 
 			return Enum.valueOf(clazz, value.toString());
+		
+		if(clazz == UUID.class)
+			return value != null ? UUID.fromString((String)value) : null;
 		
 		return super.convert(value, clazz);
 	}

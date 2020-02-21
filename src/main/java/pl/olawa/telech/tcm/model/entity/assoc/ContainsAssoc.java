@@ -1,23 +1,23 @@
 package pl.olawa.telech.tcm.model.entity.assoc;
 
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /*
- * Połączenie obrazujące zawieranie się pliku w folderze.
+ * Association between directory and files or directories which it contains.
  */
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@PrimaryKeyJoinColumn
+@DiscriminatorValue("C")
 public class ContainsAssoc extends Association {
 
 	
-	public ContainsAssoc(Integer id) {
+	public ContainsAssoc(int id) {
 		super(id);
 	}
+	
 }

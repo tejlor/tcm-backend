@@ -19,12 +19,6 @@ import pl.olawa.telech.tcm.model.exception.TcmException;
 
 
 public class TUtils {
-
-	public static final String[] indent = new String[]{"  ", "    ", "      ",  "        ",  "          "};
-
-	public static final BigDecimal EIGHT = new BigDecimal(8);
-	public static final BigDecimal FOURTY = new BigDecimal(40);
-	public static final BigDecimal HUNDRED = new BigDecimal(100);
 	
 	private static final DecimalFormat df = new DecimalFormat("# ### ### ##0,00");
 	private static final DecimalFormat dfCurr = new DecimalFormat("# ### ### ##0,00 zł");

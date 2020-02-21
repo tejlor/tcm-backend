@@ -2,12 +2,9 @@ package pl.olawa.telech.tcm.utils;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import lombok.extern.slf4j.Slf4j;
-
 /*
- * Encoder używany w uwierzytelnainiu oAuth 2.0.
+ * Encoder using in authorisation oAuth 2.0.
  */
-@Slf4j
 public class Sha1PasswordEncoder implements PasswordEncoder {
 
 	@Override

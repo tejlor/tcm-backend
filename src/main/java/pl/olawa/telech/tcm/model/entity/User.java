@@ -38,13 +38,13 @@ public class User extends AbstractEntity implements UserDetails {
 	private String password;				// hasło
 	
 	@Column
-	private Long createdById;				// osoba, która tworzyła rekord
+	private Integer createdById;				// osoba, która tworzyła rekord
 	
 	@Column
 	private LocalDateTime createdTime;		// czas utworzenia rekordu
 	
 	@Column
-	private Long modifiedById;				// osoba, która ostation modyfikowała rekord
+	private Integer modifiedById;				// osoba, która ostation modyfikowała rekord
 	
 	@Column
 	private LocalDateTime modifiedTime;		// czas ostatniej modyfikacji

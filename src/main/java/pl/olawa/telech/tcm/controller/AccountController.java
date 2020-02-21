@@ -22,7 +22,7 @@ public class AccountController extends AbstractController {
 
 	
 	/*
-	 * Zwraca aktualnie zalogowane użytkownika celem sprawdzania uprawnień i wczytywania danych.
+	 * Zwraca aktualnie zalogowanego użytkownika.
 	 */
 	@RequestMapping(value = "/current", method = RequestMethod.GET)
 	public UserDto getCurrentUser() {
@@ -31,7 +31,7 @@ public class AccountController extends AbstractController {
 	}
 	
 	/*
-	 * Loguje użytkownika jako wybrany pracownik.
+	 * Loguje użytkownika na wybrane konto.
 	 */
 	@RolesAllowed("ADMIN")
 	@RequestMapping(value = "/loginAs", method = RequestMethod.POST)

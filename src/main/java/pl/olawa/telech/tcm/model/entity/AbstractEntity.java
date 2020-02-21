@@ -13,7 +13,7 @@ import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.olawa.telech.tcm.utils.TUtils;
+import pl.olawa.telech.tcm.utils.TConstants;
 
 /*
  * Klasa nadrzędna dla wszystkich obiektów encyjnych.
@@ -25,7 +25,7 @@ public abstract class AbstractEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;							// id obiektu
+	private Integer id;							// id of object
 	
 	
 	public AbstractEntity(Integer id) {
@@ -39,25 +39,25 @@ public abstract class AbstractEntity {
 		StringBuilder sb = new StringBuilder();
 		List<Field> fields = new ArrayList<Field>();
 		
-		if(this.getClass().getSuperclass() != null)
-			fields.addAll(Arrays.asList(this.getClass().getSuperclass().getDeclaredFields()));  // dodajemy z klasy nadrzędnej
+		if(this.getClass().getSuperclass() != null) 
+			fields.addAll(Arrays.asList(this.getClass().getSuperclass().getDeclaredFields()));  // from super class
 		
-		fields.addAll(Arrays.asList(this.getClass().getDeclaredFields()));						// dodajemy z klasy bieżącej
+		fields.addAll(Arrays.asList(this.getClass().getDeclaredFields()));						// from this class
 		
 		for (Field field : fields) {
 			try {
 				field.setAccessible(true);
 				Object obj = field.get(this);
 				if (obj instanceof AbstractEntity) {
-					sb.append(TUtils.indent[depth] + field.getName() + ":\n");
+					sb.append(TConstants.INDENT[depth] + field.getName() + ":\n");
 					sb.append(((AbstractEntity) obj).toFullString(depth + 1));
 				}
 				else if(obj instanceof List){
-					sb.append(TUtils.indent[depth] + field.getName() + ": ");
+					sb.append(TConstants.INDENT[depth] + field.getName() + ": ");
 					sb.append("list of " + ((List<?>)obj).size() + " elements\n");
 				}
 				else {
-					sb.append(TUtils.indent[depth] + field.getName() + ": " + obj + "\n");
+					sb.append(TConstants.INDENT[depth] + field.getName() + ": " + obj + "\n");
 				}
 			}
 			catch (IllegalArgumentException | IllegalAccessException e) {

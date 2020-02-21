@@ -1,67 +1,66 @@
 package pl.olawa.telech.tcm.logic;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.extern.slf4j.Slf4j;
-import pl.olawa.telech.tcm.model.entity.element.Directory;
+import pl.olawa.telech.tcm.dao.FileDAO;
+import pl.olawa.telech.tcm.logic.service.DiskService;
 import pl.olawa.telech.tcm.model.entity.element.File;
 import pl.olawa.telech.tcm.model.exception.TcmException;
-import pl.olawa.telech.tcm.repository.FileRepository;
-import pl.olawa.telech.tcm.utils.TUtils;
 
-@Slf4j
+
 @Service
 @Transactional
 public class FileLogic extends AbstractLogic<File> {
 
-	private FileRepository repository;
+	private FileDAO dao;
 	
 	@Autowired
 	private DiskService diskService;
 	
 	@Autowired
-	private ContainsAssocLogic containsAssocLogic;
-	
+	private ContainsAssocLogic containsAssocLogic;	
 	@Autowired
-	private DirectoryLogic directoryLogic;
+	private ElementLogic elementLogic;
 	
 	
-	public FileLogic(FileRepository repository) {
-		super(repository);
-		this.repository = repository;
+	public FileLogic(FileDAO dao) {
+		super(dao);
+		this.dao = dao;
 	}
 	
-	public void upload(MultipartFile uploadedFile, UUID dirRef) {
-		File file = File.create();
+	public File upload(MultipartFile uploadedFile, UUID dirRef) {
+		File file = new File();
+		elementLogic.fillNew(file);
 		file.setName(uploadedFile.getOriginalFilename());
 		file.setMimeType(uploadedFile.getContentType());
+		file.setSize((int) uploadedFile.getSize());
+		file = save(file);
+		
 		try {
 			diskService.saveFile(uploadedFile, file.getRef());
 		} 
 		catch (IOException e) {
-			log.debug(e.getMessage());
 			throw new TcmException("Cannot write file on disk.", e);
 		}
-		repository.save(file);
+
+		containsAssocLogic.create(dirRef, file);
 		
-		Directory dir = directoryLogic.loadByRef(dirRef);	
-		containsAssocLogic.create(dir, file);
+		return file;
 	}
 	
-	public Resource download(UUID ref) {
-		File file = repository.findByRef(ref);
-		TUtils.assertEntityExists(file);
+	public Pair<File, Resource> download(UUID ref) {
+		File file = dao.findByRef(ref);
 				
 		Resource resource = diskService.readFileAsResource(ref);
-		return resource;
+		return Pair.of(file, resource);
 	}
 
 }

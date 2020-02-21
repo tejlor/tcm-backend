@@ -1,8 +1,5 @@
 package pl.olawa.telech.tcm.model.entity.element;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -10,10 +7,9 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.olawa.telech.tcm.logic.AccountLogic;
 
 /*
- * Element typu plik.
+ * Element with type File.
  */
 @Entity
 @Getter @Setter
@@ -28,16 +24,8 @@ public class File extends Element {
 	private String mimeType;		// typ pliku
 	
 	
-	public File(Integer id) {
+	public File(int id) {
 		super(id);
-	}
-	
-	public static File create() {
-		File file = new File();
-		file.setRef(UUID.randomUUID());
-		file.setCreatedBy(AccountLogic.getCurrentUser());
-		file.setCreatedTime(LocalDateTime.now());
-		return file;
 	}
 	
 	@Override

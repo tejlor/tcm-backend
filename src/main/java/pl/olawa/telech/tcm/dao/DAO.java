@@ -1,17 +1,17 @@
-package pl.olawa.telech.tcm.repository;
+package pl.olawa.telech.tcm.dao;
 
 import java.util.List;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 /*
- * Interfejs dla bazowej implementacji Repozytorium.
+ * Interfejs dla bazowej implementacji Repository.
  */
 @NoRepositoryBean
-public interface TRepository<T> extends JpaRepository<T, Integer> {
+public interface DAO<T> extends JpaRepository<T, Integer> {
 
 	@SuppressWarnings("unchecked")
 	T findOne(Specification<T> ...spec);
@@ -24,13 +24,11 @@ public interface TRepository<T> extends JpaRepository<T, Integer> {
 	
 	@SuppressWarnings("unchecked")
 	List<T> findAll(String entityGraphName, Specification<T> ...spec);
-
+	
 	@SuppressWarnings("unchecked")
-	List<T> findAll(Sort sort, Specification<T> ...spec);
-
+	List<T> findAll(Pageable page, Specification<T> ...spec);
+	
 	@SuppressWarnings("unchecked")
-	List<T> findAll(String entityGraphName, Sort sort, Specification<T> ...spec);
-
-	T saveAndReload(T entity);
+	List<T> findAll(String entityGraphName, Pageable page, Specification<T> ...spec);
 
 }

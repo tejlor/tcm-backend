@@ -30,7 +30,7 @@ public class AbstractController {
 	private String environment;
 
 	/*
-	 * Metoda pozwala na używanie klasy LocalDate w arguemntach metod w kontrolerzach bez potrzeby używania adnotacji @DateTimeFormat.
+	 * Metoda pozwala na używanie klasy LocalDate w argumentach metod w kontrolerzach bez potrzeby używania adnotacji @DateTimeFormat.
 	 */
 	@InitBinder
 	@AppLogOmit

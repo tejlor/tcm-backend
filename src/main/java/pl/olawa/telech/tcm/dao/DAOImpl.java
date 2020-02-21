@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.repository;
+package pl.olawa.telech.tcm.dao;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
@@ -15,14 +16,14 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import pl.olawa.telech.tcm.model.entity.AbstractEntity;
 
 /*
- * Baowa implementacja Repozytorium dla wszystkich klas. Dodaje metody pomocne przy używaniu specyfikacji i grafów encyjnych.
+ * Bazowa implementacja Repozytory dla wszystkich klas. Dodaje metody pomocne przy używaniu specyfikacji i grafów encyjnych.
  */
-public class TRepositoryImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, Integer> implements TRepository<T> {
+public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, Integer> implements DAO<T> {
 
 	private EntityManager entityManager;
 
 
-	public TRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager){
+	public DAOImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager){
 		super(entityInformation, entityManager);
 		this.entityManager = entityManager;
 	}
@@ -51,8 +52,8 @@ public class TRepositoryImpl<T extends AbstractEntity> extends SimpleJpaReposito
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<T> findAll(Sort sort, Specification<T> ...spec) {
-		 return findAll(null, sort, spec);
+	public List<T> findAll(Pageable page, Specification<T> ...spec) {
+		 return findAll(null, page, spec);
 	}
 	
 	@Override
@@ -63,19 +64,15 @@ public class TRepositoryImpl<T extends AbstractEntity> extends SimpleJpaReposito
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<T> findAll(String entityGraphName, Sort sort, Specification<T> ...spec) {
-	    TypedQuery<T> query = getQuery(conjunction(spec), (sort != null ? sort : Sort.unsorted()));
+	public List<T> findAll(String entityGraphName, Pageable page, Specification<T> ...spec) {
+	    TypedQuery<T> query = getQuery(conjunction(spec), page);
 	    if(entityGraphName != null)
 	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
 	    
+	    query.setFirstResult((int)page.getOffset());
+	    query.setMaxResults(page.getPageSize());
+	    
 	    return query.getResultList();
-	}
-	
-	@Override
-	public T saveAndReload(T entity){
-		entity = saveAndFlush(entity);
-		entityManager.refresh(entity);
-		return entity;
 	}
 	
 	@SafeVarargs
