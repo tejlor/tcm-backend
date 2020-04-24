@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pl.olawa.telech.tcm.dao.ContainsAssocDAO;
 import pl.olawa.telech.tcm.model.entity.assoc.ContainsAssoc;
-import pl.olawa.telech.tcm.model.entity.element.Directory;
+import pl.olawa.telech.tcm.model.entity.element.Folder;
 import pl.olawa.telech.tcm.model.entity.element.Element;
 
 @Service
@@ -19,7 +19,7 @@ public class ContainsAssocLogic extends AbstractLogic<ContainsAssoc> {
 	private ContainsAssocDAO dao;
 	
 	@Autowired
-	private DirectoryLogic directoryLogic;
+	private FolderLogic directoryLogic;
 	
 
 	public ContainsAssocLogic(ContainsAssocDAO dao) {
@@ -28,7 +28,7 @@ public class ContainsAssocLogic extends AbstractLogic<ContainsAssoc> {
 	}
 	
 	public void create(UUID parentRef, Element child) {
-		Directory parentDir = directoryLogic.loadByRef(parentRef);	
+		Folder parentDir = directoryLogic.loadByRef(parentRef);	
 		create(parentDir, child);
 	}
 

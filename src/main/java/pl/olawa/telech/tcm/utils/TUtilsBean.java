@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 
-import pl.olawa.telech.tcm.dto.entity.AbstractDto;
+import pl.olawa.telech.tcm.model.dto.entity.AbstractDto;
 import pl.olawa.telech.tcm.model.entity.AbstractEntity;
 
 /*

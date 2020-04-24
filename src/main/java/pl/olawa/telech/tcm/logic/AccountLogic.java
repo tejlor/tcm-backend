@@ -1,30 +1,23 @@
 package pl.olawa.telech.tcm.logic;
 
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
-import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.olawa.telech.tcm.dao.UserDAO;
+import pl.olawa.telech.tcm.logic.helper.SimpleTokenEndpoint;
 import pl.olawa.telech.tcm.model.entity.User;
 import pl.olawa.telech.tcm.model.exception.TcmException;
 import pl.olawa.telech.tcm.utils.TUtils;
@@ -43,7 +36,7 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 	private UserDAO dao;
 	
 	@Autowired
-	private TokenEndpoint tokenEndpoint;
+	private SimpleTokenEndpoint tokenEndpoint;
 
 	
 	public AccountLogic(UserDAO dao) {
@@ -101,7 +94,7 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 		
 		if(user.getPassword().compareToIgnoreCase(encodedOldPassword) == 0){
 			user.setPassword(encodedNewPassword);
-			dao.save(user);
+			save(user);
 		}
 		else {
 			throw new TcmException("Stare hasło jest niepoprawne.");
@@ -111,30 +104,17 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 	// #################################### PRIVATE ###################################################################################
 
 	private ResponseEntity<OAuth2AccessToken> generateTokenForUser(User user){
-		String tempPass = "abcdef"; // nie będzie nigdy zapisane do bazy, jest tylko w sesji
 		ResponseEntity<OAuth2AccessToken> res = null;
 		
-		try {
-			String oldPassword = user.getPassword();
-			user.setPassword(TUtils.sha1(tempPass));
-			
-			Principal principal = new UsernamePasswordAuthenticationToken(clientName, clientPass, new ArrayList<GrantedAuthority>());
+		try {			
 	        HashMap<String, String> parameters = new HashMap<String, String>();
 	        parameters.put("grant_type", "password");
-	        parameters.put("password", tempPass);
+	        parameters.put("password", "");
 	        parameters.put("username", user.getEmail());
 	        
-	        try {
-	        	res = tokenEndpoint.postAccessToken(principal, parameters);
-	        }
-	        catch(InvalidGrantException | DisabledException e) {
-	        	log.error(ExceptionUtils.getStackTrace(e));
-	        	throw new TcmException("Konto użytkownika zostało wyłączone.");
-	        }
-	
-	        user.setPassword(oldPassword);
+	        res = tokenEndpoint.postAccessToken(clientName, parameters);
 		}
-        catch(HttpRequestMethodNotSupportedException e){
+        catch(Exception e){
         	log.error(ExceptionUtils.getStackTrace(e));
         	throw new TcmException("Nie udało się wygenerować tokena.");
         }

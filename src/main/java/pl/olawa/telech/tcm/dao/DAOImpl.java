@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -73,6 +74,26 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	    query.setMaxResults(page.getPageSize());
 	    
 	    return query.getResultList();
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public Pair<List<T>, Integer> findAllWithCount(Pageable page, Specification<T> ...spec) {
+		 return findAllWithCount(null, page, spec);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public Pair<List<T>, Integer> findAllWithCount(String entityGraphName, Pageable page, Specification<T> ...spec) {
+	    Specification<T> specSum = conjunction(spec);
+		TypedQuery<T> query = getQuery(specSum, page);
+	    if(entityGraphName != null)
+	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
+	    
+	    query.setFirstResult((int)page.getOffset());
+	    query.setMaxResults(page.getPageSize());
+	    
+	    return Pair.of(query.getResultList(), (int)count(specSum));
 	}
 	
 	@SafeVarargs

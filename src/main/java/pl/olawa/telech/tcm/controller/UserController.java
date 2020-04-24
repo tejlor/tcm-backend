@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import pl.olawa.telech.tcm.dto.entity.UserDto;
 import pl.olawa.telech.tcm.logic.UserLogic;
+import pl.olawa.telech.tcm.model.dto.entity.UserDto;
 
 
 @RestController

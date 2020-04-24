@@ -6,26 +6,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import pl.olawa.telech.tcm.dto.entity.DirectoryDto;
-import pl.olawa.telech.tcm.logic.DirectoryLogic;
+import pl.olawa.telech.tcm.logic.FolderLogic;
+import pl.olawa.telech.tcm.model.dto.entity.FolderDto;
 
 
 @RestController
-@RequestMapping("/directories")
-public class DirectoryController extends AbstractController {
+@RequestMapping("/folders")
+public class FolderController extends AbstractController {
 
 	@Autowired
-	private DirectoryLogic directoryLogic;
+	private FolderLogic directoryLogic;
 
 	
 	/*
-	 * Creates new directory.
+	 * Creates new folder.
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public DirectoryDto create(
-			@RequestBody(required = true) DirectoryDto directory) {
+	public FolderDto create(
+			@RequestBody(required = true) FolderDto folder) {
 		
-		return new DirectoryDto(directoryLogic.create(directory.toModel()));
+		return new FolderDto(directoryLogic.create(folder.toModel()));
 	}
 	
 

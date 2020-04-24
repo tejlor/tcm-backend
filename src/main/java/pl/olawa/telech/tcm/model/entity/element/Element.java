@@ -23,38 +23,38 @@ import pl.olawa.telech.tcm.model.entity.assoc.Association;
 public class Element extends AbstractEntity {
 
 	@Column
-	private UUID ref;						// unikalna referencja obiektu
+	private UUID ref;						// element unique reference
 	
 	@Column
-	private String name;					// nazwa elementu
+	private String name;					// element name
 	
 	@Column
-	private LocalDateTime createdTime;		// data utworzenia
+	private LocalDateTime createdTime;		// date of creation the element
 	
 	@Column(insertable = false, updatable = false)
-	private Integer createdById;			// użytkownik tworzący element
+	private Integer createdById;			// user who created the element
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "createdById", nullable = true)
 	private User createdBy;
 	
 	@Column
-	private LocalDateTime modifiedTime;		// data ostatniej modyfikacji elementu
+	private LocalDateTime modifiedTime;		// date of last modification
 	
 	@Column(insertable = false, updatable = false)
-	private Integer modifiedById;			// użytkownik ostatnio modyfikujący element
+	private Integer modifiedById;			// user who last modified the element
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modifiedById", nullable = true)
 	private User modifiedBy;
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "childElementId")
-	private List<Association> parents;		// parents of element
+	private List<Association> parents;		// parents of the element
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parentElementId")
-	private List<Association> children;		// children of element
+	private List<Association> children;		// children of the element
 	
 	
 	@Transient

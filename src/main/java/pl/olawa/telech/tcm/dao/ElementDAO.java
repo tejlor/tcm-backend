@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.persistence.criteria.Join;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -17,9 +18,15 @@ public interface ElementDAO extends DAO<Element>, JpaSpecificationExecutor<Eleme
 
 	Element findByRef(UUID ref);
 
-	@SuppressWarnings("unchecked")
-	default List<Element> findByParent(Integer parentId, TableParams tableParams){
+	default List<Element> findByParent(Integer parentId){
 		return findAll(
+				isChildOf(parentId)
+				);
+	}
+	
+	@SuppressWarnings("unchecked")
+	default Pair<List<Element>, Integer> findByParent(Integer parentId, TableParams tableParams){
+		return findAllWithCount(
 				null,
 				tableParams.getPage(),
 				isChildOf(parentId),

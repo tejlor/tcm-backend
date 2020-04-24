@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.dto.entity;
+package pl.olawa.telech.tcm.model.dto.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -15,17 +15,17 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @PrimaryKeyJoinColumn
-public class Directory extends Element {
+public class Folder extends Element {
 
 	@Column
 	private String icon;
 	
 	
-	public Directory(int id) {
+	public Folder(int id) {
 		super(id);
 	}
 	
 	public String getTypeName() {
-		return "Directory";
+		return "Folder";
 	}
 }

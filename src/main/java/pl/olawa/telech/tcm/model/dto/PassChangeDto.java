@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.dto;
+package pl.olawa.telech.tcm.model.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
