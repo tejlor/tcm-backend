@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.olawa.telech.tcm.model.entity.AbstractEntity;
 import pl.olawa.telech.tcm.model.entity.element.Element;
+import pl.olawa.telech.tcm.model.entity.element.File;
+import pl.olawa.telech.tcm.model.entity.element.Folder;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -44,6 +46,18 @@ public class ElementDto extends AbstractDto {
 		Element model = new Element();
 		fillModel(model);
 		return model;
+	}
+	
+	public static ElementDto toDto(Element model) {
+		if(model instanceof File) {
+			return new FileDto((File) model);
+		}
+		
+		if(model instanceof Folder) {
+			return new FolderDto((Folder) model);
+		}
+		
+		return new ElementDto(model);
 	}
 
 	public static List<ElementDto> toDtoList(List<Element> list){

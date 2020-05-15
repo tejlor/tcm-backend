@@ -18,19 +18,25 @@ public interface ElementDAO extends DAO<Element>, JpaSpecificationExecutor<Eleme
 
 	Element findByRef(UUID ref);
 
-	default List<Element> findByParent(Integer parentId){
+	default List<Element> findChildren(Integer parentId){
 		return findAll(
 				isChildOf(parentId)
 				);
 	}
 	
+	default List<Element> findParents(Integer childId){
+		return findAll(
+				isParentOf(childId)
+				);
+	}
+	
 	@SuppressWarnings("unchecked")
-	default Pair<List<Element>, Integer> findByParent(Integer parentId, TableParams tableParams){
+	default Pair<List<Element>, Integer> findChildren(Integer parentId, TableParams tableParams){
 		return findAllWithCount(
 				null,
 				tableParams.getPage(),
 				isChildOf(parentId),
-				tableParams.getFilter() != null ? isNameLike(tableParams.getFilter()) : null
+				tableParams.getFilter() != null ? isLike(tableParams.getFilter()) : null
 				);
 	}
 
@@ -43,9 +49,16 @@ public interface ElementDAO extends DAO<Element>, JpaSpecificationExecutor<Eleme
         };
 	}
 	
-	default Specification<Element> isNameLike(String filter){
+	default Specification<Element> isParentOf(Integer childId){
         return (element, cq, cb) -> {
-        	return cb.like(element.get("name"), "%" + filter + "%");
+        	Join<Element, Association> assoc = element.join("children");
+            return cb.equal(assoc.get("childElementId"), childId);
+        };
+	}
+	
+	default Specification<Element> isLike(String filter){
+        return (element, cq, cb) -> {
+        	return cb.like(cb.lower(element.get("name")), "%" + filter + "%");
         };
 	}
 }

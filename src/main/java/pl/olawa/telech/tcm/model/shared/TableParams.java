@@ -5,8 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
+import pl.olawa.telech.tcm.utils.TUtils;
 
 @Getter @Setter
 public class TableParams {
@@ -33,8 +36,8 @@ public class TableParams {
 		if(pageSize != null)
 			this.pageSize = pageSize;
 		
-		if(filter != null)
-			this.filter = filter;
+		if(!TUtils.isEmpty(filter))
+			this.filter = filter.toLowerCase();
 		
 		if(sortBy != null && sortBy.length() > 0)
 			this.sortBy = sortBy;
@@ -43,10 +46,12 @@ public class TableParams {
 			this.sortAsc = sortAsc;	
 	}
 	
+	@JsonIgnore
 	public Sort getSort() {
 		return Sort.by(sortAsc ? Direction.ASC : Direction.DESC, sortBy);
 	}
 	
+	@JsonIgnore
 	public Pageable getPage() {
 		return PageRequest.of(pageNo, pageSize, getSort());
 	}

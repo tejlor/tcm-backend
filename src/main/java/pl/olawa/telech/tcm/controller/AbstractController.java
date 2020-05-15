@@ -25,9 +25,11 @@ import pl.olawa.telech.tcm.utils.aop.AppLogOmit;
 @Slf4j
 @RestController
 public class AbstractController {
-
+	
 	@Value("${tcm.environment}")
 	private String environment;
+	
+	protected static final String ref = "{ref:[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}}";
 
 	/*
 	 * Metoda pozwala na używanie klasy LocalDate w argumentach metod w kontrolerzach bez potrzeby używania adnotacji @DateTimeFormat.

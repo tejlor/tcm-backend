@@ -1,5 +1,6 @@
 package pl.olawa.telech.tcm.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,13 +29,23 @@ public class FileController extends AbstractController {
 
 
 	/*
-	 * Downloads file.
+	 * Return file info.
 	 */
-	@RequestMapping(value = "{ref:[a-z0-9-]{36}}", method = RequestMethod.GET)
-	public ResponseEntity<Resource> download(
+	@RequestMapping(value = "/{ref:[a-z0-9-]{36}}", method = RequestMethod.GET)
+	public FileDto get(
 			@PathVariable String ref) {
 
-		Pair<File, Resource> file = fileLogic.download(UUID.fromString(ref));
+		return new FileDto(fileLogic.loadByRef(UUID.fromString(ref)));
+	}
+	
+	/*
+	 * Downloads file.
+	 */
+	@RequestMapping(value = "/{ref:[a-z0-9-]{36}}/content", method = RequestMethod.GET)
+	public ResponseEntity<Resource> content(
+			@PathVariable String ref) {
+
+		Pair<File, Resource> file = fileLogic.downloadContent(UUID.fromString(ref));
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getKey().getName() + "\"")
 				.header(HttpHeaders.CONTENT_TYPE, file.getKey().getMimeType())
@@ -42,14 +53,28 @@ public class FileController extends AbstractController {
 	}
 	
 	/*
-	 * Uploads new file to specified directory.
+	 * Downloads file.
+	 */
+	@RequestMapping(value = "/{ref:[a-z0-9-]{36}}/preview", method = RequestMethod.GET)
+	public ResponseEntity<Resource> preview(
+			@PathVariable String ref) {
+
+		Pair<File, Resource> file = fileLogic.downloadPreview(UUID.fromString(ref));
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getKey().getName() + "\"")
+				.header(HttpHeaders.CONTENT_TYPE, file.getKey().getMimeType())
+				.body(file.getValue());
+	}
+	
+	/*
+	 * Uploads new files to specified directory.
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public FileDto upload( 
-			@RequestParam MultipartFile file,
+	public List<FileDto> upload( 
+			@RequestParam MultipartFile[] file,
 			@RequestParam String dirRef) {
 		
-		return new FileDto(fileLogic.upload(file, UUID.fromString(dirRef)));
+		return FileDto.toFileDtoList(fileLogic.upload(file, UUID.fromString(dirRef)));
 	}
 
 

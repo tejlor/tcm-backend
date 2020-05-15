@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -25,21 +26,47 @@ public class DiskService {
 	
 	@Value("${tcm.repo.basePath}")
 	private String basePath;
+
+	private static final String contentExtension = ".bin";
+	private static final String previewExtension = ".prv";
 	
 
-	public void saveFile(MultipartFile file, UUID ref) throws IOException {
-		Path filePath = refToFilePath(ref);
+	public void saveContent(MultipartFile file, UUID ref) throws IOException {
+		Path path = refToContentPath(ref);
 		Files.createDirectories(refToDirPath(ref));
-		log.debug("File saved in " + filePath);
+		log.debug("File saved in " + path);
 		
         try (InputStream inputStream = file.getInputStream()) {
-			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
 		}
 	}
 	
-	public Resource readFileAsResource(UUID ref) {
+	public void savePreview(byte[] bytes, UUID ref) throws IOException {		
+		Path path = refToPreviewPath(ref);
+		log.debug("File preview saved in " + path);
+		
+        Files.write(path, bytes, StandardOpenOption.CREATE);
+	}
+	
+	public Resource readContentAsResource(UUID ref) {
 		try {
-			Path path = refToFilePath(ref);
+			Path path = refToContentPath(ref);
+			Resource resource = new UrlResource(path.toUri());
+			if (resource.exists() || resource.isReadable()) {
+				return resource;
+			}
+			else {
+				throw new TcmException("Could not read file: " + ref);
+			}
+		}
+		catch (MalformedURLException e) {
+			throw new TcmException("Could not read file: " + ref, e);
+		}
+	}
+	
+	public Resource readPreviewAsResource(UUID ref) {
+		try {
+			Path path = refToPreviewPath(ref);
 			Resource resource = new UrlResource(path.toUri());
 			if (resource.exists() || resource.isReadable()) {
 				return resource;
@@ -57,10 +84,17 @@ public class DiskService {
 		return Paths.get(refToDirStr(ref));		
 	}
 	
-	private Path refToFilePath(UUID ref) {
+	private Path refToContentPath(UUID ref) {
 		return Paths.get(new StringBuilder(refToDirStr(ref))
 				.append(ref.toString())
-				.append(".bin")
+				.append(contentExtension)
+				.toString());		
+	}
+	
+	private Path refToPreviewPath(UUID ref) {
+		return Paths.get(new StringBuilder(refToDirStr(ref))
+				.append(ref.toString())
+				.append(previewExtension)
 				.toString());		
 	}
 	

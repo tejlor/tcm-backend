@@ -1,5 +1,6 @@
 package pl.olawa.telech.tcm.model.entity;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import pl.olawa.telech.tcm.utils.TConstants;
 @Getter @Setter
 @NoArgsConstructor
 @MappedSuperclass
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

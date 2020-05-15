@@ -2,6 +2,8 @@ package pl.olawa.telech.tcm.model.entity.element;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.persistence.*;
@@ -12,6 +14,7 @@ import lombok.Setter;
 import pl.olawa.telech.tcm.model.entity.AbstractEntity;
 import pl.olawa.telech.tcm.model.entity.User;
 import pl.olawa.telech.tcm.model.entity.assoc.Association;
+import pl.olawa.telech.tcm.model.entity.assoc.ContainsAssoc;
 
 /*
  * Element of the repository. Base class for all elements.
@@ -50,16 +53,19 @@ public class Element extends AbstractEntity {
 	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "childElementId")
-	private List<Association> parents;		// parents of the element
+	private List<ContainsAssoc> parents;		// parents of the element
 	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parentElementId")
-	private List<Association> children;		// children of the element
+	private List<ContainsAssoc> children;		// children of the element
 	
 	
 	@Transient
 	private UUID parentRef;
 	
+	@Transient
+	private List<Element> childrenElements;
+ 	
 	
 	public Element(int id) {
 		super(id);

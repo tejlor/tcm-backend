@@ -47,6 +47,7 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = dao.findByEmail(username);
+		log.debug("load " + user.toFullString(0));
 		if(user == null)
 			throw new UsernameNotFoundException(username);
 		
@@ -62,8 +63,9 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			Object principal = authentication.getPrincipal();
 
-			if (principal instanceof User)
-				return (User) principal;
+			if (principal instanceof User) {
+				log.debug("get " + ((User)principal).toFullString(0));
+				return (User) principal;}
 			else
 				//return null;
 				return new User(1); 
