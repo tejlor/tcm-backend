@@ -20,6 +20,9 @@ import pl.olawa.telech.tcm.model.exception.NotFoundException;
 import pl.olawa.telech.tcm.model.exception.TcmException;
 import pl.olawa.telech.tcm.model.interfaces.Loggable;
 
+/*
+ * Aspect logging every request.
+ */
 @Slf4j
 @Aspect
 @Component

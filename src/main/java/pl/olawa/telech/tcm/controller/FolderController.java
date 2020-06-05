@@ -21,9 +21,9 @@ public class FolderController extends AbstractController {
 	private FolderLogic folderLogic;
 
 	/*
-	 * Return file info.
+	 * Return folder info.
 	 */
-	@RequestMapping(value = "{ref:[a-z0-9-]{36}}", method = RequestMethod.GET)
+	@RequestMapping(value = "{ref:" + AbstractController.REF + "}", method = RequestMethod.GET)
 	public FolderDto get(
 			@PathVariable String ref) {
 
@@ -35,11 +35,9 @@ public class FolderController extends AbstractController {
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public FolderDto create(
-			@RequestBody(required = true) FolderDto folder) {
+			@RequestBody FolderDto folder) {
 		
 		return new FolderDto(folderLogic.create(folder.toModel()));
 	}
 	
-
-
 }

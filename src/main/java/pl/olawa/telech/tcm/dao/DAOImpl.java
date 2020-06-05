@@ -17,7 +17,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import pl.olawa.telech.tcm.model.entity.AbstractEntity;
 
 /*
- * Bazowa implementacja Repozytory dla wszystkich klas. Dodaje metody pomocne przy używaniu specyfikacji i grafów encyjnych.
+ * Base implementation of all repository classes. Adds some methods helpful in using specifications and entity graphs. 
  */
 public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, Integer> implements DAO<T> {
 

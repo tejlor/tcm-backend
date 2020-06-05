@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import lombok.Getter;
 
 /*
- * Wrapper dla requestu niezbędny do kilkukrotnego odczytana zawartosci body. 
- * Rest controller odczytuje i parsuje body, a następnie zamyka strumień, co nie pozwalana doczytanie jego w AppLogAspect.
+ * Wrapper for request, which allows read body content twice.
+ * Rest controller reads body and closes stream, which does not allow to read it again in AppLogAspect.
  */
 public class RequestWrapper extends HttpServletRequestWrapper {
 

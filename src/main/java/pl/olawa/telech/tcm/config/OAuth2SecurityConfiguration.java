@@ -24,7 +24,7 @@ import pl.olawa.telech.tcm.utils.Sha1PasswordEncoder;
 import pl.olawa.telech.tcm.utils.TUtils;
 
 /*
- * Konfiguracja uwierzytelniania oAuth 2.0.
+ * Configuration of oAuth 2.0.
  */
 @Configuration
 @EnableWebSecurity

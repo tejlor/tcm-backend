@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.olawa.telech.tcm.model.entity.element.File;
+import pl.olawa.telech.tcm.model.entity.element.FileEl;
 
 
 @Getter @Setter
@@ -14,19 +14,20 @@ public class FileDto extends ElementDto {
 
 	private Integer size;
 	private String mimeType;
+	private String previewMimeType;
 
 	
-	public FileDto(File model){
+	public FileDto(FileEl model){
 		super(model);
 	}
 
 	@Override
-	public File toModel() {
+	public FileEl toModel() {
 		throw new UnsupportedOperationException();
 	}
 	
-	public static List<FileDto> toFileDtoList(List<File> list){
-		return toDtoList(File.class, FileDto.class, list);
+	public static List<FileDto> toFileDtoList(List<FileEl> list){
+		return toDtoList(FileEl.class, FileDto.class, list);
 	}
 
 }

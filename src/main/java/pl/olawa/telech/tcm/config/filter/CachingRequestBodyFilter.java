@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 /*
- * Filtr dodający Wrappera na request, umożliwiający ponowny odczyt zawartości (niezbędny do logowania requestu).
+ * Filter adding wrapper for request, which allows to read content twice. Required for logging.
  */
 @Component
 public class CachingRequestBodyFilter extends GenericFilterBean {

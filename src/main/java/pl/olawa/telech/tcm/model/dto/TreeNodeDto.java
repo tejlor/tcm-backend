@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.olawa.telech.tcm.model.entity.element.Element;
-import pl.olawa.telech.tcm.model.entity.element.File;
+import pl.olawa.telech.tcm.model.entity.element.FileEl;
 import pl.olawa.telech.tcm.model.interfaces.Loggable;
 
 @Getter @Setter
@@ -23,7 +23,7 @@ public class TreeNodeDto implements Comparable<TreeNodeDto>, Loggable {
 	public TreeNodeDto(Element element) {
 		ref = element.getRef().toString();
 		name = element.getName();
-		isLeaf = (element instanceof File);
+		isLeaf = (element instanceof FileEl);
 		
 		if(element.getChildrenElements() != null) {
 			children = element.getChildrenElements().stream()

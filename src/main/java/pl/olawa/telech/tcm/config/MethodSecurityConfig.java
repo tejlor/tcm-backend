@@ -5,7 +5,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 
 /*
- * Konfiguracja pozwalająca na używanie w kontolerach adnotacji @RoleAllowed itp. 
+ * Configuration needed for using in controllers @RolesAllowed annotations and similar
  */
 @Configuration
 @EnableGlobalMethodSecurity(jsr250Enabled = true)

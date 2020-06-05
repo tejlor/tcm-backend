@@ -9,19 +9,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /*
- * Element typu folder.
+ * Element with type Folder.
  */
 @Entity
 @Getter @Setter
 @NoArgsConstructor
 @PrimaryKeyJoinColumn
-public class Folder extends Element {
+public class FolderEl extends Element {
 
 	@Column
 	private String icon;
 	
 	
-	public Folder(int id) {
+	public FolderEl(int id) {
 		super(id);
 	}
 	

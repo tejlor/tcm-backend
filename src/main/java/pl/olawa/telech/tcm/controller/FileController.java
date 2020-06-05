@@ -2,6 +2,7 @@ package pl.olawa.telech.tcm.controller;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pl.olawa.telech.tcm.logic.FileLogic;
 import pl.olawa.telech.tcm.model.dto.entity.FileDto;
-import pl.olawa.telech.tcm.model.entity.element.File;
+import pl.olawa.telech.tcm.model.entity.element.FileEl;
 
 
 @RestController
@@ -29,9 +30,9 @@ public class FileController extends AbstractController {
 
 
 	/*
-	 * Return file info.
+	 * Returns file info.
 	 */
-	@RequestMapping(value = "/{ref:[a-z0-9-]{36}}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{ref:" + AbstractController.REF + "}", method = RequestMethod.GET)
 	public FileDto get(
 			@PathVariable String ref) {
 
@@ -39,13 +40,13 @@ public class FileController extends AbstractController {
 	}
 	
 	/*
-	 * Downloads file.
+	 * Downloads file preview content.
 	 */
-	@RequestMapping(value = "/{ref:[a-z0-9-]{36}}/content", method = RequestMethod.GET)
-	public ResponseEntity<Resource> content(
+	@RequestMapping(value = "/{ref:" + AbstractController.REF + "}/preview", method = RequestMethod.GET)
+	public ResponseEntity<Resource> preview(
 			@PathVariable String ref) {
 
-		Pair<File, Resource> file = fileLogic.downloadContent(UUID.fromString(ref));
+		Pair<FileEl, Resource> file = fileLogic.downloadPreview(UUID.fromString(ref));
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getKey().getName() + "\"")
 				.header(HttpHeaders.CONTENT_TYPE, file.getKey().getMimeType())
@@ -53,17 +54,32 @@ public class FileController extends AbstractController {
 	}
 	
 	/*
-	 * Downloads file.
+	 * Downloads file content.
 	 */
-	@RequestMapping(value = "/{ref:[a-z0-9-]{36}}/preview", method = RequestMethod.GET)
-	public ResponseEntity<Resource> preview(
+	@RequestMapping(value = "/{ref:" + AbstractController.REF + "}/content", method = RequestMethod.GET)
+	public ResponseEntity<Resource> content(
 			@PathVariable String ref) {
 
-		Pair<File, Resource> file = fileLogic.downloadPreview(UUID.fromString(ref));
+		Pair<FileEl, Resource> file = fileLogic.downloadContent(UUID.fromString(ref));
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getKey().getName() + "\"")
 				.header(HttpHeaders.CONTENT_TYPE, file.getKey().getMimeType())
 				.body(file.getValue());
+	}
+	
+	/*
+	 * Downloads many files as zip.
+	 */
+	@RequestMapping(value = "/zip", method = RequestMethod.GET)
+	public ResponseEntity<Resource> downloadAsZip(
+			@RequestParam List<String> refs){
+
+		List<UUID> uuids = refs.stream().map(ref -> UUID.fromString(ref)).collect(Collectors.toList());
+		Resource file = fileLogic.downloadAsZip(uuids);
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"TCM_Files.zip\"")
+				.header(HttpHeaders.CONTENT_TYPE, "application/zip")
+				.body(file);
 	}
 	
 	/*
@@ -76,7 +92,6 @@ public class FileController extends AbstractController {
 		
 		return FileDto.toFileDtoList(fileLogic.upload(file, UUID.fromString(dirRef)));
 	}
-
 
 
 }

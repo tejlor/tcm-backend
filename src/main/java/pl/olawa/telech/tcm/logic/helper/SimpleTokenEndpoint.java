@@ -18,7 +18,7 @@ import pl.olawa.telech.tcm.model.exception.TcmException;
 
 
 /*
- * Klasa symulująca endpoint do generowania tokenów. Jest używana do wygenerowania tokena dla użytkownika, bez potrzeby podawania jego hasła.
+ * Class simulate endpoint for token generating. It is using to generate token for user without knowing of his passowrd.
  */
 @Component
 public class SimpleTokenEndpoint {

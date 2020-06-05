@@ -27,7 +27,7 @@ public class AccountController extends AbstractController {
 
 	
 	/*
-	 * Zwraca aktualnie zalogowanego użytkownika.
+	 * Returns current user.
 	 */
 	@RequestMapping(value = "/current", method = RequestMethod.GET)
 	public UserDto getCurrentUser() {
@@ -36,18 +36,18 @@ public class AccountController extends AbstractController {
 	}
 	
 	/*
-	 * Loguje użytkownika na wybrane konto.
+	 * Logins user as selected diferent user.
 	 */
 	@RolesAllowed("ADMIN")
 	@RequestMapping(value = "/loginAs", method = RequestMethod.POST)
 	public ResponseEntity<OAuth2AccessToken> loginAs(
-			@RequestParam(required = true) int userId) {
+			@RequestParam int userId) {
 		
 		return accountLogic.loginAs(userId);
 	}
 	
 	/*
-	 * Zmienia hasło dla bieżącego użytkownika.
+	 * Changes password for current user.
 	 */
 	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)

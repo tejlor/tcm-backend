@@ -20,10 +20,11 @@ public class UserController extends AbstractController {
 
 	
 	/*
-	 * Wczytuje wszystkiech użytkowników.
+	 * Return all users.
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public List<UserDto> getAll() {
+		
 		return UserDto.toDtoList(userLogic.loadAll());
 	}
 

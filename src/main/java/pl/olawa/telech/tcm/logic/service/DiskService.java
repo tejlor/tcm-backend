@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
+import pl.olawa.telech.tcm.model.exception.NotFoundException;
 import pl.olawa.telech.tcm.model.exception.TcmException;
 
 @Slf4j
@@ -68,16 +69,29 @@ public class DiskService {
 		try {
 			Path path = refToPreviewPath(ref);
 			Resource resource = new UrlResource(path.toUri());
-			if (resource.exists() || resource.isReadable()) {
-				return resource;
-			}
-			else {
+			if (!resource.exists())
+				throw new NotFoundException();
+			
+			if(!resource.isReadable())
 				throw new TcmException("Could not read file: " + ref);
-			}
+			
+			return resource;
 		}
 		catch (MalformedURLException e) {
 			throw new TcmException("Could not read file: " + ref, e);
 		}
+	}
+	
+	public File readContentAsFile(UUID ref) {
+		Path path = refToContentPath(ref);
+		File file = path.toFile();
+		if (!file.exists())
+			throw new NotFoundException();
+		
+		if(!file.canRead())
+			throw new TcmException("Could not read file: " + ref);
+		
+		return file;
 	}
 	
 	private Path refToDirPath(UUID ref) {

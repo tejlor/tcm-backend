@@ -8,7 +8,7 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 
 /*
- * Handler dla wyjątków wyrzucanych z metod asynchrnonicznych.
+ * Exception handler for exceptions throwed from async methods.
  */
 @Slf4j
 public class CustomAsyncExceptionHandler implements AsyncUncaughtExceptionHandler {

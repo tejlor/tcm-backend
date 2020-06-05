@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import pl.olawa.telech.tcm.logic.AccountLogic;
 
 /*
- * Konfiguracja uwierzytelniania oAuth 2.0.
+ * Configuration of oAuth 2.0.
  */
 @Configuration
 @EnableAuthorizationServer

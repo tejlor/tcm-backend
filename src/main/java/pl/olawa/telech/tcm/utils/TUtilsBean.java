@@ -9,13 +9,13 @@ import pl.olawa.telech.tcm.model.dto.entity.AbstractDto;
 import pl.olawa.telech.tcm.model.entity.AbstractEntity;
 
 /*
- * Rozszerzenie implementacji Apachowego BeanUtils o obsługę enumów.
- * Bean jest używany podczas automatycznej konwersji Entity <-> Dto.
+ * Extension of Apache's BeanUtils with enum handling.
+ * Bean is using during auto convertion Entity <-> Dto
  */
 public class TUtilsBean extends BeanUtilsBean {
 
 	/*
-	 * Automatycznie konwertujemy String na Enum (Dto -> Entity), w drugą stronę działa zwykłe toString().
+	 * Converts String to Enum. In oposite way works simple toString()  
 	 */
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -30,7 +30,7 @@ public class TUtilsBean extends BeanUtilsBean {
 	}
 	
 	/*
-	 * Omijamy obiekty encyjne, bo nie ma zarejestrowanego konwertera Dto <-> Entity i wyjątek powoduje przerwanie procesu kopiowania. 
+	 * Skip entity objects, because there is no registerd converter Dto <-> Entity and exception causes termination od copying process.  
 	 */
 	@Override
 	public void copyProperty(Object bean, String name, Object value) throws IllegalAccessException, InvocationTargetException {

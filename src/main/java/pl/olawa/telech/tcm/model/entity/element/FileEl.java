@@ -15,16 +15,22 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @PrimaryKeyJoinColumn
-public class File extends Element {
+public class FileEl extends Element {
 
 	@Column
-	private Integer size;			// rozmiar pliku w bajtach
+	private Integer size;				// file size in bytes
 	
 	@Column 
-	private String mimeType;		// typ pliku
+	private String mimeType;			// mime type of the file
+	
+	@Column 
+	private String previewSize;			// size of the generated preview of the file
+	
+	@Column 
+	private String previewMimeType;		// mime type of the generated preview of the file
 	
 	
-	public File(int id) {
+	public FileEl(int id) {
 		super(id);
 	}
 	

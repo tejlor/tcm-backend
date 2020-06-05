@@ -6,7 +6,7 @@ import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 
 /*
- * Implementacja starej dobrej ImprovedNamingStrategy.
+ * Implementation of old and good ImprovedNamingStrategy.
  */
 public class TNamingStrategy extends PhysicalNamingStrategyStandardImpl {
 

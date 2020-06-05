@@ -4,12 +4,12 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import pl.olawa.telech.tcm.model.entity.element.File;
+import pl.olawa.telech.tcm.model.entity.element.FileEl;
 
 
-public interface FileDAO extends DAO<File>, JpaSpecificationExecutor<File> {
+public interface FileDAO extends DAO<FileEl>, JpaSpecificationExecutor<FileEl> {
 
-	File findByRef(UUID ref);
+	FileEl findByRef(UUID ref);
 	
 }
 

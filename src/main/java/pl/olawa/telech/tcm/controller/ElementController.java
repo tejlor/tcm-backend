@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import pl.olawa.telech.tcm.logic.ElementLogic;
 import pl.olawa.telech.tcm.model.dto.TableDataDto;
 import pl.olawa.telech.tcm.model.dto.TreeNodeDto;
 import pl.olawa.telech.tcm.model.dto.entity.ElementDto;
+import pl.olawa.telech.tcm.model.entity.element.Element;
 import pl.olawa.telech.tcm.model.shared.Path;
 import pl.olawa.telech.tcm.model.shared.TableParams;
 
@@ -28,9 +30,9 @@ public class ElementController extends AbstractController {
 	
 	
 	/*
-	 * Return element info.
+	 * Returns element info.
 	 */
-	@RequestMapping(value = AbstractController.ref, method = RequestMethod.GET)
+	@RequestMapping(value = "/{ref:" + AbstractController.REF + "}", method = RequestMethod.GET)
 	public ElementDto get(
 			@PathVariable String ref) {
 
@@ -38,9 +40,19 @@ public class ElementController extends AbstractController {
 	}
 	
 	/*
+	 * Returns absolute path of element.
+	 */
+	@RequestMapping(value = "/{elementRef:" + AbstractController.REF + "}/path", method = RequestMethod.GET)
+	public Path path(
+		@PathVariable String elementRef){
+				
+		return elementLogic.loadAbsolutePath((UUID.fromString(elementRef)));
+	}
+	
+	/*
 	 * Returns children of element for tree.
 	 */
-	@RequestMapping(value = "/{parentRef:[a-z0-9-]{36}}/childrenTree", method = RequestMethod.GET)
+	@RequestMapping(value = "/{parentRef:" + AbstractController.REF + "}/childrenTree", method = RequestMethod.GET)
 	public List<TreeNodeDto> childrenTree(
 		@PathVariable String parentRef){
 				
@@ -51,9 +63,9 @@ public class ElementController extends AbstractController {
 	}
 	
 	/*
-	 * Returns children of element for tree.
+	 * Returns parents of element for tree.
 	 */
-	@RequestMapping(value = "/{elementRef:[a-z0-9-]{36}}/parentsTree", method = RequestMethod.GET)
+	@RequestMapping(value = "/{elementRef:" + AbstractController.REF + "}/parentsTree", method = RequestMethod.GET)
 	public TreeNodeDto parentsTree(
 		@PathVariable String elementRef){
 				
@@ -63,7 +75,7 @@ public class ElementController extends AbstractController {
 	/*
 	 * Returns children of element for table.
 	 */
-	@RequestMapping(value = "/{parentRef:[a-z0-9-]{36}}/childrenTable", method = RequestMethod.GET)
+	@RequestMapping(value = "/{parentRef:" + AbstractController.REF + "}/childrenTable", method = RequestMethod.GET)
 	public TableDataDto<ElementDto> childrenTable(
 		@PathVariable String parentRef,	
 		@RequestParam(required = false) Integer pageNo,
@@ -74,7 +86,7 @@ public class ElementController extends AbstractController {
 		
 		TableParams tableParams = new TableParams(pageNo, pageSize, filter, sortBy, sortAsc);
 		
-		var result = elementLogic.loadChildren(UUID.fromString(parentRef), tableParams); 
+		Pair<List<Element>, Integer> result = elementLogic.loadChildren(UUID.fromString(parentRef), tableParams); 
 		
 		TableDataDto<ElementDto> table = new TableDataDto<>(tableParams);
 		table.setRows(ElementDto.toDtoList(result.getKey()));
@@ -83,14 +95,6 @@ public class ElementController extends AbstractController {
 		return table;
 	}
 	
-	/*
-	 * Returns absolute path of element.
-	 */
-	@RequestMapping(value = "/{elementRef:[a-z0-9-]{36}}/path", method = RequestMethod.GET)
-	public Path path(
-		@PathVariable String elementRef){
-				
-		return elementLogic.loadAbsolutePath((UUID.fromString(elementRef)));
-	}
+
 
 }

@@ -29,10 +29,10 @@ public class AbstractController {
 	@Value("${tcm.environment}")
 	private String environment;
 	
-	protected static final String ref = "{ref:[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}}";
+	protected static final String REF = "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}";
 
 	/*
-	 * Metoda pozwala na używanie klasy LocalDate w argumentach metod w kontrolerzach bez potrzeby używania adnotacji @DateTimeFormat.
+	 * Configuration needed for using Localdate class in arguments of constructor methods without @DateTimeFormat annotation.
 	 */
 	@InitBinder
 	@AppLogOmit

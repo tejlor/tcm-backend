@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.olawa.telech.tcm.dao.FolderDAO;
-import pl.olawa.telech.tcm.model.entity.element.Folder;
+import pl.olawa.telech.tcm.model.entity.element.FolderEl;
 
 @Service
 @Transactional
-public class FolderLogic extends AbstractLogic<Folder> {
+public class FolderLogic extends AbstractLogic<FolderEl> {
 	
 	private FolderDAO dao;
 	
@@ -26,11 +26,11 @@ public class FolderLogic extends AbstractLogic<Folder> {
 		this.dao = dao;
 	}
 	
-	public Folder loadByRef(UUID ref) {
+	public FolderEl loadByRef(UUID ref) {
 		return dao.findByRef(ref);
 	}
 	
-	public Folder create(Folder folder) {
+	public FolderEl create(FolderEl folder) {
 		elementLogic.fillNew(folder);
 		folder = save(folder);
 		

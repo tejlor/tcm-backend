@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.olawa.telech.tcm.model.entity.element.Folder;
+import pl.olawa.telech.tcm.model.entity.element.FolderEl;
 
 
 @Getter @Setter
@@ -17,19 +17,19 @@ public class FolderDto extends ElementDto {
 	private String parentRef;
 
 	
-	public FolderDto(Folder model){
+	public FolderDto(FolderEl model){
 		super(model);
 	}
 
 	@Override
-	public Folder toModel() {
-		Folder model = new Folder();
+	public FolderEl toModel() {
+		FolderEl model = new FolderEl();
 		fillModel(model);
 		return model;
 	}
 	
-	public static List<FolderDto> toFolderDtoList(List<Folder> list){
-		return toDtoList(Folder.class, FolderDto.class, list);
+	public static List<FolderDto> toFolderDtoList(List<FolderEl> list){
+		return toDtoList(FolderEl.class, FolderDto.class, list);
 	}
 
 }

@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /*
- * Obiekt zwracany w przypadku wystąpienia błędu. Zobacz AbstractController.
+ * Object is returning in case of error. See AbstractController.
  */
 @Getter @Setter
 public class ApiError {

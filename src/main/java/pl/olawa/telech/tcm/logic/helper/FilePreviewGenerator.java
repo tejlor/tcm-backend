@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,13 +29,15 @@ public class FilePreviewGenerator {
 		availableTypes.add("image/png");
 		availableTypes.add("image/gif");
 		availableTypes.add("image/bmp");
+		availableTypes.add("application/pdf");
+		
 	}
 
 	public boolean isAvailable(String mimeType) {
 		return availableTypes.contains(mimeType);
 	}
 
-	public byte[] createPreview(MultipartFile file) throws IOException  {
+	public Pair<String, byte[]> createPreview(MultipartFile file) throws IOException  {
 		switch (file.getContentType()) {
 			case "image/jpeg":
 				BufferedImage img = ImageIO.read(file.getInputStream());
@@ -52,7 +55,10 @@ public class FilePreviewGenerator {
 				
 				var bos = new ByteArrayOutputStream();
 				ImageIO.write(img, "jpg", bos);
-				return bos.toByteArray();
+				return Pair.of("image/jpg", bos.toByteArray());
+				
+			case "application/pdf":
+				return Pair.of("application/pdf", file.getBytes());
 				
 			default:
 				throw new TcmException("Mime type " + file.getContentType() + " is not available.");

@@ -21,9 +21,9 @@ public interface Loggable {
 		List<Field> fields = new ArrayList<Field>();
 		
 		if(this.getClass().getSuperclass() != null)
-			fields.addAll(Arrays.asList(this.getClass().getSuperclass().getDeclaredFields()));  // dodajemy z klasy nadrzędnej
+			fields.addAll(Arrays.asList(this.getClass().getSuperclass().getDeclaredFields()));  // add from super class
 		
-		fields.addAll(Arrays.asList(this.getClass().getDeclaredFields()));						// dodajemy z klasy bieżącej
+		fields.addAll(Arrays.asList(this.getClass().getDeclaredFields()));						// add from current class
 		
 		for (Field field : fields) {
 			try {

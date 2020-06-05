@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /*
- * Konfiguracja wywołań asynchronicznych, pozwalająca na użycie własnego handlera wyjątków.
+ * Configuration of custom exception handler for async methods.
  */
 @Configuration
 @EnableAsync
