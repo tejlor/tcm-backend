@@ -1,5 +1,6 @@
 package pl.olawa.telech.tcm.logic;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -7,12 +8,17 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.olawa.telech.tcm.dao.ElementDAO;
+import pl.olawa.telech.tcm.model.entity.Setting;
 import pl.olawa.telech.tcm.model.entity.element.Element;
+import pl.olawa.telech.tcm.model.entity.element.FileEl;
+import pl.olawa.telech.tcm.model.entity.element.FolderEl;
+import pl.olawa.telech.tcm.model.exception.TcmException;
 import pl.olawa.telech.tcm.model.shared.Path;
 import pl.olawa.telech.tcm.model.shared.TableParams;
 import pl.olawa.telech.tcm.utils.TConstants;
@@ -24,6 +30,15 @@ import pl.olawa.telech.tcm.utils.TConstants;
 public class ElementLogic extends AbstractLogic<Element> {
 
 	private ElementDAO dao;
+	
+	@Autowired
+	private ContainsAssocLogic containsAssocLogic;
+	@Autowired
+	private FileLogic fileLogic;
+	@Autowired
+	private FolderLogic folderLogic;
+	@Autowired
+	private SettingLogic settingLogic;
 	
 	
 	public ElementLogic(ElementDAO dao) {
@@ -72,13 +87,44 @@ public class ElementLogic extends AbstractLogic<Element> {
 		return new Path(refs.toString(), names.toString());
 	}
 	
+	public void move(UUID newParentRef, List<UUID> refs) {
+		for(UUID ref : refs) {
+			Element element = dao.findByRef(ref);
+			containsAssocLogic.delete(element);
+			containsAssocLogic.create(newParentRef, element);
+		}
+	}
+	
+	public void copy(UUID newParentRef, List<UUID> refs) {
+		for(UUID ref : refs) {
+			Element element = dao.findByRef(ref);
+			
+			Element copy = element.copy();
+			fillNew(copy);
+			
+			if(element instanceof FileEl) {
+				fileLogic.copy((FileEl) element);
+			}
+			else if(element instanceof FolderEl) {
+				folderLogic.copy((FolderEl) element);
+			}
+
+			containsAssocLogic.create(newParentRef, element);
+		}
+	}
+	
+	public void delete(List<UUID> refs) {
+		UUID trashRef = settingLogic.loadUUIDValue(Setting.TRASH_REF);
+		move(trashRef, refs);
+	}
+	
 	public void fillNew(Element element) {
 		element.setRef(UUID.randomUUID());
 		element.setCreatedTime(LocalDateTime.now());
 		element.attachCreatedBy(accountLogic.loadCurrentUser());
 	}
 	
-	// ################################### PRIVATE #########################################################################3
+	// ################################### PRIVATE #########################################################################
 
 	private Element loadParentWithOtherChildren(Element child){
 		Element parent = dao.findParents(child.getId()).get(0);

@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pl.olawa.telech.tcm.dao.ContainsAssocDAO;
 import pl.olawa.telech.tcm.model.entity.assoc.ContainsAssoc;
-import pl.olawa.telech.tcm.model.entity.element.FolderEl;
 import pl.olawa.telech.tcm.model.entity.element.Element;
 
 @Service
@@ -19,7 +18,7 @@ public class ContainsAssocLogic extends AbstractLogic<ContainsAssoc> {
 	private ContainsAssocDAO dao;
 	
 	@Autowired
-	private FolderLogic directoryLogic;
+	private ElementLogic elementLogic;
 	
 
 	public ContainsAssocLogic(ContainsAssocDAO dao) {
@@ -28,8 +27,8 @@ public class ContainsAssocLogic extends AbstractLogic<ContainsAssoc> {
 	}
 	
 	public void create(UUID parentRef, Element child) {
-		FolderEl parentDir = directoryLogic.loadByRef(parentRef);	
-		create(parentDir, child);
+		Element parent = elementLogic.loadByRef(parentRef);	
+		create(parent, child);
 	}
 
 	public void create(Element parent, Element child) {
@@ -39,5 +38,10 @@ public class ContainsAssocLogic extends AbstractLogic<ContainsAssoc> {
 		assoc.setCreatedTime(LocalDateTime.now());
 		assoc.setCreatedBy(accountLogic.getCurrentUser());
 		save(assoc);
+	}
+	
+	public void delete(Element element) {
+		ContainsAssoc assoc = element.getParents().get(0);
+		delete(assoc);
 	}
 }

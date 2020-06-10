@@ -104,4 +104,9 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 			.orElse(null);
 	}
 	
+	@Override
+	public void detach(T entity) {
+        entityManager.detach(entity);
+    }
+	
 }

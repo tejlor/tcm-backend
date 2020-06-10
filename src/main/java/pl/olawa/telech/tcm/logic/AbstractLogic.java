@@ -31,8 +31,11 @@ public abstract class AbstractLogic<T extends AbstractEntity> {
 		return dao.findAll();
 	}
 	
-	public T save(T entity){
+	protected T save(T entity){
 		return dao.save(entity);
 	}
 
+	protected void delete(T entity) {
+		dao.delete(entity);
+	}
 }

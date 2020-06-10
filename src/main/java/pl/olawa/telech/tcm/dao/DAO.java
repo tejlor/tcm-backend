@@ -38,4 +38,6 @@ public interface DAO<T> extends JpaRepository<T, Integer> {
 	@SuppressWarnings("unchecked")
 	Pair<List<T>, Integer> findAllWithCount(String entityGraphName, Pageable page, Specification<T> ...spec);
 
+	void detach(T entity);
+
 }

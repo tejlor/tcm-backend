@@ -23,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.olawa.telech.tcm.dao.FileDAO;
 import pl.olawa.telech.tcm.logic.helper.FilePreviewGenerator;
 import pl.olawa.telech.tcm.logic.service.DiskService;
+import pl.olawa.telech.tcm.model.entity.Setting;
+import pl.olawa.telech.tcm.model.entity.element.Element;
 import pl.olawa.telech.tcm.model.entity.element.FileEl;
 import pl.olawa.telech.tcm.model.exception.TcmException;
 
@@ -42,6 +44,8 @@ public class FileLogic extends AbstractLogic<FileEl> {
 	private ContainsAssocLogic containsAssocLogic;	
 	@Autowired
 	private ElementLogic elementLogic;	
+	@Autowired
+	private SettingLogic settingLogic;
 	
 	
 	public FileLogic(FileDAO dao) {
@@ -126,6 +130,18 @@ public class FileLogic extends AbstractLogic<FileEl> {
 		}
 		catch(IOException e) {
 			throw new TcmException("Coud not create zip archive.", e);
+		}
+	}
+		
+	public void copy(FileEl file) {
+		try {
+			diskService.copyContent(file.getRef(), file.getRef());
+			if(file.getPreviewMimeType() != null) {
+				diskService.copyPreview(file.getRef(), file.getRef());
+			}
+		} 
+		catch (IOException e) {
+			throw new TcmException("Cannot write file on disk.", e);
 		}
 	}
 	

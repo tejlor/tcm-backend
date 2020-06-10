@@ -2,18 +2,23 @@ package pl.olawa.telech.tcm.model.entity.element;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.olawa.telech.tcm.model.entity.AbstractEntity;
 import pl.olawa.telech.tcm.model.entity.User;
-import pl.olawa.telech.tcm.model.entity.assoc.Association;
 import pl.olawa.telech.tcm.model.entity.assoc.ContainsAssoc;
 
 /*
@@ -79,11 +84,23 @@ public class Element extends AbstractEntity {
 		this.createdBy = createdBy;
 		if(createdBy != null)
 			this.createdById = createdBy.getId();
+		else 
+			this.createdById = null;
 	}
 	
 	public void attachModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 		if(modifiedBy != null)
 			this.modifiedById = modifiedBy.getId();
+		else 
+			this.modifiedById = null;
+	}
+	
+	public Element copy() {
+		throw new UnsupportedOperationException();
+	}
+	
+	protected void fillCopy(Element copy) {
+		copy.setName(name);
 	}
 }

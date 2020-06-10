@@ -47,10 +47,10 @@ public class AccountLogic extends AbstractLogic<User> implements UserDetailsServ
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = dao.findByEmail(username);
-		log.debug("load " + user.toFullString(0));
 		if(user == null)
 			throw new UsernameNotFoundException(username);
 		
+		log.debug("load " + user.toFullString(0));
 		return user;
 	}
 	

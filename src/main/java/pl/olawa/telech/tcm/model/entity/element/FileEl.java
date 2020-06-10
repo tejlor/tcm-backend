@@ -3,6 +3,7 @@ package pl.olawa.telech.tcm.model.entity.element;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @PrimaryKeyJoinColumn
+@Table(name = "file", schema = "public")
 public class FileEl extends Element {
 
 	@Column
@@ -37,5 +39,18 @@ public class FileEl extends Element {
 	@Override
 	public String getTypeName() {
 		return "File";
+	}
+	
+	@Override
+	public FileEl copy() {
+		FileEl copy = new FileEl();
+		super.fillCopy(copy);
+		
+		copy.setSize(size);
+		copy.setMimeType(mimeType);
+		copy.setPreviewSize(previewSize);
+		copy.setPreviewMimeType(previewMimeType);
+		
+		return copy;
 	}
 }

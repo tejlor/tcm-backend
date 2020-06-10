@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import pl.olawa.telech.tcm.logic.ElementLogic;
@@ -19,6 +21,7 @@ import pl.olawa.telech.tcm.model.dto.entity.ElementDto;
 import pl.olawa.telech.tcm.model.entity.element.Element;
 import pl.olawa.telech.tcm.model.shared.Path;
 import pl.olawa.telech.tcm.model.shared.TableParams;
+import pl.olawa.telech.tcm.utils.TUtils;
 
 
 @RestController
@@ -94,7 +97,39 @@ public class ElementController extends AbstractController {
 		
 		return table;
 	}
+
+	/*
+	 * Moves files.
+	 */
+	@RequestMapping(value = "/move", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void move(
+		@RequestParam String newParentRef,
+		@RequestParam List<String> refs){
+				
+		elementLogic.move(TUtils.parseUUID(newParentRef), TUtils.parseUUIDs(refs));
+	}
 	
-
-
+	/*
+	 * Copies files.
+	 */
+	@RequestMapping(value = "/copy", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void copy(
+		@RequestParam String newParentRef,
+		@RequestParam List<String> refs){
+				
+		elementLogic.copy(TUtils.parseUUID(newParentRef), TUtils.parseUUIDs(refs));
+	}
+	
+	/*
+	 * Deletes file (moves to trash).
+	 */
+	@RequestMapping(value = "/{ref:" + AbstractController.REF + "}", method = RequestMethod.DELETE)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void delete(
+		@PathVariable List<String> refs){
+				
+		elementLogic.delete(TUtils.parseUUIDs(refs));
+	}
 }

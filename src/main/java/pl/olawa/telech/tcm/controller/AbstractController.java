@@ -30,7 +30,7 @@ public class AbstractController {
 	private String environment;
 	
 	protected static final String REF = "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}";
-
+	
 	/*
 	 * Configuration needed for using Localdate class in arguments of constructor methods without @DateTimeFormat annotation.
 	 */

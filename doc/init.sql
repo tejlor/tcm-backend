@@ -1,3 +1,16 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE public.setting
+(
+    id serial NOT NULL PRIMARY KEY,
+    name varchar(255) NOT NULL,
+    value varchar(255)
+);
+ALTER TABLE public.setting OWNER to tcm;
+
+INSERT INTO public.setting (name, value) VALUES ('root_ref', '00000000-0000-0000-0000-000000000000'); 
+INSERT INTO public.setting (name, value) VALUES ('trash_ref', uuid_generate_v1()); 
+
 CREATE TABLE public.user
 (
     id serial NOT NULL PRIMARY KEY,
@@ -45,7 +58,8 @@ CREATE TABLE public.element
 );
 ALTER TABLE public.element OWNER to tcm;
 
-INSERT INTO public.element (ref, name, created_time, created_by_id) VALUES ('00000000-0000-0000-0000-000000000000', 'ROOT', current_date, 1);
+INSERT INTO public.element (ref, name, created_time, created_by_id) VALUES ((SELECT value FROM public.setting WHERE name = 'root_ref')::uuid, 'Root', current_date, 1);
+INSERT INTO public.element (ref, name, created_time, created_by_id) VALUES ((SELECT value FROM public.setting WHERE name = 'trash_ref')::uuid, 'Trash', current_date, 1);
 
 CREATE TABLE public.element_right
 (
@@ -62,6 +76,7 @@ CREATE TABLE public.file
 (
     id integer NOT NULL PRIMARY KEY,
 	size integer NOT NULL,
+	preview_size integer,
 	mime_type character varying NOT NULL,
 	preview_mime_type character varying NOT NULL
 );

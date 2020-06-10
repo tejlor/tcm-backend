@@ -49,6 +49,26 @@ public class DiskService {
         Files.write(path, bytes, StandardOpenOption.CREATE);
 	}
 	
+	public void copyContent(UUID originalRef, UUID copyRef) throws IOException {
+		Path originalPath = refToContentPath(originalRef);
+		
+		Path copyPath = refToContentPath(copyRef);
+		Files.createDirectories(refToDirPath(copyRef));
+		log.debug("File copied to " + copyPath);
+		
+		Files.copy(originalPath, copyPath);  
+	}
+	
+	public void copyPreview(UUID originalRef, UUID copyRef) throws IOException {
+		Path originalPath = refToPreviewPath(originalRef);
+		
+		Path copyPath = refToPreviewPath(copyRef);
+		Files.createDirectories(refToDirPath(copyRef));
+		log.debug("File preview copied to " + copyPath);
+		
+		Files.copy(originalPath, copyPath);  
+	}
+	
 	public Resource readContentAsResource(UUID ref) {
 		try {
 			Path path = refToContentPath(ref);

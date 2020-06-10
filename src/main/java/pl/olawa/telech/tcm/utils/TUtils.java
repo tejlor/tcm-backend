@@ -7,8 +7,10 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -53,6 +55,26 @@ public class TUtils {
 		return DatatypeConverter.parseBase64Binary(base64);
 	}
 
+	/* ################################################# UUID #################################################################### */
+	
+	public static UUID parseUUID(String ref) {
+		try {
+			return UUID.fromString(ref);
+		}
+		catch(IllegalArgumentException e) {
+			throw new TcmException("Element ref has incorrect format: " + ref);
+		}
+	}
+	
+	public static List<UUID> parseUUIDs(List<String> refs) {
+		try {
+			return refs.stream().map(ref -> UUID.fromString(ref)).collect(Collectors.toList());
+		}
+		catch(IllegalArgumentException e) {
+			throw new TcmException("At least one element ref has incorrect format");
+		}
+	}
+	
 	/* ################################################# Decimal #################################################################### */
 
 	public static boolean isZero(BigDecimal val){
@@ -124,17 +146,17 @@ public class TUtils {
 	
 	public static void assertMonthDate(LocalDate date) {
 		if(date.getDayOfMonth() != 1)
-			throw new TcmException("Niepoprawna data miesiąca.");
+			throw new TcmException("Incorrect month date.");
 	}
 	
 	public static void assertYear(int year) {
 		if(year < 2010 || year > 2050)
-			throw new TcmException("Niepoprawny rok.");
+			throw new TcmException("Incorrect year.");
 	}
 	
 	public static void assertStartBeforeEnd(LocalDate start, LocalDate end) {
 		if(start.isAfter(end))
-			throw new TcmException("Wskazany przedział jest niepoprawny.");
+			throw new TcmException("Incorrect period.");
 	}
 	
 	/* ################################################# Encoding #################################################################### */
@@ -195,24 +217,18 @@ public class TUtils {
 	}
 
 	/*
-	 * Sprawdza czy id obiektu w url jest takie same jak w body (metody do aktualizacji - PUT).
+	 * Checks if object id in body is the same as id in url (update methods - PUT).
 	 */
 	public static void assertDtoId(long id, AbstractDto dto) {
 		if(dto.getId() != null && id != dto.getId())
-			throw new TcmException("Id obiektu w body nie zgadza się z parametrem żądania.");
+			throw new TcmException("Object id is diferent than value of request parameter.");
 	}
 	
-	/*
-	 * Sprawdza czy id obiektu w url jest takie same jak w body (metody do aktualizacji - PUT).
-	 */
 	public static void assertEntityExists(AbstractEntity model) {
 		if(model == null)
-			throw new TcmException("Obiekt o podanym id nie istnieje.");
+			throw new TcmException("Obejct with given id does not exists.");
 	}
 	
-	/*
-	 * Sprawdza czy wynik jest nullem, jeśli nie wyrzuca 404.
-	 */
 	public static void assertResultExists(Object result) {
 		if(result == null)
 			throw new NotFoundException();
