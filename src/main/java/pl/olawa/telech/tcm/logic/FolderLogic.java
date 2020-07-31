@@ -39,7 +39,7 @@ public class FolderLogic extends AbstractLogic<FolderEl> {
 		return folder;
 	}
 	
-	public void copy(FolderEl folder) {
+	public void copy(FolderEl folder, FolderEl copy) {
 		
 	}
 

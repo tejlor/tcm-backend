@@ -99,7 +99,19 @@ public class ElementController extends AbstractController {
 	}
 
 	/*
-	 * Moves files.
+	 * Rename element.
+	 */
+	@RequestMapping(value = "/rename", method = RequestMethod.POST)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void rename(
+		@RequestParam String ref,
+		@RequestParam String newName){
+				
+		elementLogic.rename(TUtils.parseUUID(ref), newName);
+	}
+	
+	/*
+	 * Moves elements.
 	 */
 	@RequestMapping(value = "/move", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -111,7 +123,7 @@ public class ElementController extends AbstractController {
 	}
 	
 	/*
-	 * Copies files.
+	 * Copies elements.
 	 */
 	@RequestMapping(value = "/copy", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -123,7 +135,7 @@ public class ElementController extends AbstractController {
 	}
 	
 	/*
-	 * Deletes file (moves to trash).
+	 * Deletes elements (moves to trash).
 	 */
 	@RequestMapping(value = "/{ref:" + AbstractController.REF + "}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)

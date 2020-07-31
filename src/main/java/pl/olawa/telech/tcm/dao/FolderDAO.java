@@ -10,5 +10,4 @@ import pl.olawa.telech.tcm.model.entity.element.FolderEl;
 public interface FolderDAO extends DAO<FolderEl>, JpaSpecificationExecutor<FolderEl> {
 
 	FolderEl findByRef(UUID ref);
-	
 }

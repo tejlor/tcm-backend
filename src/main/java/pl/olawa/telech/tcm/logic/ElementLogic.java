@@ -1,9 +1,7 @@
 package pl.olawa.telech.tcm.logic;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,7 +16,6 @@ import pl.olawa.telech.tcm.model.entity.Setting;
 import pl.olawa.telech.tcm.model.entity.element.Element;
 import pl.olawa.telech.tcm.model.entity.element.FileEl;
 import pl.olawa.telech.tcm.model.entity.element.FolderEl;
-import pl.olawa.telech.tcm.model.exception.TcmException;
 import pl.olawa.telech.tcm.model.shared.Path;
 import pl.olawa.telech.tcm.model.shared.TableParams;
 import pl.olawa.telech.tcm.utils.TConstants;
@@ -87,6 +84,12 @@ public class ElementLogic extends AbstractLogic<Element> {
 		return new Path(refs.toString(), names.toString());
 	}
 	
+	public void rename(UUID ref, String newName) {
+		Element element = dao.findByRef(ref);
+		element.setName(newName);
+		save(element);
+	}
+	
 	public void move(UUID newParentRef, List<UUID> refs) {
 		for(UUID ref : refs) {
 			Element element = dao.findByRef(ref);
@@ -101,12 +104,13 @@ public class ElementLogic extends AbstractLogic<Element> {
 			
 			Element copy = element.copy();
 			fillNew(copy);
+			save(copy);
 			
 			if(element instanceof FileEl) {
-				fileLogic.copy((FileEl) element);
+				fileLogic.copy((FileEl) element, (FileEl) copy);
 			}
 			else if(element instanceof FolderEl) {
-				folderLogic.copy((FolderEl) element);
+				folderLogic.copy((FolderEl) element, (FolderEl) copy);
 			}
 
 			containsAssocLogic.create(newParentRef, element);

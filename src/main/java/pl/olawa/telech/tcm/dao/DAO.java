@@ -8,11 +8,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import pl.olawa.telech.tcm.model.entity.AbstractEntity;
+
 /*
  * Base interface for all Repository interfaces.
  */
 @NoRepositoryBean
-public interface DAO<T> extends JpaRepository<T, Integer> {
+public interface DAO<T extends AbstractEntity> extends JpaRepository<T, Integer> {
 
 	@SuppressWarnings("unchecked")
 	T findOne(Specification<T> ...spec);

@@ -26,7 +26,7 @@ public class FileEl extends Element {
 	private String mimeType;			// mime type of the file
 	
 	@Column 
-	private String previewSize;			// size of the generated preview of the file
+	private Integer previewSize;			// size of the generated preview of the file
 	
 	@Column 
 	private String previewMimeType;		// mime type of the generated preview of the file

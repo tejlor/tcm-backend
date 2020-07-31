@@ -8,9 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.olawa.telech.tcm.dao.SettingDAO;
-import pl.olawa.telech.tcm.dao.UserDAO;
 import pl.olawa.telech.tcm.model.entity.Setting;
-import pl.olawa.telech.tcm.model.entity.User;
 
 
 @Service

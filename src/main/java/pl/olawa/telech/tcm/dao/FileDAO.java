@@ -8,8 +8,7 @@ import pl.olawa.telech.tcm.model.entity.element.FileEl;
 
 
 public interface FileDAO extends DAO<FileEl>, JpaSpecificationExecutor<FileEl> {
-
-	FileEl findByRef(UUID ref);
 	
+	FileEl findByRef(UUID ref);
 }
 

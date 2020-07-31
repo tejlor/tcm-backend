@@ -23,8 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.olawa.telech.tcm.dao.FileDAO;
 import pl.olawa.telech.tcm.logic.helper.FilePreviewGenerator;
 import pl.olawa.telech.tcm.logic.service.DiskService;
-import pl.olawa.telech.tcm.model.entity.Setting;
-import pl.olawa.telech.tcm.model.entity.element.Element;
 import pl.olawa.telech.tcm.model.entity.element.FileEl;
 import pl.olawa.telech.tcm.model.exception.TcmException;
 
@@ -44,8 +42,6 @@ public class FileLogic extends AbstractLogic<FileEl> {
 	private ContainsAssocLogic containsAssocLogic;	
 	@Autowired
 	private ElementLogic elementLogic;	
-	@Autowired
-	private SettingLogic settingLogic;
 	
 	
 	public FileLogic(FileDAO dao) {
@@ -74,7 +70,7 @@ public class FileLogic extends AbstractLogic<FileEl> {
 		try {
 			diskService.saveContent(uploadedFile, file.getRef());
 			if(filePreviewGenerator.isAvailable(uploadedFile.getContentType())) {
-				Pair<String, byte[]>preview = filePreviewGenerator.createPreview(uploadedFile);
+				Pair<String, byte[]> preview = filePreviewGenerator.createPreview(uploadedFile);
 				file.setPreviewMimeType(preview.getKey());
 				diskService.savePreview(preview.getValue(), file.getRef());
 			}
@@ -133,11 +129,11 @@ public class FileLogic extends AbstractLogic<FileEl> {
 		}
 	}
 		
-	public void copy(FileEl file) {
+	public void copy(FileEl file, FileEl copy) {
 		try {
-			diskService.copyContent(file.getRef(), file.getRef());
+			diskService.copyContent(file.getRef(), copy.getRef());
 			if(file.getPreviewMimeType() != null) {
-				diskService.copyPreview(file.getRef(), file.getRef());
+				diskService.copyPreview(file.getRef(), copy.getRef());
 			}
 		} 
 		catch (IOException e) {
