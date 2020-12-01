@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE public.setting
 (
     id serial NOT NULL PRIMARY KEY,
-    name varchar(255) NOT NULL,
+    name varchar(32) NOT NULL,
     value varchar(255)
 );
 ALTER TABLE public.setting OWNER to tcm;
@@ -14,10 +14,10 @@ INSERT INTO public.setting (name, value) VALUES ('trash_ref', uuid_generate_v1()
 CREATE TABLE public.user
 (
     id serial NOT NULL PRIMARY KEY,
-    first_name character varying NOT NULL,
-    last_name character varying NOT NULL,
-    email character varying NOT NULL UNIQUE,
-    password character(40) NOT NULL,
+    first_name varchar(32) NOT NULL,
+    last_name varchar(32) NOT NULL,
+    email varchar(64) NOT NULL UNIQUE,
+    password char(40) NOT NULL,
     created_time timestamp without time zone NOT NULL,
     created_by_id integer NOT NULL REFERENCES public.user (id),
     modified_time timestamp without time zone,

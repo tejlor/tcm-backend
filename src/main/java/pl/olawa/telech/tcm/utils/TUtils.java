@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
 
-import pl.olawa.telech.tcm.model.dto.entity.AbstractDto;
-import pl.olawa.telech.tcm.model.entity.AbstractEntity;
-import pl.olawa.telech.tcm.model.exception.NotFoundException;
-import pl.olawa.telech.tcm.model.exception.TcmException;
+import pl.olawa.telech.tcm.commons.model.dto.AbstractDto;
+import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
+import pl.olawa.telech.tcm.commons.model.exception.NotFoundException;
+import pl.olawa.telech.tcm.commons.model.exception.TcmException;
 
 
 public class TUtils {

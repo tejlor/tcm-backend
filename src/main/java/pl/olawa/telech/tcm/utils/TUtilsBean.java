@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 
-import pl.olawa.telech.tcm.model.dto.entity.AbstractDto;
-import pl.olawa.telech.tcm.model.entity.AbstractEntity;
+import pl.olawa.telech.tcm.commons.model.dto.AbstractDto;
+import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
 
 /*
  * Extension of Apache's BeanUtils with enum handling.

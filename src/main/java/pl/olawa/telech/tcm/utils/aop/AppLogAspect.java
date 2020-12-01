@@ -14,11 +14,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import lombok.extern.slf4j.Slf4j;
+import pl.olawa.telech.tcm.administration.model.entity.User;
+import pl.olawa.telech.tcm.commons.model.exception.NotFoundException;
+import pl.olawa.telech.tcm.commons.model.exception.TcmException;
+import pl.olawa.telech.tcm.commons.model.interfaces.Loggable;
 import pl.olawa.telech.tcm.config.filter.RequestWrapper;
-import pl.olawa.telech.tcm.model.entity.User;
-import pl.olawa.telech.tcm.model.exception.NotFoundException;
-import pl.olawa.telech.tcm.model.exception.TcmException;
-import pl.olawa.telech.tcm.model.interfaces.Loggable;
 
 /*
  * Aspect logging every request.
@@ -74,6 +74,8 @@ public class AppLogAspect {
 	private String getRequestData() throws IOException{
 		String userName = getUserFromContext();
 		RequestWrapper request = getRequestFromContext(); 
+		if(request == null)
+			return "";
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(userName).append("] ")
@@ -136,7 +138,8 @@ public class AppLogAspect {
 	
 	private RequestWrapper getRequestFromContext(){
 		ServletRequestAttributes requestAttr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		return (RequestWrapper) requestAttr.getRequest();
+		var request = requestAttr.getRequest();
+		return request instanceof RequestWrapper ? (RequestWrapper) requestAttr.getRequest() : null;
 	}
 
 }

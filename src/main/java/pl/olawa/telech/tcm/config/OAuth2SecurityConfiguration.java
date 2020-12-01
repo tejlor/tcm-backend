@@ -19,7 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import pl.olawa.telech.tcm.logic.AccountLogic;
+import pl.olawa.telech.tcm.administration.logic.AccountLogicImpl;
 import pl.olawa.telech.tcm.utils.Sha1PasswordEncoder;
 import pl.olawa.telech.tcm.utils.TUtils;
 
@@ -34,7 +34,7 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private String environment;
 	
 	@Autowired
-	private AccountLogic accountLogic;
+	private AccountLogicImpl accountLogic;
 	
     
 	@Bean

@@ -18,7 +18,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 import lombok.extern.slf4j.Slf4j;
-import pl.olawa.telech.tcm.logic.AccountLogic;
+import pl.olawa.telech.tcm.administration.logic.AccountLogicImpl;
 
 /*
  * Configuration of oAuth 2.0.
@@ -48,7 +48,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private DataSource dataSource;
 	
 	@Autowired
-	private AccountLogic accountLogic;
+	private AccountLogicImpl accountLogic;
 
     @Bean
     public TokenStore tokenStore() {

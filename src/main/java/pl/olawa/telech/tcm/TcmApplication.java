@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import pl.olawa.telech.tcm.dao.DAOImpl;
+import pl.olawa.telech.tcm.commons.dao.DAOImpl;
 
 
 @SpringBootApplication
