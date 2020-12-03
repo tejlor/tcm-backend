@@ -1,5 +1,10 @@
 package pl.olawa.telech.tcm.repo.controller;
 
+import static lombok.AccessLevel.PRIVATE;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -9,34 +14,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.controller.AbstractController;
 import pl.olawa.telech.tcm.commons.model.dto.TableDataDto;
 import pl.olawa.telech.tcm.commons.model.dto.TreeNodeDto;
 import pl.olawa.telech.tcm.commons.model.shared.Path;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
+import pl.olawa.telech.tcm.commons.utils.TUtils;
 import pl.olawa.telech.tcm.repo.logic.ElementLogic;
 import pl.olawa.telech.tcm.repo.model.dto.ElementDto;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
-import pl.olawa.telech.tcm.utils.TUtils;
 
 
 @RestController
 @RequestMapping("/elements")
+@FieldDefaults(level = PRIVATE)
 public class ElementController extends AbstractController {
 
 	@Autowired
-	private ElementLogic elementLogic;
+	ElementLogic elementLogic;
 	
 	
 	/*
 	 * Returns element info.
 	 */
-	@RequestMapping(value = "/{ref:" + AbstractController.REF + "}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{ref:" + REF + "}", method = GET)
 	public ElementDto get(
 			@PathVariable String ref) {
 
@@ -46,7 +52,7 @@ public class ElementController extends AbstractController {
 	/*
 	 * Returns absolute path of element.
 	 */
-	@RequestMapping(value = "/{elementRef:" + AbstractController.REF + "}/path", method = RequestMethod.GET)
+	@RequestMapping(value = "/{elementRef:" + REF + "}/path", method = GET)
 	public Path path(
 		@PathVariable String elementRef){
 				
@@ -56,7 +62,7 @@ public class ElementController extends AbstractController {
 	/*
 	 * Returns children of element for tree.
 	 */
-	@RequestMapping(value = "/{parentRef:" + AbstractController.REF + "}/childrenTree", method = RequestMethod.GET)
+	@RequestMapping(value = "/{parentRef:" + REF + "}/childrenTree", method = GET)
 	public List<TreeNodeDto> childrenTree(
 		@PathVariable String parentRef){
 				
@@ -69,7 +75,7 @@ public class ElementController extends AbstractController {
 	/*
 	 * Returns parents of element for tree.
 	 */
-	@RequestMapping(value = "/{elementRef:" + AbstractController.REF + "}/parentsTree", method = RequestMethod.GET)
+	@RequestMapping(value = "/{elementRef:" + REF + "}/parentsTree", method = GET)
 	public TreeNodeDto parentsTree(
 		@PathVariable String elementRef){
 				
@@ -79,7 +85,7 @@ public class ElementController extends AbstractController {
 	/*
 	 * Returns children of element for table.
 	 */
-	@RequestMapping(value = "/{parentRef:" + AbstractController.REF + "}/childrenTable", method = RequestMethod.GET)
+	@RequestMapping(value = "/{parentRef:" + REF + "}/childrenTable", method = GET)
 	public TableDataDto<ElementDto> childrenTable(
 		@PathVariable String parentRef,	
 		@RequestParam(required = false) Integer pageNo,
@@ -88,21 +94,18 @@ public class ElementController extends AbstractController {
 		@RequestParam(required = false) String sortBy,
 		@RequestParam(required = false) Boolean sortAsc){
 		
-		TableParams tableParams = new TableParams(pageNo, pageSize, filter, sortBy, sortAsc);
-		
-		Pair<List<Element>, Integer> result = elementLogic.loadChildren(UUID.fromString(parentRef), tableParams); 
-		
+		TableParams tableParams = new TableParams(pageNo, pageSize, filter, sortBy, sortAsc);		
+		Pair<List<Element>, Integer> result = elementLogic.loadChildren(UUID.fromString(parentRef), tableParams); 	
 		TableDataDto<ElementDto> table = new TableDataDto<>(tableParams);
 		table.setRows(ElementDto.toDtoList(result.getKey()));
-		table.setCount(result.getValue());
-		
+		table.setCount(result.getValue());		
 		return table;
 	}
 
 	/*
 	 * Rename element.
 	 */
-	@RequestMapping(value = "/rename", method = RequestMethod.POST)
+	@RequestMapping(value = "/rename", method = POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void rename(
 		@RequestParam String ref,
@@ -114,7 +117,7 @@ public class ElementController extends AbstractController {
 	/*
 	 * Moves elements.
 	 */
-	@RequestMapping(value = "/move", method = RequestMethod.POST)
+	@RequestMapping(value = "/move", method = POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void move(
 		@RequestParam String newParentRef,
@@ -126,7 +129,7 @@ public class ElementController extends AbstractController {
 	/*
 	 * Copies elements.
 	 */
-	@RequestMapping(value = "/copy", method = RequestMethod.POST)
+	@RequestMapping(value = "/copy", method = POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void copy(
 		@RequestParam String newParentRef,
@@ -138,7 +141,7 @@ public class ElementController extends AbstractController {
 	/*
 	 * Deletes elements (moves to trash).
 	 */
-	@RequestMapping(value = "/{ref:" + AbstractController.REF + "}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{ref:" + REF + "}", method = DELETE)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void delete(
 		@PathVariable List<String> refs){

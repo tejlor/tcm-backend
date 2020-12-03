@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.utils;
+package pl.olawa.telech.tcm.commons.utils;
 
 import java.math.BigDecimal;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.utils;
+package pl.olawa.telech.tcm.commons.utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
@@ -39,5 +39,4 @@ public class TUtilsBean extends BeanUtilsBean {
 		
 		super.copyProperty(bean, name, value);
 	}
-	
 }

@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.utils;
+package pl.olawa.telech.tcm.commons.utils;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,5 +19,4 @@ public class Sha1PasswordEncoder implements PasswordEncoder {
 		
 		return TUtils.sha1(rawPassword.toString()).compareToIgnoreCase(encodedPassword) == 0;
 	}
-
 }

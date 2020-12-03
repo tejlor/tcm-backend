@@ -14,7 +14,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
 import pl.olawa.telech.tcm.commons.model.interfaces.Loggable;
-import pl.olawa.telech.tcm.utils.TUtilsBean;
+import pl.olawa.telech.tcm.commons.utils.TUtilsBean;
 
 @Getter @Setter
 @NoArgsConstructor

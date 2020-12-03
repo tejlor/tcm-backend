@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.config.filter;
+package pl.olawa.telech.tcm.commons.config.filter;
 
 import java.io.IOException;
 
@@ -19,9 +19,8 @@ public class CachingRequestBodyFilter extends GenericFilterBean {
     
 	@Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {		
-        HttpServletRequest currentRequest = (HttpServletRequest) servletRequest;
-        RequestWrapper wrappedRequest = new RequestWrapper(currentRequest);
+        var currentRequest = (HttpServletRequest) servletRequest;
+        var wrappedRequest = new RequestWrapper(currentRequest);
         chain.doFilter(wrappedRequest, servletResponse);
-    }
-	
+    }	
 }

@@ -1,5 +1,7 @@
 package pl.olawa.telech.tcm.repo.logic.service;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,16 +19,18 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import pl.olawa.telech.tcm.commons.model.exception.NotFoundException;
 import pl.olawa.telech.tcm.commons.model.exception.TcmException;
 
 @Slf4j
 @Service
+@FieldDefaults(level = PRIVATE)
 public class DiskService {
 	
 	@Value("${tcm.repo.basePath}")
-	private String basePath;
+	String basePath;
 
 	private static final String contentExtension = ".bin";
 	private static final String previewExtension = ".prv";

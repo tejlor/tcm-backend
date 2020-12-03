@@ -8,6 +8,4 @@ import pl.olawa.telech.tcm.repo.model.entity.assoc.Association;
 
 public interface AssociationDAO extends DAO<Association>, JpaSpecificationExecutor<Association> {
 	
-
-	
 }

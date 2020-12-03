@@ -1,20 +1,24 @@
 package pl.olawa.telech.tcm.repo.model.dto;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.repo.model.entity.element.FolderEl;
 
 
 @Getter @Setter
 @NoArgsConstructor
+@FieldDefaults(level = PRIVATE)
 public class FolderDto extends ElementDto {
 
-	private String icon;
+	String icon;
 	
-	private String parentRef;
+	String parentRef;
 
 	
 	public FolderDto(FolderEl model){
@@ -23,7 +27,7 @@ public class FolderDto extends ElementDto {
 
 	@Override
 	public FolderEl toModel() {
-		FolderEl model = new FolderEl();
+		var model = new FolderEl();
 		fillModel(model);
 		return model;
 	}
@@ -31,5 +35,4 @@ public class FolderDto extends ElementDto {
 	public static List<FolderDto> toFolderDtoList(List<FolderEl> list){
 		return toDtoList(FolderEl.class, FolderDto.class, list);
 	}
-
 }

@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.utils.aop;
+package pl.olawa.telech.tcm.commons.utils.aop;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,10 +15,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.olawa.telech.tcm.administration.model.entity.User;
+import pl.olawa.telech.tcm.commons.config.filter.RequestWrapper;
 import pl.olawa.telech.tcm.commons.model.exception.NotFoundException;
 import pl.olawa.telech.tcm.commons.model.exception.TcmException;
 import pl.olawa.telech.tcm.commons.model.interfaces.Loggable;
-import pl.olawa.telech.tcm.config.filter.RequestWrapper;
 
 /*
  * Aspect logging every request.
@@ -28,9 +28,9 @@ import pl.olawa.telech.tcm.config.filter.RequestWrapper;
 @Component
 public class AppLogAspect {
 
-	private static final long MEGABYTE = 1024L * 1024L;
+	private static final long MEGABYTE = 1024 * 1024;
 	
-	@Pointcut("execution(public * pl.olawa.telech.tcm.controller.*.*(..))")
+	@Pointcut("execution(public * pl.olawa.telech.tcm.*.controller.*.*(..))")
 	public void controllerPublicMethods() {
 	}
 	
@@ -141,5 +141,4 @@ public class AppLogAspect {
 		var request = requestAttr.getRequest();
 		return request instanceof RequestWrapper ? (RequestWrapper) requestAttr.getRequest() : null;
 	}
-
 }

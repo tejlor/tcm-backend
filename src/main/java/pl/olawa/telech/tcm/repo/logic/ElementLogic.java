@@ -1,5 +1,7 @@
 package pl.olawa.telech.tcm.repo.logic;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -10,37 +12,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.administration.logic.SettingLogicImpl;
 import pl.olawa.telech.tcm.administration.logic.interfaces.AccountLogic;
 import pl.olawa.telech.tcm.administration.model.entity.Setting;
 import pl.olawa.telech.tcm.commons.logic.AbstractLogicImpl;
 import pl.olawa.telech.tcm.commons.model.shared.Path;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
+import pl.olawa.telech.tcm.commons.utils.TConstants;
 import pl.olawa.telech.tcm.repo.dao.ElementDAO;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
 import pl.olawa.telech.tcm.repo.model.entity.element.FolderEl;
-import pl.olawa.telech.tcm.utils.TConstants;
 
 
-@Slf4j
 @Service
 @Transactional
+@FieldDefaults(level = PRIVATE)
 public class ElementLogic extends AbstractLogicImpl<Element> {
 
-	private ElementDAO dao;
+	ElementDAO dao;
 	
 	@Autowired
 	AccountLogic accountLogic;
 	@Autowired
-	private ContainsAssocLogic containsAssocLogic;
+	ContainsAssocLogic containsAssocLogic;
 	@Autowired
-	private FileLogic fileLogic;
+	FileLogic fileLogic;
 	@Autowired
-	private FolderLogic folderLogic;
+	FolderLogic folderLogic;
 	@Autowired
-	private SettingLogicImpl settingLogic;
+	SettingLogicImpl settingLogic;
 	
 	
 	public ElementLogic(ElementDAO dao) {
@@ -62,8 +64,7 @@ public class ElementLogic extends AbstractLogicImpl<Element> {
 		element.setChildrenElements(dao.findChildren(element.getId()));
 		while(!element.getRef().equals(TConstants.ROOT_UUID)) {			
 			element = loadParentWithOtherChildren(element);
-		} 
-				
+		} 				
 		return element;
 	}
 	
@@ -144,5 +145,4 @@ public class ElementLogic extends AbstractLogicImpl<Element> {
 		parent.setChildrenElements(children);
 		return parent;
 	}
-	
 }

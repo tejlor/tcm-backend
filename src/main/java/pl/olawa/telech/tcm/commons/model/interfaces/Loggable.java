@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javassist.Modifier;
-import pl.olawa.telech.tcm.utils.TConstants;
+import pl.olawa.telech.tcm.commons.utils.TConstants;
 
 /*
  * Interface for dto objects which contets should be logged.

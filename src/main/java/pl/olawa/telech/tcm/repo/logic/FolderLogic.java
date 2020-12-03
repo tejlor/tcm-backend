@@ -1,25 +1,29 @@
 package pl.olawa.telech.tcm.repo.logic;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.logic.AbstractLogicImpl;
 import pl.olawa.telech.tcm.repo.dao.FolderDAO;
 import pl.olawa.telech.tcm.repo.model.entity.element.FolderEl;
 
 @Service
 @Transactional
+@FieldDefaults(level = PRIVATE)
 public class FolderLogic extends AbstractLogicImpl<FolderEl> {
 	
-	private FolderDAO dao;
+	FolderDAO dao;
 	
 	@Autowired
-	private ContainsAssocLogic containsAssocLogic;
+	ContainsAssocLogic containsAssocLogic;
 	@Autowired
-	private ElementLogic elementLogic;
+	ElementLogic elementLogic;
 	
 	
 	public FolderLogic(FolderDAO dao) {
@@ -43,5 +47,4 @@ public class FolderLogic extends AbstractLogicImpl<FolderEl> {
 	public void copy(FolderEl folder, FolderEl copy) {
 		
 	}
-
 }

@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.utils;
+package pl.olawa.telech.tcm.commons.utils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -165,7 +165,8 @@ public class TUtils {
         MessageDigest m;
 		try {
 			m = MessageDigest.getInstance("MD5");
-		} catch (NoSuchAlgorithmException e) {
+		} 
+		catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return "";
 		}

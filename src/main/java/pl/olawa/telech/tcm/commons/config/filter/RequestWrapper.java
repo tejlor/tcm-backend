@@ -1,4 +1,6 @@
-package pl.olawa.telech.tcm.config.filter;
+package pl.olawa.telech.tcm.commons.config.filter;
+
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.*;
 
@@ -8,21 +10,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 /*
  * Wrapper for request, which allows read body content twice.
  * Rest controller reads body and closes stream, which does not allow to read it again in AppLogAspect.
  */
+@Slf4j
+@FieldDefaults(level = PRIVATE)
 public class RequestWrapper extends HttpServletRequestWrapper {
 
 	@Getter
-	private final String body;
-
+	final String body;
 	
 	public RequestWrapper(HttpServletRequest request) throws IOException {
 		super(request);
 
-		StringBuilder stringBuilder = new StringBuilder();
+		var sb = new StringBuilder();
 		BufferedReader bufferedReader = null;
 		try {
 			InputStream inputStream = request.getInputStream();
@@ -31,12 +36,12 @@ public class RequestWrapper extends HttpServletRequestWrapper {
 				char[] charBuffer = new char[128];
 				int bytesRead = -1;
 				while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
-					stringBuilder.append(charBuffer, 0, bytesRead);
+					sb.append(charBuffer, 0, bytesRead);
 				}
 			} 
 		} 
 		catch (IOException e) {
-			throw e;
+			log.error(e.getMessage());
 		} 
 		finally {
 			if (bufferedReader != null) {
@@ -44,18 +49,18 @@ public class RequestWrapper extends HttpServletRequestWrapper {
 					bufferedReader.close();
 				} 
 				catch (IOException e) {
-					throw e;
+					log.error(e.getMessage());
 				}
 			}
 		}
-
-		body = stringBuilder.toString();
+		body = sb.toString();
 	}
 
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
-		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body.getBytes());
-		ServletInputStream servletInputStream = new ServletInputStream() {
+		return new ServletInputStream() {
+			private ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(body.getBytes());
+			
 			@Override
 			public int read() throws IOException {
 				return byteArrayInputStream.read();
@@ -76,12 +81,10 @@ public class RequestWrapper extends HttpServletRequestWrapper {
 
 			}
 		};
-		return servletInputStream;
 	}
 
 	@Override
 	public BufferedReader getReader() throws IOException {
 		return new BufferedReader(new InputStreamReader(getInputStream()));
 	}
-	
 }

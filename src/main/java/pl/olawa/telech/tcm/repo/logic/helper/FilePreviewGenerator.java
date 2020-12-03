@@ -1,5 +1,7 @@
 package pl.olawa.telech.tcm.repo.logic.helper;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,13 +20,15 @@ import com.documents4j.api.DocumentType;
 import com.documents4j.api.IConverter;
 import com.documents4j.job.LocalConverter;
 
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.model.exception.TcmException;
 
 @Component
+@FieldDefaults(level = PRIVATE)
 public class FilePreviewGenerator {
 
 	@Value("${tcm.repo.previewSize}")
-	private int previewSize;
+	int previewSize;
 	
 	private static final Set<String> availableTypes;
 
@@ -109,5 +113,4 @@ public class FilePreviewGenerator {
         bos.close();
         return Pair.of("application/pdf", bos.toByteArray());
 	}
-	
 }

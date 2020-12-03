@@ -1,5 +1,7 @@
 package pl.olawa.telech.tcm.repo.logic;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.administration.logic.interfaces.AccountLogic;
 import pl.olawa.telech.tcm.commons.logic.AbstractLogicImpl;
 import pl.olawa.telech.tcm.repo.dao.ContainsAssocDAO;
@@ -15,14 +18,16 @@ import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 
 @Service
 @Transactional
+@FieldDefaults(level = PRIVATE)
 public class ContainsAssocLogic extends AbstractLogicImpl<ContainsAssoc> {
 
-	private ContainsAssocDAO dao;
+	@SuppressWarnings("unused")
+	ContainsAssocDAO dao;
 	
 	@Autowired
-	private AccountLogic accountLogic;
+	AccountLogic accountLogic;
 	@Autowired
-	private ElementLogic elementLogic;
+	ElementLogic elementLogic;
 	
 
 	public ContainsAssocLogic(ContainsAssocDAO dao) {
@@ -36,7 +41,7 @@ public class ContainsAssocLogic extends AbstractLogicImpl<ContainsAssoc> {
 	}
 
 	public void create(Element parent, Element child) {
-		ContainsAssoc assoc = new ContainsAssoc();
+		var assoc = new ContainsAssoc();
 		assoc.setParentElement(parent);
 		assoc.setChildElement(child);
 		assoc.setCreatedTime(LocalDateTime.now());

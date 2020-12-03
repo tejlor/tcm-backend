@@ -22,8 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import pl.olawa.telech.tcm.commons.model.exception.NotFoundException;
 import pl.olawa.telech.tcm.commons.model.exception.TcmException;
 import pl.olawa.telech.tcm.commons.model.shared.ApiError;
-import pl.olawa.telech.tcm.utils.TUtils;
-import pl.olawa.telech.tcm.utils.aop.AppLogOmit;
+import pl.olawa.telech.tcm.commons.utils.TUtils;
+import pl.olawa.telech.tcm.commons.utils.aop.AppLogOmit;
 
 @Slf4j
 @RestController

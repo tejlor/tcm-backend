@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import pl.olawa.telech.tcm.utils.TConstants;
+import pl.olawa.telech.tcm.commons.utils.TConstants;
 
 /*
  * Base class for all enity classes

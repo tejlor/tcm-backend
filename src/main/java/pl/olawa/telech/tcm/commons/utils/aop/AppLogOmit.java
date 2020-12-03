@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.utils.aop;
+package pl.olawa.telech.tcm.commons.utils.aop;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,5 +1,7 @@
 package pl.olawa.telech.tcm.repo.model.entity.element;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +19,7 @@ import javax.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.administration.model.entity.User;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
 import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
@@ -27,49 +30,50 @@ import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@FieldDefaults(level = PRIVATE)
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Element extends AbstractEntity {
 
 	@Column
-	private UUID ref;						// element unique reference
+	UUID ref;						// element unique reference
 	
 	@Column
-	private String name;					// element name
+	String name;					// element name
 	
 	@Column
-	private LocalDateTime createdTime;		// date of creation the element
+	LocalDateTime createdTime;		// date of creation the element
 	
 	@Column(insertable = false, updatable = false)
-	private Integer createdById;			// user who created the element
+	Integer createdById;			// user who created the element
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "createdById", nullable = true)
-	private User createdBy;
+	User createdBy;
 	
 	@Column
-	private LocalDateTime modifiedTime;		// date of last modification
+	LocalDateTime modifiedTime;		// date of last modification
 	
 	@Column(insertable = false, updatable = false)
-	private Integer modifiedById;			// user who last modified the element
+	Integer modifiedById;			// user who last modified the element
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modifiedById", nullable = true)
-	private User modifiedBy;
+	User modifiedBy;
 	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "childElementId")
-	private List<ContainsAssoc> parents;		// parents of the element
+	List<ContainsAssoc> parents;		// parents of the element
 	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parentElementId")
-	private List<ContainsAssoc> children;		// children of the element
+	List<ContainsAssoc> children;		// children of the element
 	
 	
 	@Transient
-	private UUID parentRef;
+	UUID parentRef;
 	
 	@Transient
-	private List<Element> childrenElements;
+	List<Element> childrenElements;
  	
 	
 	public Element(int id) {

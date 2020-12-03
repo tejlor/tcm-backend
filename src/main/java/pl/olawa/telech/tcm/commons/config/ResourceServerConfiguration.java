@@ -1,4 +1,4 @@
-package pl.olawa.telech.tcm.config;
+package pl.olawa.telech.tcm.commons.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,5 +25,4 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 			.and()
 			.exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
 	}
-
 }

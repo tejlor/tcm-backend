@@ -1,4 +1,6 @@
-package pl.olawa.telech.tcm.config;
+package pl.olawa.telech.tcm.commons.config;
+
+import static lombok.AccessLevel.PRIVATE;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,27 +21,28 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.administration.logic.AccountLogicImpl;
-import pl.olawa.telech.tcm.utils.Sha1PasswordEncoder;
-import pl.olawa.telech.tcm.utils.TUtils;
+import pl.olawa.telech.tcm.commons.utils.Sha1PasswordEncoder;
+import pl.olawa.telech.tcm.commons.utils.TUtils;
 
 /*
  * Configuration of oAuth 2.0.
  */
 @Configuration
 @EnableWebSecurity
+@FieldDefaults(level = PRIVATE)
 public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Value("${tcm.environment}")
-	private String environment;
+	String environment;
 	
 	@Autowired
-	private AccountLogicImpl accountLogic;
+	AccountLogicImpl accountLogic;
 	
-    
 	@Bean
 	public AuthenticationProvider authProvider() {
-	    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+	    var authProvider = new DaoAuthenticationProvider();
 	    authProvider.setUserDetailsService((UserDetailsService) accountLogic);
 	    authProvider.setPasswordEncoder(passwordEncoder());
 	    return authProvider;
@@ -60,9 +63,9 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public FilterRegistrationBean<CorsFilter> corsFilter() {	
-		CorsConfiguration config = new CorsConfiguration();
+		var config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		if(TUtils.isDev(environment) || TUtils.isTest(environment)){
+		if(!TUtils.isProd(environment)){
 			config.addAllowedOrigin("*");
 		}
 		config.addAllowedHeader("*");
@@ -91,5 +94,4 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public static PasswordEncoder passwordEncoder() {
     	return new Sha1PasswordEncoder();
     }
-	
 }

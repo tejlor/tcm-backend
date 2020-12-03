@@ -25,7 +25,7 @@ import pl.olawa.telech.tcm.administration.logic.helper.interfaces.SimpleTokenEnd
 import pl.olawa.telech.tcm.administration.logic.interfaces.AccountLogic;
 import pl.olawa.telech.tcm.administration.model.entity.User;
 import pl.olawa.telech.tcm.commons.model.exception.TcmException;
-import pl.olawa.telech.tcm.utils.TUtils;
+import pl.olawa.telech.tcm.commons.utils.TUtils;
 
 @Slf4j
 @Service

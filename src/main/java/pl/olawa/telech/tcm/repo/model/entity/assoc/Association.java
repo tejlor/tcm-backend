@@ -1,5 +1,7 @@
 package pl.olawa.telech.tcm.repo.model.entity.assoc;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
@@ -7,6 +9,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.administration.model.entity.User;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
@@ -17,30 +20,31 @@ import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@FieldDefaults(level = PRIVATE)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.CHAR)
 @DiscriminatorValue("A")
 public class Association extends AbstractEntity {
 
 	@Column(insertable = false, updatable = false)
-	private Integer parentElementId;					// element rodzica
+	Integer parentElementId;					// parent element
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parentElementId", nullable = true)
-	private Element parentElement;
+	Element parentElement;
 	
 	@Column(insertable = false, updatable = false)
-	private Integer childElementId;						// element dzecka
+	Integer childElementId;						// child element
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "childElementId", nullable = true)
-	private Element childElement;
+	Element childElement;
 	
 	@Column
-	private LocalDateTime createdTime;					// data utworzenia
+	LocalDateTime createdTime;					// time of creation
 	
 	@Column(insertable = false, updatable = false)
-	private Integer createdById;						// użytkownik tworzący element
+	Integer createdById;						// user created element
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "createdById", nullable = true)
@@ -50,5 +54,4 @@ public class Association extends AbstractEntity {
 	public Association(int id) {
 		super(id);
 	}
-
 }

@@ -1,5 +1,7 @@
 package pl.olawa.telech.tcm.repo.logic;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.logic.AbstractLogicImpl;
 import pl.olawa.telech.tcm.commons.model.exception.TcmException;
 import pl.olawa.telech.tcm.repo.dao.FileDAO;
@@ -30,19 +33,20 @@ import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
 
 @Service
 @Transactional
+@FieldDefaults(level = PRIVATE)
 public class FileLogic extends AbstractLogicImpl<FileEl> {
 
-	private FileDAO dao;
+	FileDAO dao;
 	
 	@Autowired
-	private DiskService diskService;
+	DiskService diskService;
 	@Autowired
-	private FilePreviewGenerator filePreviewGenerator;
+	FilePreviewGenerator filePreviewGenerator;
 	
 	@Autowired
-	private ContainsAssocLogic containsAssocLogic;	
+	ContainsAssocLogic containsAssocLogic;	
 	@Autowired
-	private ElementLogic elementLogic;	
+	ElementLogic elementLogic;	
 	
 	
 	public FileLogic(FileDAO dao) {
@@ -61,7 +65,7 @@ public class FileLogic extends AbstractLogicImpl<FileEl> {
 	}
 	
 	private FileEl upload(MultipartFile uploadedFile, UUID dirRef) {
-		FileEl file = new FileEl();
+		var file = new FileEl();
 		elementLogic.fillNew(file);
 		file.setName(uploadedFile.getOriginalFilename());
 		file.setMimeType(uploadedFile.getContentType());
@@ -140,6 +144,5 @@ public class FileLogic extends AbstractLogicImpl<FileEl> {
 		catch (IOException e) {
 			throw new TcmException("Cannot write file on disk.", e);
 		}
-	}
-	
+	}	
 }

@@ -1,4 +1,6 @@
-package pl.olawa.telech.tcm.config;
+package pl.olawa.telech.tcm.commons.config;
+
+import static lombok.AccessLevel.PRIVATE;
 
 import javax.sql.DataSource;
 
@@ -17,7 +19,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.administration.logic.AccountLogicImpl;
 
 /*
@@ -25,30 +27,30 @@ import pl.olawa.telech.tcm.administration.logic.AccountLogicImpl;
  */
 @Configuration
 @EnableAuthorizationServer
-@Slf4j
+@FieldDefaults(level = PRIVATE)
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
 	@Value("${tcm.auth.clientName}")
-	private String clientName;
+	String clientName;
 	
 	@Value("${tcm.auth.clientPass}")
-	private String clientPass;
+	String clientPass;
 	
 	@Value("${tcm.auth.accessTokenExpTime}")
-	private int accessTokenExpTime;
+	int accessTokenExpTime;
 	
 	@Value("${tcm.auth.refreshTokenExpTime}")
-	private int refreshTokenExpTime;
+	int refreshTokenExpTime;
 
 	@Autowired
 	@Qualifier("authenticationManagerBean")
-	private AuthenticationManager authenticationManager;
+	AuthenticationManager authenticationManager;
 	
     @Autowired
-    private DataSource dataSource;
+    DataSource dataSource;
 	
 	@Autowired
-	private AccountLogicImpl accountLogic;
+	AccountLogicImpl accountLogic;
 
     @Bean
     public TokenStore tokenStore() {
@@ -93,5 +95,4 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 			.tokenStore(tokenStore())
 			.authenticationManager(authenticationManager).userDetailsService((UserDetailsService) accountLogic);
 	}
-
 }

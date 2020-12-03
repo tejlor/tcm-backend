@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import pl.olawa.telech.tcm.utils.TUtils;
+import pl.olawa.telech.tcm.commons.utils.TUtils;
 
 @Getter @Setter
 @FieldDefaults(level = PRIVATE)

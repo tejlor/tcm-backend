@@ -1,20 +1,19 @@
-package pl.olawa.telech.tcm.repo.builder;
+package pl.olawa.telech.tcm.administration.builder;
 
 import static lombok.AccessLevel.PRIVATE;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.EntityManager;
-
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.administration.model.entity.User;
+import pl.olawa.telech.tcm.commons.builder.AbstractBuilder;
 
 @Setter
 @Accessors(chain = true, fluent = true)
 @FieldDefaults(level = PRIVATE)
-public class UserBuilder {
+public class UserBuilder extends AbstractBuilder<User> {
 	
 	String firstName = "Adam";				
 	String lastName = "Nowakowski";				
@@ -25,6 +24,7 @@ public class UserBuilder {
 	Integer modifiedById = 1;				
 	LocalDateTime modifiedTime = LocalDateTime.now();		
 	
+	@Override
 	public User build() {
 		var user = new User();
 		user.setFirstName(firstName);
@@ -36,11 +36,5 @@ public class UserBuilder {
 		user.setModifiedById(modifiedById);
 		user.setModifiedTime(modifiedTime);
 		return user;	
-	}
-	
-	public User save(EntityManager em) {
-		var result = build();
-		em.persist(result);
-		return result;
 	}
 }
