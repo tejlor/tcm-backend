@@ -1,7 +1,6 @@
 package pl.olawa.telech.tcm.commons.utils;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public class TConstants {
 
@@ -10,9 +9,6 @@ public class TConstants {
 	public static final BigDecimal HUNDRED = new BigDecimal(100);
 	
 	public static final String[] INDENT = new String[]{"  ", "    ", "      ",  "        ",  "          "};
-	
-	public static final String ROOT_REF = "00000000-0000-0000-0000-000000000000";
-	public static final UUID ROOT_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 	
 	public static final String DIRECTORY_SEPARATOR = "/";
 }

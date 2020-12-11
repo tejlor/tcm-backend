@@ -4,8 +4,7 @@ rc=0
 
 function compile {    
 	export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
-
-	mvn clean package -Dmaven.test.skip=true 
+    mvn clean package -Dmaven.test.skip=true
 	rc=$?
 }
 
@@ -14,7 +13,7 @@ function deploy {
 		exit
 	fi
 
-	/usr/lib/jvm/java-1.11.0-openjdk-amd64/bin/java -jar target/tcm.jar --spring.profiles.active=dev
+	java -jar target/tcm.jar --spring.profiles.active=dev
 }
 
 function test {
@@ -41,7 +40,7 @@ function eclipse {
 while getopts "cdtpev:sq" opt; do  
 	case $opt in    
 	c)      
-		compile      
+		compile
 		;;    
 	d)      
 		deploy      

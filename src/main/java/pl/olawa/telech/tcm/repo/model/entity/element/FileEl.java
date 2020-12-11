@@ -20,19 +20,19 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = PRIVATE)
 @PrimaryKeyJoinColumn
-@Table(name = "file", schema = "public")
+@Table(name = "file", schema = "repo")
 public class FileEl extends Element {
 
-	@Column
+	@Column(nullable = false)
 	Integer size;				// file size in bytes
 	
-	@Column 
+	@Column(length = 32, nullable = false) 
 	String mimeType;			// mime type of the file
 	
 	@Column 
-	Integer previewSize;			// size of the generated preview of the file
+	Integer previewSize;		// size of the generated preview of the file
 	
-	@Column 
+	@Column(length = 32) 
 	String previewMimeType;		// mime type of the generated preview of the file
 	
 	
@@ -46,9 +46,9 @@ public class FileEl extends Element {
 	}
 	
 	@Override
-	public FileEl copy() {
+	public FileEl clone() {
 		FileEl copy = new FileEl();
-		super.fillCopy(copy);	
+		super.fillClone(copy);	
 		copy.setSize(size);
 		copy.setMimeType(mimeType);
 		copy.setPreviewSize(previewSize);

@@ -1,114 +1,101 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE public.setting
-(
+-- *****************************************************************************
+-- ADMINISTRATION
+-- *****************************************************************************
+CREATE SCHEMA adm;
+
+-- Setting
+CREATE TABLE adm.setting (
     id serial NOT NULL PRIMARY KEY,
     name varchar(32) NOT NULL,
     value varchar(255)
 );
-ALTER TABLE public.setting OWNER to tcm;
+ALTER TABLE adm.setting OWNER to tcm;
 
-INSERT INTO public.setting (name, value) VALUES ('root_ref', '00000000-0000-0000-0000-000000000000'); 
-INSERT INTO public.setting (name, value) VALUES ('trash_ref', uuid_generate_v1()); 
-
-CREATE TABLE public.user
-(
+-- User
+CREATE TABLE adm.user (
     id serial NOT NULL PRIMARY KEY,
     first_name varchar(32) NOT NULL,
     last_name varchar(32) NOT NULL,
     email varchar(64) NOT NULL UNIQUE,
     password char(40) NOT NULL,
     created_time timestamp without time zone NOT NULL,
-    created_by_id integer NOT NULL REFERENCES public.user (id),
+    created_by_id integer NOT NULL REFERENCES adm.user(id),
     modified_time timestamp without time zone,
-    modified_by_id integer REFERENCES public.user (id)
+    modified_by_id integer REFERENCES adm.user(id)
 );
-ALTER TABLE public.user OWNER to tcm;
+ALTER TABLE adm.user OWNER to tcm;
 
-INSERT INTO "user"(first_name, last_name, email, password, created_time, created_by_id)
-    VALUES ('Krzysztof', 'Telech', 'tejlor@wp.pl','7c4a8d09ca3762af61e59520943dc26494f8941b', now(), 1);
-
-CREATE TABLE public.user_group
-(
+-- UserGroup
+CREATE TABLE adm.user_group (
     id serial NOT NULL PRIMARY KEY,
-    name character varying NOT NULL,
+    name varchar(32) NOT NULL,
     created_time timestamp without time zone NOT NULL,
-    created_by_id integer NOT NULL REFERENCES public.user (id),
+    created_by_id integer NOT NULL REFERENCES adm.user(id),
     modified_time timestamp without time zone,
-    modified_by_id integer REFERENCES public.user (id)
+    modified_by_id integer REFERENCES adm.user(id)
 );
-ALTER TABLE public.user_group OWNER to tcm;
+ALTER TABLE adm.user_group OWNER to tcm;
 
-CREATE TABLE public.user2user_group
-(
-    user_id integer REFERENCES public.user (id),
-	user_group_id integer REFERENCES public.user_group (id)
+-- User2UserGroup 
+CREATE TABLE adm.user2user_group (
+    user_id integer REFERENCES adm.user(id),
+	user_group_id integer REFERENCES adm.user_group(id)
 );
-ALTER TABLE public.user2user_group OWNER to tcm;
+ALTER TABLE adm.user2user_group OWNER to tcm;
 	
-CREATE TABLE public.element
-(
+-- *****************************************************************************
+-- REPOSITORY
+-- *****************************************************************************	
+CREATE SCHEMA repo;	
+	
+-- Element
+CREATE TABLE repo.element (
     id serial NOT NULL PRIMARY KEY,
     ref uuid NOT NULL UNIQUE,
-    name character varying  NOT NULL,
+    name varchar(255) NOT NULL,
     created_time timestamp without time zone NOT NULL,
-    created_by_id integer NOT NULL REFERENCES public.user (id),
-	modified_time timestamp without time zone,
-    modified_by_id integer REFERENCES public.user (id)
+    created_by_id integer NOT NULL REFERENCES adm.user(id),
+    modified_time timestamp without time zone,
+    modified_by_id integer REFERENCES adm.user(id)
 );
-ALTER TABLE public.element OWNER to tcm;
+ALTER TABLE repo.element OWNER to tcm;
 
-INSERT INTO public.element (ref, name, created_time, created_by_id) VALUES ((SELECT value FROM public.setting WHERE name = 'root_ref')::uuid, 'Root', current_date, 1);
-INSERT INTO public.element (ref, name, created_time, created_by_id) VALUES ((SELECT value FROM public.setting WHERE name = 'trash_ref')::uuid, 'Trash', current_date, 1);
-
-CREATE TABLE public.element_right
-(
-    id integer NOT NULL PRIMARY KEY,
-	element_id integer NOT NULL REFERENCES public.element (id),
-	user_id integer REFERENCES public.user (id),
-	user_group_id integer REFERENCES public.user_group (id),
-	read boolean,
-	write boolean
-);
-ALTER TABLE public.element_right OWNER to tcm;
-
-CREATE TABLE public.file
-(
+-- File
+CREATE TABLE repo.file (
     id integer NOT NULL PRIMARY KEY,
 	size integer NOT NULL,
-	preview_size integer,
-	mime_type character varying NOT NULL,
-	preview_mime_type character varying NOT NULL
+	mime_type varchar(32) NOT NULL,
+	preview_size integer ,
+	preview_mime_type varchar(32)
 );
-ALTER TABLE public.file OWNER to tcm;
+ALTER TABLE repo.file OWNER to tcm;
 
-CREATE TABLE public.folder
-(
+-- Folder
+CREATE TABLE repo.folder (
     id integer NOT NULL PRIMARY KEY,
-	icon character varying
+	icon varchar(32)
 );
-ALTER TABLE public.folder OWNER to tcm;
+ALTER TABLE repo.folder OWNER to tcm;
 
-INSERT INTO public.folder(id, icon) VALUES(1, NULL);
-
-
-CREATE TABLE public.association
-(
+-- Association
+CREATE TABLE repo.association (
     id serial NOT NULL PRIMARY KEY,
-	parent_element_id integer REFERENCES public.element (id) NOT NULL,
-	child_element_id integer REFERENCES public.element (id) NOT NULL,
-	type char(1) NOT NULL,
-	created_time timestamp without time zone NOT NULL,
-    created_by_id integer NOT NULL REFERENCES public.user (id)
+    type char(1) NOT NULL,
+	parent_element_id integer REFERENCES repo.element(id) NOT NULL,
+	child_element_id integer REFERENCES repo.element(id) NOT NULL,
+	created_time timestamp without time zone,
+    created_by_id integer REFERENCES adm.user(id)
 );
-ALTER TABLE public.association OWNER to tcm;
+ALTER TABLE repo.association OWNER to tcm;
 
--- OAuth2
-
+-- *****************************************************************************
+-- AUTHENTICATION
+-- *****************************************************************************
 CREATE SCHEMA auth;
 
-CREATE TABLE auth.access_token 
-( 
+CREATE TABLE auth.access_token ( 
 	token_id varchar(255),
 	token bytea,
 	authentication_id varchar(255) PRIMARY KEY,
@@ -117,10 +104,28 @@ CREATE TABLE auth.access_token
 	authentication bytea,
 	refresh_token varchar(255)
 );
+ALTER TABLE auth.access_token OWNER to tcm;
 
-CREATE TABLE auth.refresh_token
-( 
+CREATE TABLE auth.refresh_token ( 
 	token_id varchar(255),
 	token bytea,
 	authentication bytea 
 );
+ALTER TABLE auth.refresh_token OWNER to tcm;
+
+-- *****************************************************************************
+
+INSERT INTO adm.setting(name, value) VALUES ('root_ref',  uuid_generate_v1()); 
+INSERT INTO adm.setting(name, value) VALUES ('trash_ref', uuid_generate_v1()); 
+
+INSERT INTO adm.user(first_name, last_name, email, password, created_time, created_by_id)
+    VALUES ('Krzysztof', 'Telech', 'tejlor@wp.pl','7c4a8d09ca3762af61e59520943dc26494f8941b', now(), 1);
+    
+INSERT INTO repo.element(ref, name, created_time, created_by_id) 
+	VALUES ((SELECT value FROM adm.setting WHERE name = 'root_ref')::uuid, 'Root', now(), 1);
+INSERT INTO repo.element(ref, name, created_time, created_by_id) 
+	VALUES ((SELECT value FROM adm.setting WHERE name = 'trash_ref')::uuid, 'Trash', now(), 1);
+	
+INSERT INTO repo.folder(id) VALUES(1);
+    
+

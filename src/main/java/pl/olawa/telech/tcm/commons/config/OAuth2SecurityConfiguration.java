@@ -22,7 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import lombok.experimental.FieldDefaults;
-import pl.olawa.telech.tcm.administration.logic.AccountLogicImpl;
+import pl.olawa.telech.tcm.adm.logic.AccountLogicImpl;
 import pl.olawa.telech.tcm.commons.utils.Sha1PasswordEncoder;
 import pl.olawa.telech.tcm.commons.utils.TUtils;
 

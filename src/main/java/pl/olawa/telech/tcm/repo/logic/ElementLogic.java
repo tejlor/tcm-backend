@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.experimental.FieldDefaults;
-import pl.olawa.telech.tcm.administration.logic.SettingLogicImpl;
-import pl.olawa.telech.tcm.administration.logic.interfaces.AccountLogic;
-import pl.olawa.telech.tcm.administration.model.entity.Setting;
+import pl.olawa.telech.tcm.adm.logic.interfaces.AccountLogic;
+import pl.olawa.telech.tcm.adm.logic.interfaces.SettingLogic;
+import pl.olawa.telech.tcm.adm.model.entity.Setting;
 import pl.olawa.telech.tcm.commons.logic.AbstractLogicImpl;
 import pl.olawa.telech.tcm.commons.model.shared.Path;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
@@ -42,7 +42,7 @@ public class ElementLogic extends AbstractLogicImpl<Element> {
 	@Autowired
 	FolderLogic folderLogic;
 	@Autowired
-	SettingLogicImpl settingLogic;
+	SettingLogic settingLogic;
 	
 	
 	public ElementLogic(ElementDAO dao) {
@@ -60,9 +60,10 @@ public class ElementLogic extends AbstractLogicImpl<Element> {
 	}
 	
 	public Element loadParentsTree(UUID ref){
+		UUID rootRef = getRootRef();
 		Element element = dao.findByRef(ref);
 		element.setChildrenElements(dao.findChildren(element.getId()));
-		while(!element.getRef().equals(TConstants.ROOT_UUID)) {			
+		while(!element.getRef().equals(rootRef)) {			
 			element = loadParentWithOtherChildren(element);
 		} 				
 		return element;
@@ -108,7 +109,7 @@ public class ElementLogic extends AbstractLogicImpl<Element> {
 		for(UUID ref : refs) {
 			Element element = dao.findByRef(ref);
 			
-			Element copy = element.copy();
+			Element copy = element.clone();
 			fillNew(copy);
 			save(copy);
 			
@@ -131,7 +132,7 @@ public class ElementLogic extends AbstractLogicImpl<Element> {
 	public void fillNew(Element element) {
 		element.setRef(UUID.randomUUID());
 		element.setCreatedTime(LocalDateTime.now());
-		element.attachCreatedBy(accountLogic.loadCurrentUser());
+		element.setCreatedBy(accountLogic.loadCurrentUser());
 	}
 	
 	// ################################### PRIVATE #########################################################################
@@ -144,5 +145,9 @@ public class ElementLogic extends AbstractLogicImpl<Element> {
 		children.add(child);
 		parent.setChildrenElements(children);
 		return parent;
+	}
+	
+	private UUID getRootRef() {
+		return settingLogic.loadUUIDValue(Setting.ROOT_REF);
 	}
 }

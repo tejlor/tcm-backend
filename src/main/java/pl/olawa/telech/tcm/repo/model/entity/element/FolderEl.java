@@ -20,10 +20,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = PRIVATE)
 @PrimaryKeyJoinColumn
-@Table(name = "folder", schema = "public")
+@Table(name = "folder", schema = "repo")
 public class FolderEl extends Element {
 
-	@Column
+	@Column(length = 32)
 	String icon;
 	
 	

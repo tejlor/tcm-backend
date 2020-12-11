@@ -10,7 +10,7 @@ import pl.olawa.telech.tcm.commons.dao.DAOImpl;
 
 @SpringBootApplication
 @EnableScheduling
-@EnableJpaRepositories(basePackages = "pl.olawa.telech.tcm.dao", repositoryBaseClass = DAOImpl.class)
+@EnableJpaRepositories(basePackages = "pl.olawa.telech.tcm.*.dao", repositoryBaseClass = DAOImpl.class)
 public class TcmApplication {
 
 	public static void main(String[] args) {

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.experimental.FieldDefaults;
-import pl.olawa.telech.tcm.administration.logic.interfaces.AccountLogic;
+import pl.olawa.telech.tcm.adm.logic.interfaces.AccountLogic;
 import pl.olawa.telech.tcm.commons.logic.AbstractLogicImpl;
 import pl.olawa.telech.tcm.repo.dao.ContainsAssocDAO;
 import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
@@ -50,7 +50,7 @@ public class ContainsAssocLogic extends AbstractLogicImpl<ContainsAssoc> {
 	}
 	
 	public void delete(Element element) {
-		ContainsAssoc assoc = element.getParents().get(0);
+		ContainsAssoc assoc = element.getParentsAssoc().iterator().next();
 		delete(assoc);
 	}
 }

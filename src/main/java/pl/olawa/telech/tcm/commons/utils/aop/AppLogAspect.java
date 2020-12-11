@@ -14,7 +14,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import lombok.extern.slf4j.Slf4j;
-import pl.olawa.telech.tcm.administration.model.entity.User;
+import pl.olawa.telech.tcm.adm.model.entity.User;
 import pl.olawa.telech.tcm.commons.config.filter.RequestWrapper;
 import pl.olawa.telech.tcm.commons.model.exception.NotFoundException;
 import pl.olawa.telech.tcm.commons.model.exception.TcmException;
@@ -34,7 +34,7 @@ public class AppLogAspect {
 	public void controllerPublicMethods() {
 	}
 	
-	@Pointcut("@annotation(pl.olawa.telech.tcm.utils.aop.AppLogOmit)")
+	@Pointcut("@annotation(pl.olawa.telech.tcm.commons.utils.aop.AppLogOmit)")
 	public void isAppLogOmit() {}
 
 

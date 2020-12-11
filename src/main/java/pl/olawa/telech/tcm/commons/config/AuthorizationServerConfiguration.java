@@ -20,7 +20,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 import lombok.experimental.FieldDefaults;
-import pl.olawa.telech.tcm.administration.logic.AccountLogicImpl;
+import pl.olawa.telech.tcm.adm.logic.AccountLogicImpl;
 
 /*
  * Configuration of oAuth 2.0.

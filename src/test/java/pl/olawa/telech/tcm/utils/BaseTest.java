@@ -1,30 +1,68 @@
 package pl.olawa.telech.tcm.utils;
 
+import static lombok.AccessLevel.PROTECTED;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import javax.persistence.EntityManager;
 
-import org.junit.runner.RunWith;
+import org.assertj.core.api.Fail;
+import org.junit.After;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import lombok.experimental.FieldDefaults;
+import pl.olawa.telech.tcm.adm.builder.UserBuilder;
+import pl.olawa.telech.tcm.adm.model.entity.User;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
 
 @SpringBootTest 
 @ActiveProfiles("junit")
-@RunWith(SpringRunner.class)
 @Import(TcmTestConfiguration.class)
+@FieldDefaults(level = PROTECTED)
 public class BaseTest {
 
-	@Autowired
-	protected EntityManager entityManager;
+	User defaultUser;
+	BeanFieldSetter beanFieldSetter;
 	
-	protected <T extends AbstractEntity> void save(T entity) {
-		entityManager.persist(entity);
+	@Autowired
+	EntityManager entityManager;
+	
+	public BaseTest() {
+		beanFieldSetter = new BeanFieldSetter();
+	}
+	
+	@Before
+	public void before() {
+		// restart autoincrement values
+		entityManager.createNativeQuery("TRUNCATE TABLE adm.User RESTART IDENTITY AND COMMIT NO CHECK").executeUpdate();
+		// create required user references in createdBy fields
+		defaultUser = new UserBuilder().save(entityManager);	
+	}
+	
+	@After
+	public void after() {
+		beanFieldSetter.restoreAllOriginValues();
 	}
 	
 	protected <T extends AbstractEntity> void flush() {
 		entityManager.flush();
+	}
+	
+	protected void setBeanField(Object targetObject, String name, Object value) {
+		beanFieldSetter.setObjectField(targetObject, name, value);
+	}
+
+	protected static <T extends Exception> void expectException(Runnable action, Class<T> exceptionClass, String exceptionMessage) {
+		try {
+			action.run();
+			Fail.failBecauseExceptionWasNotThrown(exceptionClass);
+		} 
+		catch (Exception e) {
+			assertThat(e).isInstanceOf(exceptionClass);
+			assertThat(e.getMessage()).contains(exceptionMessage);
+		}
 	}
 }
