@@ -27,7 +27,7 @@ public class FolderController extends AbstractController {
 	FolderLogic folderLogic;
 
 	/*
-	 * Return folder info.
+	 * Returns folder info.
 	 */
 	@RequestMapping(value = "{ref:" + REF + "}", method = GET)
 	public FolderDto get(
@@ -43,6 +43,6 @@ public class FolderController extends AbstractController {
 	public FolderDto create(
 			@RequestBody FolderDto folder) {
 		
-		return new FolderDto(folderLogic.create(folder.toModel()));
+		return new FolderDto(folderLogic.create(UUID.fromString(folder.getParentRef()), folder.toModel()));
 	}
 }

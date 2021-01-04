@@ -49,7 +49,7 @@ public class ContainsAssocLogic extends AbstractLogicImpl<ContainsAssoc> {
 		save(assoc);
 	}
 	
-	public void delete(Element element) {
+	public void deleteParentAssoc(Element element) {
 		ContainsAssoc assoc = element.getParentsAssoc().iterator().next();
 		delete(assoc);
 	}

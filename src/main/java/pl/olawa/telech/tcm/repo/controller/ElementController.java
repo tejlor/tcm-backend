@@ -94,9 +94,9 @@ public class ElementController extends AbstractController {
 		@RequestParam(required = false) String sortBy,
 		@RequestParam(required = false) Boolean sortAsc){
 		
-		TableParams tableParams = new TableParams(pageNo, pageSize, filter, sortBy, sortAsc);		
+		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy, sortAsc);		
 		Pair<List<Element>, Integer> result = elementLogic.loadChildren(UUID.fromString(parentRef), tableParams); 	
-		TableDataDto<ElementDto> table = new TableDataDto<>(tableParams);
+		var table = new TableDataDto<ElementDto>(tableParams);
 		table.setRows(ElementDto.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
 		return table;

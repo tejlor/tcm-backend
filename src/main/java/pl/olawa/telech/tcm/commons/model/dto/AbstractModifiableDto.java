@@ -20,5 +20,8 @@ public abstract class AbstractModifiableDto extends AbstractCreatableDto {
 	
 	public AbstractModifiableDto(AbstractModifiableEntity model){
 		super(model);
+		if(model.getModifiedById() != null) {
+			modifiedByName = model.getModifiedBy().calcFirstLastName();
+		}
 	}
 }

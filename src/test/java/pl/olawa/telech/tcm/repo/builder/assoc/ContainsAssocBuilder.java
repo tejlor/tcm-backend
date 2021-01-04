@@ -10,7 +10,7 @@ import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
 @Setter
 @FieldDefaults(level = PRIVATE)
 @Accessors(chain = true, fluent = true)
-public class ContainsAssocBuilder extends AssociationBuilder {
+public class ContainsAssocBuilder extends AssociationBuilder<ContainsAssoc> {
 				
 	
 	@Override

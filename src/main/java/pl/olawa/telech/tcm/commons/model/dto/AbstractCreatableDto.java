@@ -20,5 +20,8 @@ public abstract class AbstractCreatableDto extends AbstractDto {
 	
 	public AbstractCreatableDto(AbstractCreatableEntity model){
 		super(model);
+		if(model.getCreatedById() != null) {
+			createdByName = model.getCreatedBy().calcFirstLastName();
+		}
 	}
 }

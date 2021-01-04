@@ -104,34 +104,12 @@ public class FileLogic extends AbstractLogicImpl<FileEl> {
 	}
 
 	public Resource downloadAsZip(List<UUID> refs) {
-		try {
-			Path zipPath = Files.createTempFile(null, null);
-			FileOutputStream fos = new FileOutputStream(zipPath.toFile());
-		    ZipOutputStream zipos = new ZipOutputStream(fos);
-	
-			for(UUID ref : refs) {
-				FileEl file = dao.findByRef(ref);		
-				FileInputStream fis = new FileInputStream(diskService.readContentAsFile(ref));
-		        
-				ZipEntry zipEntry = new ZipEntry(file.getName());
-		        zipos.putNextEntry(zipEntry);	 
-	            byte[] bytes = new byte[1024];
-	            int length;
-	            while((length = fis.read(bytes)) >= 0) {
-	                zipos.write(bytes, 0, length);
-	            }
-	            fis.close();
-				
-			}
-			
-			zipos.close();
-		    fos.close();
-		    
-			return new UrlResource(zipPath.toUri());
-		}
-		catch(IOException e) {
-			throw new TcmException("Coud not create zip archive.", e);
-		}
+		return diskService.createZip(
+					refs.stream()
+					.map(ref -> dao.findByRef(ref))
+					.map(file -> Pair.of(file.getRef(), file.getName()))
+					.collect(Collectors.toList())
+		);
 	}
 		
 	public void copy(FileEl file, FileEl copy) {

@@ -46,9 +46,9 @@ public class FileEl extends Element {
 	}
 	
 	@Override
-	public FileEl clone() {
+	public FileEl copy() {
 		FileEl copy = new FileEl();
-		super.fillClone(copy);	
+		super.fillCopy(copy);	
 		copy.setSize(size);
 		copy.setMimeType(mimeType);
 		copy.setPreviewSize(previewSize);

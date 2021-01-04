@@ -34,4 +34,12 @@ public class FolderEl extends Element {
 	public String getTypeName() {
 		return "Folder";
 	}
+	
+	@Override
+	public FolderEl copy() {
+		FolderEl copy = new FolderEl();
+		super.fillCopy(copy);	
+		copy.setIcon(icon);	
+		return copy;
+	}
 }

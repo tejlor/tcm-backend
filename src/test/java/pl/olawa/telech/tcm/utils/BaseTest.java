@@ -47,8 +47,21 @@ public class BaseTest {
 		beanFieldSetter.restoreAllOriginValues();
 	}
 	
+	protected <T extends AbstractEntity> T load(Class<T> clazz, int id)  {
+		return entityManager.find(clazz, id);
+	}
+	
+	protected <T extends AbstractEntity> void reload(T entity)  {
+		entityManager.refresh(entity);
+	}
+	
 	protected <T extends AbstractEntity> void flush() {
 		entityManager.flush();
+	}
+	
+	protected <T extends AbstractEntity> void flushAndClear() {
+		entityManager.flush();
+		entityManager.clear();
 	}
 	
 	protected void setBeanField(Object targetObject, String name, Object value) {

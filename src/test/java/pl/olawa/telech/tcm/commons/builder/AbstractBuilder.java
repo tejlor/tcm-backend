@@ -24,6 +24,14 @@ public abstract class AbstractBuilder<T extends AbstractEntity> {
 		return result;
 	}
 	
+	public T saveAndReload(EntityManager em) {
+		var result = build();
+		em.persist(result);
+		em.flush();
+		em.refresh(result);
+		return result;
+	}
+	
 	protected void fill(T entity) {
 		entity.setId(id);
 	}

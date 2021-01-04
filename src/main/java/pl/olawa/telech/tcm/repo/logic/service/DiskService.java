@@ -2,17 +2,19 @@ package pl.olawa.telech.tcm.repo.logic.service;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -23,6 +25,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import pl.olawa.telech.tcm.commons.model.exception.NotFoundException;
 import pl.olawa.telech.tcm.commons.model.exception.TcmException;
+import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
 
 @Slf4j
 @Service
@@ -116,6 +119,38 @@ public class DiskService {
 			throw new TcmException("Could not read file: " + ref);
 		
 		return file;
+	}
+	
+	public Resource createZip(List<Pair<UUID, String>> refsWithNames) {
+		try {
+			Path zipPath = Files.createTempFile(null, null);
+			FileOutputStream fos = new FileOutputStream(zipPath.toFile());
+		    ZipOutputStream zipos = new ZipOutputStream(fos);
+	
+			for(Pair<UUID, String> refWithName : refsWithNames) {	
+				UUID ref = refWithName.getKey();
+				String fileName = refWithName.getValue();
+				
+				FileInputStream fis = new FileInputStream(readContentAsFile(ref));
+		        
+				ZipEntry zipEntry = new ZipEntry(fileName);
+		        zipos.putNextEntry(zipEntry);	 
+	            byte[] bytes = new byte[1024];
+	            int length;
+	            while((length = fis.read(bytes)) >= 0) {
+	                zipos.write(bytes, 0, length);
+	            }
+	            fis.close();		
+			}
+			
+			zipos.close();
+		    fos.close();
+		    
+			return new UrlResource(zipPath.toUri());
+		}
+		catch(IOException e) {
+			throw new TcmException("Coud not create zip archive.", e);
+		}
 	}
 	
 	private Path refToDirPath(UUID ref) {

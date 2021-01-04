@@ -10,7 +10,7 @@ import pl.olawa.telech.tcm.repo.model.entity.element.FolderEl;
 @Setter
 @FieldDefaults(level = PRIVATE)
 @Accessors(chain = true, fluent = true)
-public class FolderElBuilder extends ElementBuilder {
+public class FolderElBuilder extends ElementBuilder<FolderEl> {
 	
 	String icon = "icon";						
 	

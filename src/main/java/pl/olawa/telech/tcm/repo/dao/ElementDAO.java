@@ -45,21 +45,21 @@ public interface ElementDAO extends DAO<Element>, JpaSpecificationExecutor<Eleme
 
 	default Specification<Element> isChildOf(Integer parentId){
         return (element, cq, cb) -> {
-        	Join<Element, Association> assoc = element.join("parents");
-            return cb.equal(assoc.get("parentElementId"), parentId);
+        	Join<Element, Association> assoc = element.join(Element.PROP_PARENTS_ASSOC);
+            return cb.equal(assoc.get(Association.PROP_PARENT_ELEMENT_ID), parentId);
         };
 	}
 	
 	default Specification<Element> isParentOf(Integer childId){
         return (element, cq, cb) -> {
-        	Join<Element, Association> assoc = element.join("children");
-            return cb.equal(assoc.get("childElementId"), childId);
+        	Join<Element, Association> assoc = element.join(Element.PROP_CHILDREN_ASSOC);
+            return cb.equal(assoc.get(Association.PROP_CHILD_ELEMENT_ID), childId);
         };
 	}
 	
 	default Specification<Element> isLike(String filter){
         return (element, cq, cb) -> {
-        	return cb.like(cb.lower(element.get("name")), "%" + filter + "%");
+        	return cb.like(cb.lower(element.get(Element.PROP_NAME)), "%" + filter + "%");
         };
 	}
 }

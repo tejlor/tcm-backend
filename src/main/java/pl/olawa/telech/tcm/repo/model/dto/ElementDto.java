@@ -2,14 +2,13 @@ package pl.olawa.telech.tcm.repo.model.dto;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import pl.olawa.telech.tcm.commons.model.dto.AbstractDto;
+import pl.olawa.telech.tcm.commons.model.dto.AbstractModifiableDto;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
@@ -18,29 +17,18 @@ import pl.olawa.telech.tcm.repo.model.entity.element.FolderEl;
 @Getter @Setter
 @NoArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class ElementDto extends AbstractDto {
+public class ElementDto extends AbstractModifiableDto {
 
 	String ref;
 	String name;
-	LocalDateTime createdTime;
-	Integer createdById;
-	String createdByName;
-	Integer modifiedById;
-	String modifiedByName;
-	
+	// out
 	String typeName;
+	// in
 	String parentRef; 
-	
 	
 	public ElementDto(Element model) {
 		super(model);
 		typeName = model.getTypeName();
-		if(model.getCreatedBy() != null) {
-			createdByName = model.getCreatedBy().calcFirstLastName();
-		}	
-		if(model.getModifiedBy() != null) {
-			modifiedByName = model.getModifiedBy().calcFirstLastName();
-		}
 	}
 
 	@Override

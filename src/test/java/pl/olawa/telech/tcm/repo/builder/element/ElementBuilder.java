@@ -9,14 +9,14 @@ import java.util.UUID;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-import pl.olawa.telech.tcm.commons.builder.AbstractBuilder;
+import pl.olawa.telech.tcm.commons.builder.AbstractModifiableBuilder;
 import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 
 @Setter
 @FieldDefaults(level = PRIVATE)
 @Accessors(chain = true, fluent = true)
-public class ElementBuilder extends AbstractBuilder<Element> {
+public class ElementBuilder<T extends Element> extends AbstractModifiableBuilder<T> {
 	
 	UUID ref = UUID.randomUUID();						
 	String name = "Example element";					
@@ -24,14 +24,15 @@ public class ElementBuilder extends AbstractBuilder<Element> {
 	Set<ContainsAssoc> childrenAssoc = new HashSet<>();			
 	
 	@Override
-	public Element build() {
-		var obj = new Element();
+	@SuppressWarnings("unchecked")
+	public T build() {
+		var obj = (T) new Element();
 		fill(obj);
 		return obj;	
 	}
 	
 	@Override
-	protected void fill(Element element) {
+	protected void fill(T element) {
 		super.fill(element);
 		element.setRef(ref);
 		element.setName(name);

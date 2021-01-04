@@ -6,9 +6,7 @@ import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import pl.olawa.telech.tcm.adm.model.entity.User;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractCreatableEntity;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 
@@ -25,17 +23,20 @@ import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 @Table(name = "association", schema = "repo")
 public class Association extends AbstractCreatableEntity {
 
+	public static final String PROP_PARENT_ELEMENT_ID = "parentElementId"; 
+	public static final String PROP_CHILD_ELEMENT_ID = "childElementId"; 
+	
 	@Column(insertable = false, updatable = false)
 	Integer parentElementId;					// parent element
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parentElementId", nullable = true)
 	Element parentElement;
 	
 	@Column(insertable = false, updatable = false)
 	Integer childElementId;						// child element
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "childElementId", nullable = true)
 	Element childElement;
 	

@@ -10,7 +10,7 @@ import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
 @Setter
 @FieldDefaults(level = PRIVATE)
 @Accessors(chain = true, fluent = true)
-public class FileElBuilder extends ElementBuilder {
+public class FileElBuilder extends ElementBuilder<FileEl> {
 	
 	Integer size = 100;				
 	String mimeType = "application/pdf";			

@@ -53,7 +53,7 @@ public class FileController extends AbstractController {
 		Pair<FileEl, Resource> file = fileLogic.downloadPreview(UUID.fromString(ref));
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getKey().getName() + "\"")
-				.header(HttpHeaders.CONTENT_TYPE, file.getKey().getMimeType())
+				.header(HttpHeaders.CONTENT_TYPE, file.getKey().getPreviewMimeType())
 				.body(file.getValue());
 	}
 	
@@ -91,9 +91,9 @@ public class FileController extends AbstractController {
 	 */
 	@RequestMapping(value = "", method = POST)
 	public List<FileDto> upload( 
-			@RequestParam MultipartFile[] file,
+			@RequestParam MultipartFile[] files,
 			@RequestParam String dirRef) {
 		
-		return FileDto.toFileDtoList(fileLogic.upload(file, UUID.fromString(dirRef)));
+		return FileDto.toFileDtoList(fileLogic.upload(files, UUID.fromString(dirRef)));
 	}
 }

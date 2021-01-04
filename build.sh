@@ -4,7 +4,17 @@ rc=0
 
 function compile {    
 	export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
-    mvn clean package -Dmaven.test.skip=true
+	case $1 in
+        full)
+            mvn clean package
+            ;;
+        fast)
+            mvn clean package -Dmaven.test.skip=true
+            ;;
+        *)
+            mvn clean package -Dmaven.test.skip=true
+            ;;
+    esac
 	rc=$?
 }
 
@@ -37,10 +47,10 @@ function eclipse {
 	mvn eclipse:eclipse -DdownloadSources -DdownloadJavadocs
 }
 
-while getopts "cdtpev:sq" opt; do  
+while getopts "c:dtpev:sq" opt; do  
 	case $opt in    
 	c)      
-		compile
+		compile $OPTARG
 		;;    
 	d)      
 		deploy      

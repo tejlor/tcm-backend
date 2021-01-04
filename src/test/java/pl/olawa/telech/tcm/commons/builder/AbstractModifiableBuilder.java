@@ -19,7 +19,7 @@ public abstract class AbstractModifiableBuilder<T extends AbstractModifiableEnti
 	LocalDateTime modifiedTime = LocalDateTime.now();
 	
 	@Override
-	public void fill(T entity) {
+	protected void fill(T entity) {
 		super.fill(entity);
 		entity.setModifiedBy(modifiedBy);
 		entity.setModifiedTime(modifiedTime);

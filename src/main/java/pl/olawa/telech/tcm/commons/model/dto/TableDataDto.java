@@ -31,20 +31,22 @@ public class TableDataDto<T> implements Loggable {
 	public void setCount(int count) {
 		tableInfo.setCount(tableParams, count);
 	}
-}
-
-@Getter @Setter
-@FieldDefaults(level = PRIVATE)
-class TableInfoDto {
-	int pageCount;
-	int rowCount;
-	int rowStart;
-	int rowEnd;
 	
-	public void setCount(TableParams tableParams, int count) {
-		rowCount = count;
-		pageCount = (int) Math.ceil((double) count / tableParams.getPageSize());
-		rowStart = tableParams.getPageNo() * tableParams.getPageSize() + 1;
-		rowEnd = Math.min(rowStart + tableParams.getPageSize() - 1, count);
+	@Getter @Setter
+	@FieldDefaults(level = PRIVATE)
+	public static class TableInfoDto {
+		int pageCount;
+		int rowCount;
+		int rowStart;
+		int rowEnd;
+		
+		public void setCount(TableParams tableParams, int count) {
+			rowCount = count;
+			pageCount = (int) Math.ceil((double) count / tableParams.getPageSize());
+			rowStart = tableParams.getPageNo() * tableParams.getPageSize() + 1;
+			rowEnd = rowStart + Math.min(count, tableParams.getPageSize()) - 1;
+		}
 	}
 }
+
+

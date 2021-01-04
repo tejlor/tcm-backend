@@ -38,6 +38,7 @@ public class UserControllerTest extends BaseTest {
 		flush();	
 		// when
 		List<UserDto> result = userController.getAll();	
+		flushAndClear();
 		result.remove(0); // delete default user created in base class
 		// then
 		assertThat(result).isNotNull();
@@ -55,9 +56,9 @@ public class UserControllerTest extends BaseTest {
 		assertThat(userDto.getLastName()).isEqualTo(user.getLastName());
 		assertThat(userDto.getEmail()).isEqualTo(user.getEmail());
 		assertThat(userDto.getCreatedTime()).isEqualTo(user.getCreatedTime());
-		assertThat(userDto.getCreatedByName()).isNull();
+		assertThat(userDto.getCreatedByName()).isEqualTo(user.getCreatedBy().calcFirstLastName());
 		assertThat(userDto.getModifiedTime()).isEqualTo(user.getModifiedTime());
-		assertThat(userDto.getModifiedByName()).isNull();
+		assertThat(userDto.getModifiedByName()).isEqualTo(user.getModifiedBy().calcFirstLastName());
 	}
 	
 	private User setupUser(String firstName, String lastName, String email) {
@@ -65,6 +66,6 @@ public class UserControllerTest extends BaseTest {
 			.firstName(firstName)
 			.lastName(lastName)
 			.email(email)
-			.save(entityManager);
+			.saveAndReload(entityManager);
 	}
 }

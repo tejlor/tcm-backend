@@ -17,8 +17,6 @@ import pl.olawa.telech.tcm.repo.model.entity.element.FolderEl;
 public class FolderDto extends ElementDto {
 
 	String icon;
-	
-	String parentRef;
 
 	
 	public FolderDto(FolderEl model){

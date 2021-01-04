@@ -2,7 +2,9 @@ package pl.olawa.telech.tcm.repo.logic;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class FolderLogic extends AbstractLogicImpl<FolderEl> {
 	ContainsAssocLogic containsAssocLogic;
 	@Autowired
 	ElementLogic elementLogic;
+	@Autowired
+	FileLogic fileLogic;
 	
 	
 	public FolderLogic(FolderDAO dao) {
@@ -35,16 +39,20 @@ public class FolderLogic extends AbstractLogicImpl<FolderEl> {
 		return dao.findByRef(ref);
 	}
 	
-	public FolderEl create(FolderEl folder) {
+	public FolderEl create(UUID parentRef, FolderEl folder) {
 		elementLogic.fillNew(folder);
 		folder = save(folder);
 		
-		containsAssocLogic.create(folder.getParentRef(), folder);
+		containsAssocLogic.create(parentRef, folder);
 		
 		return folder;
 	}
 	
 	public void copy(FolderEl folder, FolderEl copy) {
+		List<UUID> refs = folder.getChildrenAssoc().stream()
+			.map(a -> a.getChildElement().getRef())
+			.collect(Collectors.toList());
 		
+		elementLogic.copy(copy.getRef(), refs);
 	}
 }

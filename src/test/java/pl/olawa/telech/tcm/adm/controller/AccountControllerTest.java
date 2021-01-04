@@ -39,9 +39,10 @@ public class AccountControllerTest extends BaseTest {
 		flush();
 		// when
 		UserDto result = accountController.getCurrentUser();	
+		flushAndClear();
 		// then
 		assertThat(result).isNotNull();
-		assertUser(result, defaultUser);
+		assertCurrentUser(result, defaultUser);
 	}
 	
 	@Test
@@ -52,6 +53,7 @@ public class AccountControllerTest extends BaseTest {
 		flush();	
 		// when
 		ResponseEntity<OAuth2AccessToken> result = accountController.loginAs(user.getId());	
+		flushAndClear();
 		// then
 		assertThat(result).isNotNull();		
 		OAuth2AccessToken body = result.getBody();
@@ -69,6 +71,7 @@ public class AccountControllerTest extends BaseTest {
 		in.setOldPassword(oldPassword);
 		in.setNewPassword(newPassword);
 		accountController.changePassword(in);	
+		flushAndClear();
 		// then	
 		assertThat(defaultUser.getPassword()).isNotEqualTo(TUtils.sha1(oldPassword));
 		assertThat(defaultUser.getPassword()).isEqualTo(TUtils.sha1(newPassword));
@@ -116,20 +119,16 @@ public class AccountControllerTest extends BaseTest {
 			.save(entityManager);
 	}
 	
-	private void assertUser(UserDto userDto, User user) {
+	private void assertCurrentUser(UserDto userDto, User user) {
 		assertThat(userDto.getId()).isEqualTo(user.getId());
 		assertThat(userDto.getFirstName()).isEqualTo(user.getFirstName());
 		assertThat(userDto.getLastName()).isEqualTo(user.getLastName());
 		assertThat(userDto.getEmail()).isEqualTo(user.getEmail());
-		assertThat(userDto.getCreatedTime()).isEqualTo(user.getCreatedTime());
-		assertThat(userDto.getCreatedByName()).isNull();
-		assertThat(userDto.getModifiedTime()).isEqualTo(user.getModifiedTime());
-		assertThat(userDto.getModifiedByName()).isNull();
 	}
 	
 	@SuppressWarnings("unused")
 	private AccountLogic mockAccountLogic(User currentUser) {
-		var accountLogic = mock(AccountLogic.class, Mockito.CALLS_REAL_METHODS);
+		var accountLogic = mock(AccountLogic.class);
 		when(accountLogic.getCurrentUser()).thenReturn(currentUser);
 		setBeanField(accountController, "accountLogic", accountLogic);
 		return accountLogic;

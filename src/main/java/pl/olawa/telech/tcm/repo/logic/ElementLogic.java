@@ -100,7 +100,7 @@ public class ElementLogic extends AbstractLogicImpl<Element> {
 	public void move(UUID newParentRef, List<UUID> refs) {
 		for(UUID ref : refs) {
 			Element element = dao.findByRef(ref);
-			containsAssocLogic.delete(element);
+			containsAssocLogic.deleteParentAssoc(element);
 			containsAssocLogic.create(newParentRef, element);
 		}
 	}
@@ -109,7 +109,7 @@ public class ElementLogic extends AbstractLogicImpl<Element> {
 		for(UUID ref : refs) {
 			Element element = dao.findByRef(ref);
 			
-			Element copy = element.clone();
+			Element copy = element.copy();
 			fillNew(copy);
 			save(copy);
 			
@@ -120,7 +120,7 @@ public class ElementLogic extends AbstractLogicImpl<Element> {
 				folderLogic.copy((FolderEl) element, (FolderEl) copy);
 			}
 
-			containsAssocLogic.create(newParentRef, element);
+			containsAssocLogic.create(newParentRef, copy);
 		}
 	}
 	

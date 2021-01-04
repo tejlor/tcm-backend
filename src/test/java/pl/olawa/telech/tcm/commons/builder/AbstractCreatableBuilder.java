@@ -19,7 +19,7 @@ public abstract class AbstractCreatableBuilder<T extends AbstractCreatableEntity
 	LocalDateTime createdTime = LocalDateTime.now();
 	
 	@Override
-	public void fill(T entity) {
+	protected void fill(T entity) {
 		super.fill(entity);
 		entity.setCreatedBy(createdBy);
 		entity.setCreatedTime(createdTime);

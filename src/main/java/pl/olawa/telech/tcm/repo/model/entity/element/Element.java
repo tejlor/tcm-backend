@@ -27,6 +27,10 @@ import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
 @Table(name = "element", schema = "repo")
 public class Element extends AbstractModifiableEntity {
 
+	public static final String PROP_NAME = "name";
+	public static final String PROP_PARENTS_ASSOC = "parentsAssoc";
+	public static final String PROP_CHILDREN_ASSOC = "childrenAssoc";
+	
 	@Column(nullable = false)
 	UUID ref;							// element unique reference
 	
@@ -43,9 +47,6 @@ public class Element extends AbstractModifiableEntity {
 	
 	
 	@Transient
-	UUID parentRef;
-	
-	@Transient
 	List<Element> childrenElements;
  	
 	
@@ -59,12 +60,19 @@ public class Element extends AbstractModifiableEntity {
 		return "Element";
 	}
 	
-	@Override
-	public Element clone() {
+	public Element getParentElement() {
+		var iterator = parentsAssoc.iterator();
+		if(iterator.hasNext()) {
+			return iterator.next().getParentElement();
+		}
+		return null;
+	}
+	
+	public Element copy() {
 		throw new UnsupportedOperationException();
 	}
 	
-	protected void fillClone(Element clone) {
-		clone.setName(name);
+	protected void fillCopy(Element copy) {
+		copy.setName(name);
 	}
 }

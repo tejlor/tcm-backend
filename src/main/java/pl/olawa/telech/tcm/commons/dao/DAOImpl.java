@@ -97,7 +97,7 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	    query.setFirstResult((int)page.getOffset());
 	    query.setMaxResults(page.getPageSize());
 	    
-	    return Pair.of(query.getResultList(), (int)count(specSum));
+	    return Pair.of(query.getResultList(), (int) count(specSum));
 	}
 	
 	@SafeVarargs
