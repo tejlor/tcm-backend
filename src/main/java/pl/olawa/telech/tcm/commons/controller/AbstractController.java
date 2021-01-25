@@ -5,6 +5,7 @@ import static lombok.AccessLevel.PRIVATE;
 import java.beans.PropertyEditorSupport;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,10 +43,16 @@ public class AbstractController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
-
 			@Override
 			public void setAsText(String text) throws IllegalArgumentException {
 				setValue(LocalDate.parse(text, DateTimeFormatter.ISO_DATE));
+			}
+		});
+		
+		binder.registerCustomEditor(UUID.class, new PropertyEditorSupport() {
+			@Override
+			public void setAsText(String text) throws IllegalArgumentException {
+				setValue(UUID.fromString(text));
 			}
 		});
 	}

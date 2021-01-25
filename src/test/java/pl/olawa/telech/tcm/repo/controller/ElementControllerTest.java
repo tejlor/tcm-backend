@@ -31,8 +31,8 @@ import pl.olawa.telech.tcm.commons.model.shared.TableParams;
 import pl.olawa.telech.tcm.repo.builder.assoc.ContainsAssocBuilder;
 import pl.olawa.telech.tcm.repo.builder.element.FileElBuilder;
 import pl.olawa.telech.tcm.repo.builder.element.FolderElBuilder;
-import pl.olawa.telech.tcm.repo.logic.FileLogic;
-import pl.olawa.telech.tcm.repo.logic.service.DiskService;
+import pl.olawa.telech.tcm.repo.logic.FileLogicImpl;
+import pl.olawa.telech.tcm.repo.logic.service.DiskServiceImpl;
 import pl.olawa.telech.tcm.repo.model.dto.ElementDto;
 import pl.olawa.telech.tcm.repo.model.dto.FileDto;
 import pl.olawa.telech.tcm.repo.model.dto.FolderDto;
@@ -49,7 +49,7 @@ public class ElementControllerTest extends BaseTest {
 	@Autowired
 	ElementController elementController;
 	@Autowired
-	FileLogic fileLogic;	
+	FileLogicImpl fileLogic;	
 
 	@Test
 	@Transactional
@@ -58,7 +58,7 @@ public class ElementControllerTest extends BaseTest {
 		FileEl file = setupFileElement("Document.pdf");
 		flush();	
 		// when
-		FileDto fileDto = (FileDto) elementController.get(file.getRef().toString());
+		FileDto fileDto = (FileDto) elementController.get(file.getRef());
 		flushAndClear();
 		// then
 		assertFileElement(fileDto, file);
@@ -71,7 +71,7 @@ public class ElementControllerTest extends BaseTest {
 		FolderEl folder = setupFolderElement("Documents");
 		flush();	
 		// when
-		FolderDto folderDto = (FolderDto) elementController.get(folder.getRef().toString());
+		FolderDto folderDto = (FolderDto) elementController.get(folder.getRef());
 		flushAndClear();
 		// then
 		assertFolderElement(folderDto, folder);
@@ -86,7 +86,7 @@ public class ElementControllerTest extends BaseTest {
 		setupContainsAssoc(folder, file);
 		flush();	
 		// when
-		Path path = elementController.path(file.getRef().toString());
+		Path path = elementController.path(file.getRef());
 		flushAndClear();
 		// then
 		assertThat(path).isNotNull();
@@ -109,7 +109,7 @@ public class ElementControllerTest extends BaseTest {
 		setupContainsAssoc(root, file3);
 		flush();	
 		// when
-		List<TreeNodeDto> children = elementController.childrenTree(root.getRef().toString());
+		List<TreeNodeDto> children = elementController.childrenTree(root.getRef());
 		flushAndClear();
 		// then
 		assertThat(children).isNotNull();
@@ -136,7 +136,7 @@ public class ElementControllerTest extends BaseTest {
 		setupSetting(Setting.ROOT_REF, root.getRef());
 		flush();	
 		// when
-		TreeNodeDto treeNodeDto = elementController.parentsTree(file21.getRef().toString());
+		TreeNodeDto treeNodeDto = elementController.parentsTree(file21.getRef());
 		flushAndClear();
 		// then
 		assertThat(treeNodeDto).isNotNull();
@@ -166,7 +166,7 @@ public class ElementControllerTest extends BaseTest {
 		setupContainsAssoc(root, file3);
 		flush();	
 		// when
-		TableDataDto<ElementDto> tableDataDto = elementController.childrenTable(root.getRef().toString(), null, null, null, null, null);
+		TableDataDto<ElementDto> tableDataDto = elementController.childrenTable(root.getRef(), null, null, null, null, null);
 		flushAndClear();
 		// then
 		assertThat(tableDataDto).isNotNull();
@@ -210,7 +210,7 @@ public class ElementControllerTest extends BaseTest {
 		setupContainsAssoc(root, file3);
 		flush();	
 		// when
-		TableDataDto<ElementDto> tableDataDto = elementController.childrenTable(root.getRef().toString(), 1, 5, "doc", "ref", false);
+		TableDataDto<ElementDto> tableDataDto = elementController.childrenTable(root.getRef(), 1, 5, "doc", "ref", false);
 		flushAndClear();
 		// then
 		assertThat(tableDataDto).isNotNull();
@@ -261,7 +261,7 @@ public class ElementControllerTest extends BaseTest {
 		setupContainsAssoc(oldFolder, file);
 		flush();	
 		// when
-		elementController.move(newFolder.getRef().toString(), Collections.singletonList(file.getRef().toString()));
+		elementController.move(Collections.singletonList(file.getRef().toString()), newFolder.getRef().toString());
 		flushAndClear(); 
 		// then
 		FileEl movedFile = load(FileEl.class, file.getId());
@@ -281,10 +281,10 @@ public class ElementControllerTest extends BaseTest {
 		FolderEl newFolder = setupFolderElement("New Documents");
 		FileEl file = setupFileElement("Document.pdf");
 		setupContainsAssoc(oldFolder, file);
-		DiskService diskService = mockDiskService();
+		DiskServiceImpl diskService = mockDiskService();
 		flush();	
 		// when
-		elementController.copy(newFolder.getRef().toString(), Collections.singletonList(file.getRef().toString()));
+		elementController.copy(Collections.singletonList(file.getRef().toString()), newFolder.getRef().toString());
 		flushAndClear(); 
 		// then
 		FileEl oldFile = load(FileEl.class, file.getId());
@@ -320,10 +320,10 @@ public class ElementControllerTest extends BaseTest {
 		setupContainsAssoc(oldFolder, folder1);
 		setupContainsAssoc(folder1, file21);
 		setupContainsAssoc(folder1, file22);
-		DiskService diskService = mockDiskService();
+		DiskServiceImpl diskService = mockDiskService();
 		flush();	
 		// when
-		elementController.copy(newFolder.getRef().toString(), Collections.singletonList(folder1.getRef().toString()));
+		elementController.copy(Collections.singletonList(folder1.getRef().toString()), newFolder.getRef().toString());
 		flushAndClear(); 
 		// then
 		FolderEl oldFolder1 = load(FolderEl.class, folder1.getId());
@@ -357,7 +357,7 @@ public class ElementControllerTest extends BaseTest {
 	
 	@Test
 	@Transactional
-	public void delete() {
+	public void remove() {
 		// given
 		FolderEl folder = setupFolderElement("Documents");
 		FolderEl trash = setupFolderElement("Trash");
@@ -366,7 +366,7 @@ public class ElementControllerTest extends BaseTest {
 		setupSetting(Setting.TRASH_REF, trash.getRef());
 		flush();	
 		// when
-		elementController.delete(Collections.singletonList(file.getRef().toString()));
+		elementController.remove(Collections.singletonList(file.getRef().toString()));
 		flushAndClear(); 
 		// then
 		FileEl deletedFile = load(FileEl.class, file.getId());
@@ -392,6 +392,7 @@ public class ElementControllerTest extends BaseTest {
 		assertThat(fileDto.getTypeName()).isEqualTo("File");	
 		assertThat(fileDto.getSize()).isEqualTo(file.getSize());	
 		assertThat(fileDto.getMimeType()).isEqualTo(file.getMimeType());
+		assertThat(fileDto.getPreviewSize()).isEqualTo(file.getPreviewSize());
 		assertThat(fileDto.getPreviewMimeType()).isEqualTo(file.getPreviewMimeType());
 	}
 	
@@ -459,8 +460,8 @@ public class ElementControllerTest extends BaseTest {
 	}
 	
 	@SneakyThrows
-	private DiskService mockDiskService() {
-		var diskService = mock(DiskService.class, Mockito.CALLS_REAL_METHODS);
+	private DiskServiceImpl mockDiskService() {
+		var diskService = mock(DiskServiceImpl.class, Mockito.CALLS_REAL_METHODS);
 		Mockito.doNothing().when(diskService).copyContent(any(), any());
 		Mockito.doNothing().when(diskService).copyPreview(any(), any());
 		setBeanField(fileLogic, "diskService", diskService);

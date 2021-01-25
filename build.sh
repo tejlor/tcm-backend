@@ -4,17 +4,7 @@ rc=0
 
 function compile {    
 	export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
-	case $1 in
-        full)
-            mvn clean package
-            ;;
-        fast)
-            mvn clean package -Dmaven.test.skip=true
-            ;;
-        *)
-            mvn clean package -Dmaven.test.skip=true
-            ;;
-    esac
+	mvn clean package -Dmaven.test.skip=true
 	rc=$?
 }
 
@@ -27,27 +17,11 @@ function deploy {
 }
 
 function test {
-	if [[ $rc -ne 0 ]] ; then
-		exit
-	fi
-
-	java -jar target/tcm.jar --spring.profiles.active=test
+	export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+	mvn clean package
 }
 
-function prod {
-	if [[ $rc -ne 0 ]] ; then
-		exit
-	fi
-
-	java -jar target/tcm.jar --spring.profiles.active=prod
-}
-
-function eclipse {
-	mvn eclipse:clean
-	mvn eclipse:eclipse -DdownloadSources -DdownloadJavadocs
-}
-
-while getopts "c:dtpev:sq" opt; do  
+while getopts "cdtv:" opt; do  
 	case $opt in    
 	c)      
 		compile $OPTARG
@@ -57,12 +31,6 @@ while getopts "c:dtpev:sq" opt; do
 		;;
 	t)      
 		test      
-		;;
-	p)      
-		prod
-		;;
-	e)
-		eclipse
 		;;   
 	v)
 		mvn versions:set -DnewVersion=${OPTARG}

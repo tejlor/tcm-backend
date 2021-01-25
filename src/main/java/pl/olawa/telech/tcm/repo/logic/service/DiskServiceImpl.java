@@ -25,12 +25,12 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import pl.olawa.telech.tcm.commons.model.exception.NotFoundException;
 import pl.olawa.telech.tcm.commons.model.exception.TcmException;
-import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
+import pl.olawa.telech.tcm.repo.logic.service.interfaces.DiskService;
 
 @Slf4j
 @Service
 @FieldDefaults(level = PRIVATE)
-public class DiskService {
+public class DiskServiceImpl implements DiskService {
 	
 	@Value("${tcm.repo.basePath}")
 	String basePath;
@@ -38,7 +38,7 @@ public class DiskService {
 	private static final String contentExtension = ".bin";
 	private static final String previewExtension = ".prv";
 	
-
+	@Override
 	public void saveContent(MultipartFile file, UUID ref) throws IOException {
 		Path path = refToContentPath(ref);
 		Files.createDirectories(refToDirPath(ref));
@@ -49,6 +49,7 @@ public class DiskService {
 		}
 	}
 	
+	@Override
 	public void savePreview(byte[] bytes, UUID ref) throws IOException {		
 		Path path = refToPreviewPath(ref);
 		log.debug("File preview saved in " + path);
@@ -56,6 +57,7 @@ public class DiskService {
         Files.write(path, bytes, StandardOpenOption.CREATE);
 	}
 	
+	@Override
 	public void copyContent(UUID originalRef, UUID copyRef) throws IOException {
 		Path originalPath = refToContentPath(originalRef);
 		
@@ -66,6 +68,7 @@ public class DiskService {
 		Files.copy(originalPath, copyPath);  
 	}
 	
+	@Override
 	public void copyPreview(UUID originalRef, UUID copyRef) throws IOException {
 		Path originalPath = refToPreviewPath(originalRef);
 		
@@ -76,6 +79,7 @@ public class DiskService {
 		Files.copy(originalPath, copyPath);  
 	}
 	
+	@Override
 	public Resource readContentAsResource(UUID ref) {
 		try {
 			Path path = refToContentPath(ref);
@@ -92,6 +96,7 @@ public class DiskService {
 		}
 	}
 	
+	@Override
 	public Resource readPreviewAsResource(UUID ref) {
 		try {
 			Path path = refToPreviewPath(ref);
@@ -109,6 +114,7 @@ public class DiskService {
 		}
 	}
 	
+	@Override
 	public File readContentAsFile(UUID ref) {
 		Path path = refToContentPath(ref);
 		File file = path.toFile();
@@ -121,6 +127,7 @@ public class DiskService {
 		return file;
 	}
 	
+	@Override
 	public Resource createZip(List<Pair<UUID, String>> refsWithNames) {
 		try {
 			Path zipPath = Files.createTempFile(null, null);

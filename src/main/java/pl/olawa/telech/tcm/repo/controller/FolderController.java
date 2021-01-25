@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.controller.AbstractController;
-import pl.olawa.telech.tcm.repo.logic.FolderLogic;
+import pl.olawa.telech.tcm.repo.logic.FolderLogicImpl;
 import pl.olawa.telech.tcm.repo.model.dto.FolderDto;
 
 
@@ -24,7 +24,7 @@ import pl.olawa.telech.tcm.repo.model.dto.FolderDto;
 public class FolderController extends AbstractController {
 
 	@Autowired
-	FolderLogic folderLogic;
+	FolderLogicImpl folderLogic;
 
 	/*
 	 * Returns folder info.

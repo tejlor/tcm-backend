@@ -7,12 +7,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -32,22 +29,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
-import pl.olawa.telech.tcm.adm.builder.SettingBuilder;
-import pl.olawa.telech.tcm.adm.model.entity.Setting;
-import pl.olawa.telech.tcm.commons.model.dto.TableDataDto;
-import pl.olawa.telech.tcm.commons.model.dto.TableDataDto.TableInfoDto;
-import pl.olawa.telech.tcm.commons.model.dto.TreeNodeDto;
-import pl.olawa.telech.tcm.commons.model.shared.Path;
-import pl.olawa.telech.tcm.commons.model.shared.TableParams;
-import pl.olawa.telech.tcm.repo.builder.assoc.ContainsAssocBuilder;
 import pl.olawa.telech.tcm.repo.builder.element.FileElBuilder;
 import pl.olawa.telech.tcm.repo.builder.element.FolderElBuilder;
-import pl.olawa.telech.tcm.repo.logic.FileLogic;
-import pl.olawa.telech.tcm.repo.logic.service.DiskService;
+import pl.olawa.telech.tcm.repo.logic.FileLogicImpl;
+import pl.olawa.telech.tcm.repo.logic.service.DiskServiceImpl;
 import pl.olawa.telech.tcm.repo.model.dto.ElementDto;
 import pl.olawa.telech.tcm.repo.model.dto.FileDto;
-import pl.olawa.telech.tcm.repo.model.dto.FolderDto;
-import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
 import pl.olawa.telech.tcm.repo.model.entity.element.FolderEl;
@@ -60,7 +47,7 @@ public class FileControllerTest extends BaseTest {
 	@Autowired
 	FileController fileController;
 	@Autowired
-	FileLogic fileLogic;	
+	FileLogicImpl fileLogic;	
 	@Captor
 	ArgumentCaptor<List<Pair<UUID,String>>> refsWithNamesCaptor;
 
@@ -82,7 +69,7 @@ public class FileControllerTest extends BaseTest {
 	public void preview() {
 		// given
 		FileEl file = setupFileElement("Document.pdf");
-		DiskService diskService = mockDiskService();
+		DiskServiceImpl diskService = mockDiskService();
 		flush();	
 		// when
 		ResponseEntity<Resource> result = fileController.preview(file.getRef().toString());
@@ -99,7 +86,7 @@ public class FileControllerTest extends BaseTest {
 	public void content() {
 		// given
 		FileEl file = setupFileElement("Document.pdf");
-		DiskService diskService = mockDiskService();
+		DiskServiceImpl diskService = mockDiskService();
 		flush();	
 		// when
 		ResponseEntity<Resource> result =  fileController.content(file.getRef().toString());
@@ -117,7 +104,7 @@ public class FileControllerTest extends BaseTest {
 		// given
 		FileEl file1 = setupFileElement("Document.pdf");
 		FileEl file2 = setupFileElement("Image.jpg");
-		DiskService diskService = mockDiskService();
+		DiskServiceImpl diskService = mockDiskService();
 		flush();	
 		// when
 		List<String> refs = new ArrayList<>();
@@ -163,6 +150,7 @@ public class FileControllerTest extends BaseTest {
 		assertThat(fileDto.getTypeName()).isEqualTo("File");	
 		assertThat(fileDto.getSize()).isEqualTo(file.getSize());	
 		assertThat(fileDto.getMimeType()).isEqualTo(file.getMimeType());
+		assertThat(fileDto.getPreviewSize()).isEqualTo(file.getPreviewSize());
 		assertThat(fileDto.getPreviewMimeType()).isEqualTo(file.getPreviewMimeType());
 	}
 	
@@ -204,8 +192,8 @@ public class FileControllerTest extends BaseTest {
 	}
 	
 	@SneakyThrows
-	private DiskService mockDiskService() {
-		var diskService = mock(DiskService.class);
+	private DiskServiceImpl mockDiskService() {
+		var diskService = mock(DiskServiceImpl.class);
 		when(diskService.createZip(any())).thenReturn(null);
 		Mockito.doNothing().when(diskService).saveContent(any(), any());
 		setBeanField(fileLogic, "diskService", diskService);

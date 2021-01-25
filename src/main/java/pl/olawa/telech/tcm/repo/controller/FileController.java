@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.controller.AbstractController;
-import pl.olawa.telech.tcm.repo.logic.FileLogic;
+import pl.olawa.telech.tcm.repo.logic.FileLogicImpl;
 import pl.olawa.telech.tcm.repo.model.dto.FileDto;
 import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
 
@@ -31,7 +31,7 @@ import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
 public class FileController extends AbstractController {
 
 	@Autowired
-	FileLogic fileLogic;
+	FileLogicImpl fileLogic;
 
 	/*
 	 * Returns file info.

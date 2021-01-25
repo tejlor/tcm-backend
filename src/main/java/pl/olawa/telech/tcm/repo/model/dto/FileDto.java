@@ -18,6 +18,7 @@ public class FileDto extends ElementDto {
 
 	Integer size;
 	String mimeType;
+	Integer previewSize;
 	String previewMimeType;
 
 	

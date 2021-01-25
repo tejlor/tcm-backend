@@ -38,7 +38,7 @@ public class User extends AbstractModifiableEntity implements UserDetails {
 	String password;				// password (hash SHA1)
 	
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "User2UserGroup", 
+	@JoinTable(name = "User2UserGroup", schema = "adm",
 		joinColumns = { @JoinColumn(name = "user_id") }, 
 		inverseJoinColumns = { @JoinColumn(name = "user_group_id") })
 	Set<UserGroup> groups;

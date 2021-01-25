@@ -3,7 +3,10 @@ package pl.olawa.telech.tcm.adm.logic;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +25,19 @@ import pl.olawa.telech.tcm.commons.logic.AbstractLogicImpl;
 @FieldDefaults(level = PRIVATE)
 public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements SettingLogic {
 
+	private static final Set<String> safeSettings = Set.of(Setting.ROOT_REF, Setting.TRASH_REF);
+	
 	SettingDAO dao;
 	
 	public SettingLogicImpl(SettingDAO dao) {
 		super(dao);
 		this.dao = dao;
+	}
+	
+	public List<Setting> loadSafe(){
+		return loadAll().stream()
+				.filter(s -> isSafe(s.getName()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -105,6 +116,10 @@ public class SettingLogicImpl extends AbstractLogicImpl<Setting> implements Sett
 			return null;
 		
 		return setting.getValue();
+	}
+	
+	private boolean isSafe(String name) {
+		return safeSettings.contains(name);
 	}
 
 }

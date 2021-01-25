@@ -25,7 +25,7 @@ import pl.olawa.telech.tcm.commons.model.dto.TreeNodeDto;
 import pl.olawa.telech.tcm.commons.model.shared.Path;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
 import pl.olawa.telech.tcm.commons.utils.TUtils;
-import pl.olawa.telech.tcm.repo.logic.ElementLogic;
+import pl.olawa.telech.tcm.repo.logic.ElementLogicImpl;
 import pl.olawa.telech.tcm.repo.model.dto.ElementDto;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 
@@ -36,7 +36,7 @@ import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 public class ElementController extends AbstractController {
 
 	@Autowired
-	ElementLogic elementLogic;
+	ElementLogicImpl elementLogic;
 	
 	
 	/*
@@ -44,19 +44,19 @@ public class ElementController extends AbstractController {
 	 */
 	@RequestMapping(value = "/{ref:" + REF + "}", method = GET)
 	public ElementDto get(
-			@PathVariable String ref) {
+			@PathVariable UUID ref) {
 
-		return ElementDto.toDto(elementLogic.loadByRef(UUID.fromString(ref)));
+		return ElementDto.toDto(elementLogic.loadByRef(ref));
 	}
 	
 	/*
 	 * Returns absolute path of element.
 	 */
-	@RequestMapping(value = "/{elementRef:" + REF + "}/path", method = GET)
+	@RequestMapping(value = "/{ref:" + REF + "}/path", method = GET)
 	public Path path(
-		@PathVariable String elementRef){
+		@PathVariable UUID ref){
 				
-		return elementLogic.loadAbsolutePath((UUID.fromString(elementRef)));
+		return elementLogic.loadAbsolutePath(ref);
 	}
 	
 	/*
@@ -64,9 +64,9 @@ public class ElementController extends AbstractController {
 	 */
 	@RequestMapping(value = "/{parentRef:" + REF + "}/childrenTree", method = GET)
 	public List<TreeNodeDto> childrenTree(
-		@PathVariable String parentRef){
+		@PathVariable UUID parentRef){
 				
-		return elementLogic.loadChildren(UUID.fromString(parentRef)).stream()
+		return elementLogic.loadChildren(parentRef).stream()
 				.map(e -> new TreeNodeDto(e))
 				.sorted()
 				.collect(Collectors.toList());
@@ -75,19 +75,19 @@ public class ElementController extends AbstractController {
 	/*
 	 * Returns parents of element for tree.
 	 */
-	@RequestMapping(value = "/{elementRef:" + REF + "}/parentsTree", method = GET)
+	@RequestMapping(value = "/{ref:" + REF + "}/parentsTree", method = GET)
 	public TreeNodeDto parentsTree(
-		@PathVariable String elementRef){
+		@PathVariable UUID ref){
 				
-		return new TreeNodeDto(elementLogic.loadParentsTree((UUID.fromString(elementRef))));
+		return new TreeNodeDto(elementLogic.loadParentsTree(ref));
 	}
 	
 	/*
 	 * Returns children of element for table.
 	 */
-	@RequestMapping(value = "/{parentRef:" + REF + "}/childrenTable", method = GET)
+	@RequestMapping(value = "/{ref:" + REF + "}/childrenTable", method = GET)
 	public TableDataDto<ElementDto> childrenTable(
-		@PathVariable String parentRef,	
+		@PathVariable UUID ref,	
 		@RequestParam(required = false) Integer pageNo,
 		@RequestParam(required = false) Integer pageSize,
 		@RequestParam(required = false) String filter,
@@ -95,7 +95,7 @@ public class ElementController extends AbstractController {
 		@RequestParam(required = false) Boolean sortAsc){
 		
 		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy, sortAsc);		
-		Pair<List<Element>, Integer> result = elementLogic.loadChildren(UUID.fromString(parentRef), tableParams); 	
+		Pair<List<Element>, Integer> result = elementLogic.loadChildren(ref, tableParams); 	
 		var table = new TableDataDto<ElementDto>(tableParams);
 		table.setRows(ElementDto.toDtoList(result.getKey()));
 		table.setCount(result.getValue());		
@@ -120,10 +120,10 @@ public class ElementController extends AbstractController {
 	@RequestMapping(value = "/move", method = POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void move(
-		@RequestParam String newParentRef,
-		@RequestParam List<String> refs){
+		@RequestParam List<String> refs,
+		@RequestParam String newParentRef){
 				
-		elementLogic.move(TUtils.parseUUID(newParentRef), TUtils.parseUUIDs(refs));
+		elementLogic.move(TUtils.parseUUIDs(refs), TUtils.parseUUID(newParentRef));
 	}
 	
 	/*
@@ -132,10 +132,10 @@ public class ElementController extends AbstractController {
 	@RequestMapping(value = "/copy", method = POST)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void copy(
-		@RequestParam String newParentRef,
-		@RequestParam List<String> refs){
+		@RequestParam List<String> refs,		
+		@RequestParam String newParentRef){
 				
-		elementLogic.copy(TUtils.parseUUID(newParentRef), TUtils.parseUUIDs(refs));
+		elementLogic.copy(TUtils.parseUUIDs(refs), TUtils.parseUUID(newParentRef));
 	}
 	
 	/*
@@ -143,9 +143,9 @@ public class ElementController extends AbstractController {
 	 */
 	@RequestMapping(value = "/{ref:" + REF + "}", method = DELETE)
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void delete(
+	public void remove(
 		@PathVariable List<String> refs){
 				
-		elementLogic.delete(TUtils.parseUUIDs(refs));
+		elementLogic.remove(TUtils.parseUUIDs(refs));
 	}
 }

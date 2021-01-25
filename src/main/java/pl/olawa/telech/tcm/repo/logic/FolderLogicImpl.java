@@ -13,12 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.logic.AbstractLogicImpl;
 import pl.olawa.telech.tcm.repo.dao.FolderDAO;
+import pl.olawa.telech.tcm.repo.logic.interfaces.ContainsAssocLogic;
+import pl.olawa.telech.tcm.repo.logic.interfaces.ElementLogic;
+import pl.olawa.telech.tcm.repo.logic.interfaces.FolderLogic;
 import pl.olawa.telech.tcm.repo.model.entity.element.FolderEl;
 
 @Service
 @Transactional
 @FieldDefaults(level = PRIVATE)
-public class FolderLogic extends AbstractLogicImpl<FolderEl> {
+public class FolderLogicImpl extends AbstractLogicImpl<FolderEl> implements FolderLogic {
 	
 	FolderDAO dao;
 	
@@ -26,19 +29,19 @@ public class FolderLogic extends AbstractLogicImpl<FolderEl> {
 	ContainsAssocLogic containsAssocLogic;
 	@Autowired
 	ElementLogic elementLogic;
-	@Autowired
-	FileLogic fileLogic;
 	
 	
-	public FolderLogic(FolderDAO dao) {
+	public FolderLogicImpl(FolderDAO dao) {
 		super(dao);
 		this.dao = dao;
 	}
 	
+	@Override
 	public FolderEl loadByRef(UUID ref) {
 		return dao.findByRef(ref);
 	}
 	
+	@Override
 	public FolderEl create(UUID parentRef, FolderEl folder) {
 		elementLogic.fillNew(folder);
 		folder = save(folder);
@@ -48,11 +51,12 @@ public class FolderLogic extends AbstractLogicImpl<FolderEl> {
 		return folder;
 	}
 	
+	@Override
 	public void copy(FolderEl folder, FolderEl copy) {
 		List<UUID> refs = folder.getChildrenAssoc().stream()
 			.map(a -> a.getChildElement().getRef())
 			.collect(Collectors.toList());
 		
-		elementLogic.copy(copy.getRef(), refs);
+		elementLogic.copy(refs, copy.getRef());
 	}
 }

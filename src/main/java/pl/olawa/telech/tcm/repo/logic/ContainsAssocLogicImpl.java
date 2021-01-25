@@ -13,13 +13,14 @@ import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.adm.logic.interfaces.AccountLogic;
 import pl.olawa.telech.tcm.commons.logic.AbstractLogicImpl;
 import pl.olawa.telech.tcm.repo.dao.ContainsAssocDAO;
+import pl.olawa.telech.tcm.repo.logic.interfaces.ContainsAssocLogic;
 import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 
 @Service
 @Transactional
 @FieldDefaults(level = PRIVATE)
-public class ContainsAssocLogic extends AbstractLogicImpl<ContainsAssoc> {
+public class ContainsAssocLogicImpl extends AbstractLogicImpl<ContainsAssoc> implements ContainsAssocLogic {
 
 	@SuppressWarnings("unused")
 	ContainsAssocDAO dao;
@@ -27,19 +28,21 @@ public class ContainsAssocLogic extends AbstractLogicImpl<ContainsAssoc> {
 	@Autowired
 	AccountLogic accountLogic;
 	@Autowired
-	ElementLogic elementLogic;
+	ElementLogicImpl elementLogic;
 	
 
-	public ContainsAssocLogic(ContainsAssocDAO dao) {
+	public ContainsAssocLogicImpl(ContainsAssocDAO dao) {
 		super(dao);
 		this.dao = dao;
 	}
 	
+	@Override
 	public void create(UUID parentRef, Element child) {
 		Element parent = elementLogic.loadByRef(parentRef);	
 		create(parent, child);
 	}
 
+	@Override
 	public void create(Element parent, Element child) {
 		var assoc = new ContainsAssoc();
 		assoc.setParentElement(parent);
@@ -49,6 +52,7 @@ public class ContainsAssocLogic extends AbstractLogicImpl<ContainsAssoc> {
 		save(assoc);
 	}
 	
+	@Override
 	public void deleteParentAssoc(Element element) {
 		ContainsAssoc assoc = element.getParentsAssoc().iterator().next();
 		delete(assoc);
