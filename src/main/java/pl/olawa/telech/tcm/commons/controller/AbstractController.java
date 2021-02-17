@@ -33,7 +33,8 @@ public class AbstractController {
 	
 	@Value("${tcm.environment}")
 	String environment;
-	
+
+	protected static final String ID = "[0-9]+";
 	protected static final String REF = "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}";
 	
 	/*

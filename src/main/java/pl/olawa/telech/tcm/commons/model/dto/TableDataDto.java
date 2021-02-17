@@ -34,7 +34,7 @@ public class TableDataDto<T> implements Loggable {
 	
 	@Getter @Setter
 	@FieldDefaults(level = PRIVATE)
-	public static class TableInfoDto {
+	public static class TableInfoDto implements Loggable {
 		int pageCount;
 		int rowCount;
 		int rowStart;
@@ -44,7 +44,7 @@ public class TableDataDto<T> implements Loggable {
 			rowCount = count;
 			pageCount = (int) Math.ceil((double) count / tableParams.getPageSize());
 			rowStart = tableParams.getPageNo() * tableParams.getPageSize() + 1;
-			rowEnd = rowStart + Math.min(count, tableParams.getPageSize()) - 1;
+			rowEnd = Math.min(rowStart + tableParams.getPageSize() - 1, rowCount);
 		}
 	}
 }

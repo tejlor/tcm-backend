@@ -31,6 +31,11 @@ public abstract class AbstractLogicImpl<T extends AbstractEntity> implements Abs
 		return dao.findAll();
 	}
 	
+	@Override
+	public List<T> loadAllById() {
+		return dao.findAllById();
+	}
+	
 	protected T save(T entity){
 		return dao.save(entity);
 	}

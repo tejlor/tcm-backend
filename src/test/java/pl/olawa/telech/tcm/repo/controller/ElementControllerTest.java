@@ -210,14 +210,14 @@ public class ElementControllerTest extends BaseTest {
 		setupContainsAssoc(root, file3);
 		flush();	
 		// when
-		TableDataDto<ElementDto> tableDataDto = elementController.childrenTable(root.getRef(), 1, 5, "doc", "ref", false);
+		TableDataDto<ElementDto> tableDataDto = elementController.childrenTable(root.getRef(), 0, 5, "doc", "ref", false);
 		flushAndClear();
 		// then
 		assertThat(tableDataDto).isNotNull();
 		
 		TableParams params = tableDataDto.getTableParams();
 		assertThat(params).isNotNull();
-		assertThat(params.getPageNo()).isEqualTo(1);
+		assertThat(params.getPageNo()).isEqualTo(0);
 		assertThat(params.getPageSize()).isEqualTo(5);
 		assertThat(params.getFilter()).isEqualTo("doc");
 		assertThat(params.getSortBy()).isEqualTo("ref");
@@ -227,12 +227,12 @@ public class ElementControllerTest extends BaseTest {
 		assertThat(info).isNotNull();
 		assertThat(info.getPageCount()).isEqualTo(1);
 		assertThat(info.getRowCount()).isEqualTo(1);
-		assertThat(info.getRowStart()).isEqualTo(6);
-		assertThat(info.getRowEnd()).isEqualTo(6);
+		assertThat(info.getRowStart()).isEqualTo(1);
+		assertThat(info.getRowEnd()).isEqualTo(1);
 		
 		List<ElementDto> rows = tableDataDto.getRows();
 		assertThat(rows).isNotNull();
-		assertThat(rows).hasSize(0);
+		assertThat(rows).hasSize(1);
 	}
 	
 	@Test

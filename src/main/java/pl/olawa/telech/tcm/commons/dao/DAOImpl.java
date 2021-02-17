@@ -50,6 +50,11 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
     }
 	
 	@Override
+	public List<T> findAllById() {
+		return getQuery(null, Sort.by("id")).getResultList();
+	}
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<T> findAll(Specification<T> ...spec) {
 	    return findAll(null, null, spec);

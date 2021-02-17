@@ -22,6 +22,8 @@ public interface DAO<T extends AbstractEntity> extends JpaRepository<T, Integer>
 	@SuppressWarnings("unchecked")
 	T findOne(String entityGraphName, Specification<T> ...spec);
 
+	List<T> findAllById();
+	
 	@SuppressWarnings("unchecked")
 	List<T> findAll(Specification<T> ...spec);
 	

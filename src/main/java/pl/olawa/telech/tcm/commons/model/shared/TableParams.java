@@ -12,11 +12,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import pl.olawa.telech.tcm.commons.model.interfaces.Loggable;
 import pl.olawa.telech.tcm.commons.utils.TUtils;
 
 @Getter @Setter
 @FieldDefaults(level = PRIVATE)
-public class TableParams {
+public class TableParams implements Loggable {
 
 	int pageNo;
 	int pageSize;

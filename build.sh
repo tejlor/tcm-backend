@@ -8,7 +8,7 @@ function compile {
 	rc=$?
 }
 
-function deploy {
+function start {
 	if [[ $rc -ne 0 ]] ; then
 		exit
 	fi
@@ -21,20 +21,19 @@ function test {
 	mvn clean package
 }
 
-while getopts "cdtv:" opt; do  
+while getopts "cstv:" opt; do  
 	case $opt in    
 	c)      
 		compile $OPTARG
 		;;    
-	d)      
-		deploy      
+	s)      
+		start
 		;;
 	t)      
 		test      
 		;;   
 	v)
 		mvn versions:set -DnewVersion=${OPTARG}
-		eclipse
 		;;
 	\?)      
 		echo "Dopuszczalne opcje to: c (compile), d (deploy), t (test), p (prod), e (eclipse), v [number] (version)."      
