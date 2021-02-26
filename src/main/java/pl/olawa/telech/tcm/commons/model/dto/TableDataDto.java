@@ -43,7 +43,7 @@ public class TableDataDto<T> implements Loggable {
 		public void setCount(TableParams tableParams, int count) {
 			rowCount = count;
 			pageCount = (int) Math.ceil((double) count / tableParams.getPageSize());
-			rowStart = tableParams.getPageNo() * tableParams.getPageSize() + 1;
+			rowStart = Math.min(tableParams.getPageNo() * tableParams.getPageSize() + 1, rowCount);
 			rowEnd = Math.min(rowStart + tableParams.getPageSize() - 1, rowCount);
 		}
 	}

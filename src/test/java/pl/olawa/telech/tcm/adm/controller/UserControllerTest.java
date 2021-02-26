@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -17,8 +18,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.adm.builder.UserBuilder;
+import pl.olawa.telech.tcm.adm.builder.UserGroupBuilder;
 import pl.olawa.telech.tcm.adm.model.dto.UserDto;
+import pl.olawa.telech.tcm.adm.model.dto.UserGroupDto;
 import pl.olawa.telech.tcm.adm.model.entity.User;
+import pl.olawa.telech.tcm.adm.model.entity.UserGroup;
 import pl.olawa.telech.tcm.commons.model.dto.TableDataDto;
 import pl.olawa.telech.tcm.commons.model.dto.TableDataDto.TableInfoDto;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
@@ -111,11 +115,13 @@ public class UserControllerTest extends BaseTest {
 	@Transactional
 	public void update() {
 		// given
+		UserGroup userGroup = setupUserGroup("Pracownicy");
 		User user = setupUser("Jakub", "Walczak", "jwalczak@gmail.com");
 		UserDto userDto = new UserDto(user);
 		userDto.setFirstName("Paulina");
 		userDto.setLastName("Wach");
 		userDto.setEmail("pwach@poczta.pl");
+		userDto.setGroups(Set.of(new UserGroupDto(userGroup)));
 		// when
 		UserDto result = userController.update(userDto.getId(), userDto);	
 		flushAndClear();
@@ -128,6 +134,11 @@ public class UserControllerTest extends BaseTest {
 		assertThat(updatedUser.getEmail()).isEqualTo(userDto.getEmail());
 		assertThat(updatedUser.getModifiedById()).isNotNull();
 		assertThat(updatedUser.getModifiedTime()).isNotNull();
+		
+		assertThat(updatedUser.getGroups()).hasSize(1);
+		assertThat(updatedUser.getGroups().iterator().next().getName()).isEqualTo(userGroup.getName());
+		assertThat(userDto.getGroups()).hasSize(1);
+		assertThat(userDto.getGroups().iterator().next().getName()).isEqualTo(userGroup.getName());
 	}
 	
 	@Test
@@ -138,7 +149,6 @@ public class UserControllerTest extends BaseTest {
 		// then
 		assertThat(result).isNotNull();
 		assertThat(result.getBody().contentLength()).isGreaterThan(0);
-		
 	}
 	
 	// ################################### PRIVATE #########################################################################
@@ -170,5 +180,11 @@ public class UserControllerTest extends BaseTest {
 				.email(email)
 				.build()
 			);
+	}
+	
+	private UserGroup setupUserGroup(String name) {
+		return new UserGroupBuilder()
+			.name(name)
+			.saveAndReload(entityManager);
 	}
 }

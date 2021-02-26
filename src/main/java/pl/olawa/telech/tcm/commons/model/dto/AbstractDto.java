@@ -3,8 +3,8 @@ package pl.olawa.telech.tcm.commons.model.dto;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 
@@ -45,8 +45,8 @@ public abstract class AbstractDto implements Loggable {
 		}
 	}
 
-	protected static <M extends AbstractEntity, T extends AbstractDto> List<T> toDtoList(Class<M> modelType, Class<T> dtoType, List<M> list) {
-		if (list == null) {
+	protected static <M extends AbstractEntity, T extends AbstractDto> List<T> toDtoList(Class<M> modelType, Class<T> dtoType, Collection<M> models) {
+		if (models == null) {
 			return new ArrayList<T>();
 		}
 		
@@ -54,7 +54,7 @@ public abstract class AbstractDto implements Loggable {
 
 		try {
 			Constructor<T> cons = dtoType.getDeclaredConstructor(modelType);
-			for (M model : list) {
+			for (M model : models) {
 				newList.add(cons.newInstance(model));
 			}
 		}
@@ -65,15 +65,47 @@ public abstract class AbstractDto implements Loggable {
 
 		return newList;
 	}
+	
+	protected static <M extends AbstractEntity, T extends AbstractDto> Set<T> toDtoSet(Class<M> modelType, Class<T> dtoType, Collection<M> models) {
+		if (models == null) {
+			return new HashSet<T>();
+		}
+		
+		Set<T> newSet = new HashSet<>();
 
-	@SuppressWarnings("unchecked")
-	protected static <M extends AbstractEntity, T extends AbstractDto> List<M> toModelList(List<T> list) {
-		List<M> newList = new ArrayList<M>();
-		if (list != null) {
-			for (T dto : list) {
-				newList.add((M) dto.toModel());
+		try {
+			Constructor<T> cons = dtoType.getDeclaredConstructor(modelType);
+			for (M model : models) {
+				newSet.add(cons.newInstance(model));
 			}
 		}
-		return newList;
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		return newSet;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected static <M extends AbstractEntity, T extends AbstractDto> List<M> toModelList(Collection<T> dtos) {	
+		if(dtos == null) {
+			return new ArrayList<M>();
+		}
+		
+		return dtos.stream()
+				.map(dto -> (M) dto.toModel())
+				.collect(Collectors.toList());
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected static <M extends AbstractEntity, T extends AbstractDto> Set<M> toModelSet(Collection<T> dtos) {
+		if(dtos == null) {
+			return new HashSet<M>();
+		}
+		
+		return dtos.stream()
+				.map(dto -> (M) dto.toModel())
+				.collect(Collectors.toSet());
 	}
 }

@@ -3,6 +3,7 @@ package pl.olawa.telech.tcm.adm.model.dto;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,20 +21,19 @@ public class UserDto extends AbstractModifiableDto {
 	String firstName;
 	String lastName;
 	String email;
+	Set<UserGroupDto> groups;
 	
 	
 	public UserDto(User model){
-		super(model);
+		super(model);	
+		groups = UserGroupDto.toDtoSet(model.getGroups());
 	}
 
 	@Override
 	public User toModel() {
 		User user = new User();
 		fillModel(user);
-		
-		// TODO
-		// createdByname, modifiedByName
-		
+		user.setGroups(UserGroupDto.toModelSet(groups));
 		return user;
 	}
 	

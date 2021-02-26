@@ -1,6 +1,8 @@
 package pl.olawa.telech.tcm.commons.utils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
@@ -30,11 +32,14 @@ public class TUtilsBean extends BeanUtilsBean {
 	}
 	
 	/*
-	 * Skip entity objects, because there is no registerd converter Dto <-> Entity and exception causes termination od copying process.  
+	 * Skip entity objects, because there is no registered converter Dto <-> Entity and exception causes termination od copying process.  
 	 */
 	@Override
 	public void copyProperty(Object bean, String name, Object value) throws IllegalAccessException, InvocationTargetException {
 		if(value == null || value instanceof AbstractDto || value instanceof AbstractEntity)
+			return;
+		
+		if(value instanceof List || value instanceof Set)
 			return;
 		
 		super.copyProperty(bean, name, value);

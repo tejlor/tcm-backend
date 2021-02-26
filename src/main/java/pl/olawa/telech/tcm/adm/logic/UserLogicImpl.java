@@ -54,6 +54,7 @@ public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic 
 		user.setLastName(_user.getLastName());
 		user.setEmail(_user.getEmail());
 		user.setPassword(user.getEmail());
+		user.setGroups(_user.getGroups());
 		
 		return save(user);
 	}
@@ -64,14 +65,15 @@ public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic 
 		
 		User user = loadById(id);
 		TUtils.assertEntityExists(user);
+
+		user.setModifiedBy(accountLogic.getCurrentUser());
+		user.setModifiedTime(LocalDateTime.now());
 		
 		user.setFirstName(_user.getFirstName());
 		user.setLastName(_user.getLastName());
 		user.setEmail(_user.getEmail());
-		
-		user.setModifiedBy(accountLogic.getCurrentUser());
-		user.setModifiedTime(LocalDateTime.now());
-		
+		user.setGroups(_user.getGroups());
+
 		return save(user);
 	}
 	

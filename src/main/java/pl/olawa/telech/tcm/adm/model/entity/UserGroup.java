@@ -26,11 +26,13 @@ import pl.olawa.telech.tcm.commons.model.entity.AbstractModifiableEntity;
 @Table(name = "user_group", schema = "adm")
 public class UserGroup extends AbstractModifiableEntity {
 		
+	public static final String PROP_NAME = "name";
+	
 	@Column(length = 32, nullable = false)
 	String name;				// name
 	
 	@ManyToMany(mappedBy = "groups")
-	Set<User> users;
+	Set<User> users = new HashSet<>();
 			
 
 	public UserGroup(Integer id) {
