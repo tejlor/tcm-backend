@@ -90,6 +90,55 @@ CREATE TABLE repo.association (
 );
 ALTER TABLE repo.association OWNER to tcm;
 
+-- Feature
+CREATE TABLE repo.feature (
+	id serial NOT NULL PRIMARY KEY,
+	name varchar(32) NOT NULL,
+	code varchar(32) NOT NULL,
+	created_time timestamp without time zone NOT NULL,
+    created_by_id integer NOT NULL REFERENCES adm.user(id),
+    modified_time timestamp without time zone,
+    modified_by_id integer REFERENCES adm.user(id)
+);
+ALTER TABLE repo.feature OWNER to tcm;
+
+-- Element2Feature
+CREATE TABLE repo.element2feature (
+	element_id int NOT NULL REFERENCES repo.element(id),
+	feature_id int NOT NULL REFERENCES repo.feature(id)
+);
+ALTER TABLE repo.element2feature OWNER to tcm;
+
+-- FeatureAttribute
+CREATE TABLE repo.feature_attribute (
+	id serial NOT NULL PRIMARY KEY,
+	name varchar(32) NOT NULL,
+	type varchar(16) NOT NULL,
+	required bool NOT NULL,
+	feature_id int NOT NULL REFERENCES repo.feature(id),
+	created_time timestamp without time zone NOT NULL,
+    created_by_id integer NOT NULL REFERENCES adm.user(id),
+    modified_time timestamp without time zone,
+    modified_by_id integer REFERENCES adm.user(id)
+);
+ALTER TABLE repo.feature_attribute OWNER to tcm;
+
+-- FeatureAttributeValue
+CREATE TABLE repo.feature_attribute_value (
+	id serial NOT NULL PRIMARY KEY,
+	feature_attribute_id int NOT NULL REFERENCES repo.feature_attribute(id),
+	element_id int NOT NULL REFERENCES repo.element(id),
+	value_int int, 
+	value_float float,
+	value_dec decimal(10,2),
+	value_string varchar(255),
+	value_text TEXT,
+	value_date date,
+	value_time timestamp
+);
+ALTER TABLE repo.feature_attribute_value OWNER TO tcm;
+
+
 -- *****************************************************************************
 -- AUTHENTICATION
 -- *****************************************************************************

@@ -7,7 +7,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +25,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractModifiableEntity;
 import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
+import pl.olawa.telech.tcm.repo.model.entity.feature.Feature;
 
 /*
  * Element of the repository. Base class for all elements.
@@ -45,6 +56,11 @@ public class Element extends AbstractModifiableEntity {
 	@JoinColumn(name = "parentElementId")
 	Set<ContainsAssoc> childrenAssoc;		// children of the element
 	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "Element2Feature", schema = "repo",
+		joinColumns = { @JoinColumn(name = "element_id") }, 
+		inverseJoinColumns = { @JoinColumn(name ="feature_id") })
+	Set<Feature> features;
 	
 	@Transient
 	List<Element> childrenElements;

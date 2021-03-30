@@ -6,6 +6,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,9 @@ import pl.olawa.telech.tcm.commons.model.shared.Path;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
 import pl.olawa.telech.tcm.commons.utils.TUtils;
 import pl.olawa.telech.tcm.repo.logic.ElementLogicImpl;
+import pl.olawa.telech.tcm.repo.logic.FeatureLogicImpl;
 import pl.olawa.telech.tcm.repo.model.dto.ElementDto;
+import pl.olawa.telech.tcm.repo.model.dto.FeatureAttributeValueDto;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 
 
@@ -37,7 +40,8 @@ public class ElementController extends AbstractController {
 
 	@Autowired
 	ElementLogicImpl elementLogic;
-	
+	@Autowired
+	FeatureLogicImpl featureLogic;
 	
 	/*
 	 * Returns element info.
@@ -102,6 +106,17 @@ public class ElementController extends AbstractController {
 		return table;
 	}
 
+	/*
+	 * Returns parents of element for tree.
+	 */
+	@RequestMapping(value = "/{ref:" + REF + "}/feature/{code:" + CODE +"}", method = GET)
+	public Set<FeatureAttributeValueDto> featureValues(
+		@PathVariable UUID ref,
+		@PathVariable String code){
+				
+		return FeatureAttributeValueDto.toDtoSet(featureLogic.loadValuesByElementFeature(ref, code));
+	}
+	
 	/*
 	 * Rename element.
 	 */

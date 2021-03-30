@@ -20,7 +20,7 @@ import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.utils.TConstants;
 
 /*
- * Base class for all enity classes
+ * Base class for all enity classes.
  */
 @Getter @Setter
 @NoArgsConstructor
@@ -28,6 +28,8 @@ import pl.olawa.telech.tcm.commons.utils.TConstants;
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
 
+	public static final String PROP_ID = "id";
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;									// id of object
