@@ -7,8 +7,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -22,20 +24,27 @@ import org.springframework.test.context.junit4.SpringRunner;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.adm.builder.SettingBuilder;
+import pl.olawa.telech.tcm.adm.builder.UserBuilder;
+import pl.olawa.telech.tcm.adm.builder.UserGroupBuilder;
 import pl.olawa.telech.tcm.adm.model.entity.Setting;
+import pl.olawa.telech.tcm.adm.model.entity.User;
+import pl.olawa.telech.tcm.adm.model.entity.UserGroup;
 import pl.olawa.telech.tcm.commons.model.dto.TableDataDto;
 import pl.olawa.telech.tcm.commons.model.dto.TableDataDto.TableInfoDto;
 import pl.olawa.telech.tcm.commons.model.dto.TreeNodeDto;
 import pl.olawa.telech.tcm.commons.model.shared.Path;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
+import pl.olawa.telech.tcm.repo.builder.AccessRightBuilder;
 import pl.olawa.telech.tcm.repo.builder.assoc.ContainsAssocBuilder;
 import pl.olawa.telech.tcm.repo.builder.element.FileElBuilder;
 import pl.olawa.telech.tcm.repo.builder.element.FolderElBuilder;
 import pl.olawa.telech.tcm.repo.logic.FileLogicImpl;
 import pl.olawa.telech.tcm.repo.logic.service.DiskServiceImpl;
+import pl.olawa.telech.tcm.repo.model.dto.AccessRightDto;
 import pl.olawa.telech.tcm.repo.model.dto.ElementDto;
 import pl.olawa.telech.tcm.repo.model.dto.FileDto;
 import pl.olawa.telech.tcm.repo.model.dto.FolderDto;
+import pl.olawa.telech.tcm.repo.model.entity.AccessRight;
 import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
@@ -378,6 +387,46 @@ public class ElementControllerTest extends BaseTest {
 		assertThat(parentEl.getRef()).isEqualTo(trash.getRef());
 	}
 	
+	@Test
+	@Transactional
+	public void getAccessRights() {
+		// given
+		Element element = setupFileElement("Document.pdf");
+		User user = setupUser("Jakub", "Walczak", "jwalczak@gmail.com");
+		UserGroup userGroup = setupUserGroup("Pracownicy");
+		AccessRight accessRight0 = setupAccessRight(element.getId(), 0, Collections.emptySet(), Set.of(user), true, true, true ,true);
+		AccessRight accessRight1 = setupAccessRight(element.getId(), 1, Set.of(userGroup), Collections.emptySet(), false, true, false ,false);
+		AccessRight accessRight2 = setupAccessRight(element.getId(), 1, Collections.emptySet(), Collections.emptySet(), false, true, false ,false);
+		// when
+		List<AccessRightDto> result = elementController.getAccessRights(element.getRef());
+		//then
+		assertThat(result).isNotEmpty();
+		assertAccessRight(result.get(0), accessRight0);
+		assertAccessRight(result.get(1), accessRight1);
+		assertAccessRight(result.get(2), accessRight2);
+	}
+	
+	@Test
+	@Transactional
+	public void saveAccessRights() {
+		// given
+		Element element = setupFileElement("Document.pdf");
+		User user = setupUser("Jakub", "Walczak", "jwalczak@gmail.com");
+		UserGroup userGroup = setupUserGroup("Pracownicy");
+		AccessRight oldAccessRight = setupAccessRight(element.getId(), 1, Collections.emptySet(), Set.of(user), true, true, true, false);
+		AccessRightDto accessRight0Dto = setupAccessRightDto(0, Set.of(userGroup), Collections.emptySet(), false, true, false ,false);
+		AccessRightDto accessRight3Dto = setupAccessRightDto(3, Collections.emptySet(), Collections.emptySet(), false, true, false ,false);
+		List<AccessRightDto> accessRights = Arrays.asList(accessRight0Dto, accessRight3Dto);
+		// when
+		List<AccessRightDto> result = elementController.saveAccessRights(element.getRef(), accessRights);
+		flushAndClear();
+		// then
+		AccessRight loadedOldAccessRight = load(AccessRight.class, oldAccessRight.getId());
+		assertThat(loadedOldAccessRight).isNull();
+		assertAccessRight(result.get(0), accessRight0Dto);
+		assertAccessRight(result.get(1), accessRight3Dto);
+	}
+	
 	// ################################### PRIVATE #########################################################################
 	
 	private void assertTreeNode(TreeNodeDto nodeDto, Element element){
@@ -432,6 +481,29 @@ public class ElementControllerTest extends BaseTest {
 		assertCopiedElement(copy, original);	
 		assertThat(copy.getIcon()).isEqualTo(original.getIcon());	
 	}
+	
+	private void assertAccessRight(AccessRightDto dto, AccessRight model) {
+		assertThat(dto.getId()).isEqualTo(model.getId());
+		assertThat(dto.getElementId()).isEqualTo(model.getElementId());
+		assertThat(dto.getOrderNo()).isEqualTo(model.getOrderNo());
+		assertThat(dto.getUserIds()).containsAll(model.getUsers().stream().map(User::getId).collect(Collectors.toSet()));
+		assertThat(dto.getUserGroupIds()).containsAll(model.getUserGroups().stream().map(UserGroup::getId).collect(Collectors.toSet()));
+		assertThat(dto.isForAll()).isEqualTo(model.isForAll());
+		assertThat(dto.isCanCreate()).isEqualTo(model.isCanCreate());
+		assertThat(dto.isCanRead()).isEqualTo(model.isCanRead());
+		assertThat(dto.isCanUpdate()).isEqualTo(model.isCanUpdate());
+		assertThat(dto.isCanDelete()).isEqualTo(model.isCanDelete());
+	}
+	
+	private void assertAccessRight(AccessRightDto dto, AccessRightDto dto2) {
+		assertThat(dto.getUserIds()).containsAll(dto2.getUserIds());
+		assertThat(dto.getUserGroupIds()).containsAll(dto2.getUserGroupIds());
+		assertThat(dto.isForAll()).isEqualTo(dto2.isForAll());
+		assertThat(dto.isCanCreate()).isEqualTo(dto2.isCanCreate());
+		assertThat(dto.isCanRead()).isEqualTo(dto2.isCanRead());
+		assertThat(dto.isCanUpdate()).isEqualTo(dto2.isCanUpdate());
+		assertThat(dto.isCanDelete()).isEqualTo(dto2.isCanDelete());
+	}
 
 	private FileEl setupFileElement(String name) {
 		return new FileElBuilder()
@@ -457,6 +529,47 @@ public class ElementControllerTest extends BaseTest {
 			.name(name)
 			.value(value.toString())
 			.save(entityManager);
+	}
+	
+	private AccessRight setupAccessRight(int elementId, int order, Set<UserGroup> userGroupIds, Set<User> userIds, 
+										 boolean create, boolean read, boolean modify, boolean delete) {
+		return new AccessRightBuilder()
+			.elementId(elementId)
+			.userGroups(userGroupIds)
+			.users(userIds)
+			.orderNo(order)
+			.canCreate(create)
+			.canRead(read)
+			.canUpdate(modify)
+			.canDelete(delete)
+			.saveAndReload(entityManager);
+	}
+	
+	private AccessRightDto setupAccessRightDto(int order, Set<UserGroup> userGroupIds, Set<User> userIds, 
+											   boolean create, boolean read, boolean modify, boolean delete) {
+		return new AccessRightDto(new AccessRightBuilder()
+			.userGroups(userGroupIds)
+			.users(userIds)
+			.orderNo(order)
+			.canCreate(create)
+			.canRead(read)
+			.canUpdate(modify)
+			.canDelete(delete)
+			.build());
+	}
+	
+	private User setupUser(String firstName, String lastName, String email) {
+		return new UserBuilder()
+			.firstName(firstName)
+			.lastName(lastName)
+			.email(email)
+			.saveAndReload(entityManager);
+	}
+	
+	private UserGroup setupUserGroup(String name) {
+		return new UserGroupBuilder()
+			.name(name)
+			.saveAndReload(entityManager);
 	}
 	
 	@SneakyThrows

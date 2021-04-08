@@ -13,11 +13,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.controller.AbstractController;
@@ -28,6 +24,8 @@ import pl.olawa.telech.tcm.commons.model.shared.TableParams;
 import pl.olawa.telech.tcm.commons.utils.TUtils;
 import pl.olawa.telech.tcm.repo.logic.ElementLogicImpl;
 import pl.olawa.telech.tcm.repo.logic.FeatureLogicImpl;
+import pl.olawa.telech.tcm.repo.logic.interfaces.AccessRightLogic;
+import pl.olawa.telech.tcm.repo.model.dto.AccessRightDto;
 import pl.olawa.telech.tcm.repo.model.dto.ElementDto;
 import pl.olawa.telech.tcm.repo.model.dto.FeatureAttributeValueDto;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
@@ -38,6 +36,8 @@ import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 @FieldDefaults(level = PRIVATE)
 public class ElementController extends AbstractController {
 
+	@Autowired
+	AccessRightLogic accessRightLogic;
 	@Autowired
 	ElementLogicImpl elementLogic;
 	@Autowired
@@ -83,7 +83,9 @@ public class ElementController extends AbstractController {
 	public TreeNodeDto parentsTree(
 		@PathVariable UUID ref){
 				
-		return new TreeNodeDto(elementLogic.loadParentsTree(ref));
+		return new TreeNodeDto(
+				elementLogic.loadParentsTree(ref)
+		);
 	}
 	
 	/*
@@ -162,5 +164,31 @@ public class ElementController extends AbstractController {
 		@PathVariable List<String> refs){
 				
 		elementLogic.remove(TUtils.parseUUIDs(refs));
+	}
+	
+	/*
+	 * Returns access rights for element.
+	 */
+	@RequestMapping(value = "/{ref:" + REF + "}/accessRights", method = GET)
+	public List<AccessRightDto> getAccessRights(
+			@PathVariable UUID ref){
+				
+		return AccessRightDto.toDtoList(
+				accessRightLogic.loadByElementRef(ref)
+		);
+	}
+	
+	/*
+	 * Saves access rights for element.
+	 */
+	@RequestMapping(value = "/{ref:" + REF + "}/accessRights", method = POST)
+	public List<AccessRightDto> saveAccessRights(
+			@PathVariable UUID ref,
+			@RequestBody List<AccessRightDto> accessRights){
+				
+		return accessRightLogic.save(ref, AccessRightDto.toModelList(accessRights)).stream()
+				.map(ar -> new AccessRightDto(ar))
+				.sorted()
+				.collect(Collectors.toList());
 	}
 }

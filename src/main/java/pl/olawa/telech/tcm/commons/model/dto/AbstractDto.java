@@ -88,7 +88,7 @@ public abstract class AbstractDto implements Loggable {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected static <M extends AbstractEntity, T extends AbstractDto> List<M> toModelList(Collection<T> dtos) {	
+	public static <M extends AbstractEntity, T extends AbstractDto> List<M> toModelList(Collection<T> dtos) {	
 		if(dtos == null) {
 			return new ArrayList<M>();
 		}
@@ -99,7 +99,7 @@ public abstract class AbstractDto implements Loggable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected static <M extends AbstractEntity, T extends AbstractDto> Set<M> toModelSet(Collection<T> dtos) {
+	public static <M extends AbstractEntity, T extends AbstractDto> Set<M> toModelSet(Collection<T> dtos) {
 		if(dtos == null) {
 			return new HashSet<M>();
 		}

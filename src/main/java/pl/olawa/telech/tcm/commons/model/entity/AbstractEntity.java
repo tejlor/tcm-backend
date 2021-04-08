@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import javassist.Modifier;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -52,6 +53,9 @@ public abstract class AbstractEntity implements Serializable {
 		
 		for (Field field : fields) {
 			try {
+				if(Modifier.isStatic(field.getModifiers()))
+					continue;
+				
 				field.setAccessible(true);
 				Object obj = field.get(this);
 				if (obj instanceof AbstractEntity) {

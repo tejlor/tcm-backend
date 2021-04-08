@@ -90,6 +90,32 @@ CREATE TABLE repo.association (
 );
 ALTER TABLE repo.association OWNER to tcm;
 
+-- AccessRight
+CREATE TABLE repo.access_right (
+    id serial NOT NULL PRIMARY KEY,
+    element_id int NOT NULL REFERENCES repo.element(id),
+	order_no int NOT NULL,
+	can_create bool NOT NULL,
+	can_read bool NOT NULL,
+	can_update bool NOT NULL,
+	can_delete bool NOT NULL
+);
+ALTER TABLE repo.access_right OWNER to tcm;
+
+-- User2AccessRight
+CREATE TABLE repo.user2access_right (
+	user_id int NOT NULL REFERENCES adm.user(id),
+	access_right int NOT NULL REFERENCES repo.access_right(id)
+);
+ALTER TABLE repo.user2access_right OWNER to tcm;
+
+-- UserGroup2AccessRight
+CREATE TABLE repo.user_group2access_right (
+	user_group_id int NOT NULL REFERENCES adm.user_group(id),
+	access_right int NOT NULL REFERENCES repo.access_right(id)
+);
+ALTER TABLE repo.user_group2access_right OWNER to tcm;
+
 -- Feature
 CREATE TABLE repo.feature (
 	id serial NOT NULL PRIMARY KEY,
@@ -138,7 +164,6 @@ CREATE TABLE repo.feature_attribute_value (
 );
 ALTER TABLE repo.feature_attribute_value OWNER TO tcm;
 
-
 -- *****************************************************************************
 -- AUTHENTICATION
 -- *****************************************************************************
@@ -161,6 +186,46 @@ CREATE TABLE auth.refresh_token (
 	authentication bytea 
 );
 ALTER TABLE auth.refresh_token OWNER to tcm;
+
+-- *****************************************************************************
+
+CREATE OR REPLACE FUNCTION calcAccessRight(userId int, elementId int)
+RETURNS int AS $result$
+DECLARE
+	total integer;
+	accessRightsCursor cursor(elementId int) FOR SELECT * FROM repo.access_right WHERE element_id = elementId ORDER BY order_no;
+	accessRight record;
+BEGIN
+   	OPEN accessRightsCursor(elementId);
+	LOOP 
+		FETCH accessRightsCursor into accessRight;
+	    EXIT WHEN NOT FOUND;
+		IF userId IN (
+			SELECT user_id 
+				FROM repo.user2access_right 	
+				WHERE access_right = accessRight.id
+			UNION
+			SELECT u2ug.user_id 
+				FROM repo.user_group2access_right ug2ar 
+				INNER JOIN adm.user2user_group u2ug ON ug2ar.user_group_id = u2ug.user_group_id 
+				WHERE access_right = accessRight.id) 
+		THEN
+			RETURN accessRight.can_create::int + accessRight.can_read::int*2 + accessRight.can_update::int*4 + accessRight.can_delete::int*8;
+		END IF;
+   	END LOOP;
+   	RETURN -1;
+END;
+$result$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION hasAccessRight(userId int, elementId int, rightCode int)
+RETURNS bool AS $result$
+BEGIN
+   	RETURN calcAccessRight(userId, elementId) & rightCode > 0;
+END;
+$result$ LANGUAGE plpgsql;
+
+SELECT calcAccessRight(5, 5);
+SELECT hasAccessRight(5, 5, 8);
 
 -- *****************************************************************************
 
