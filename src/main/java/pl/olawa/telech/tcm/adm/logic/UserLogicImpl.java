@@ -85,7 +85,7 @@ public class UserLogicImpl extends AbstractLogicImpl<User> implements UserLogic 
 				.column(new ExcelExporter.Column<User>("First name", User::getFirstName))
 				.column(new ExcelExporter.Column<User>("Last name", User::getLastName))
 				.column(new ExcelExporter.Column<User>("E-mail", User::getEmail))
-				.dataSet(loadAllById())
+				.dataSet(loadAllOrderById())
 				.create();
 	}
 	

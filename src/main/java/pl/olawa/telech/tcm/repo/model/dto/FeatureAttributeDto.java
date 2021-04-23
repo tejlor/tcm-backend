@@ -27,7 +27,7 @@ public class FeatureAttributeDto extends AbstractModifiableDto {
 
 	@Override
 	public FeatureAttribute toModel() {
-		var model = new FeatureAttribute();
+		var model = new FeatureAttribute();	
 		fillModel(model);
 		return model;
 	}

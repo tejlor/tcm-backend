@@ -6,13 +6,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +28,7 @@ public class FeatureAttributeValue extends AbstractModifiableEntity {
 	
 	public static final String PROP_FEATURE_ATTRIBUTE = "featureAttribute";
 	
+	@Setter(value = AccessLevel.NONE)
 	@Column(insertable = false, updatable = false)
 	Integer featureAttributeId;
 	
@@ -39,6 +36,7 @@ public class FeatureAttributeValue extends AbstractModifiableEntity {
 	@JoinColumn(name = "featureAttributeId")
 	FeatureAttribute featureAttribute;		// feature attribute definition
 	
+	@Setter(value = AccessLevel.NONE)
 	@Column(insertable = false, updatable = false)
 	Integer elementId;					
 	
@@ -50,7 +48,7 @@ public class FeatureAttributeValue extends AbstractModifiableEntity {
 	Integer valueInt;						// int value 
 	
 	@Column
-	float valueFloat;						// float value
+	Float valueFloat;						// float value
 	
 	@Column
 	Boolean valueBool;						// boolean value
@@ -61,14 +59,18 @@ public class FeatureAttributeValue extends AbstractModifiableEntity {
 	@Column(length = 255)
 	String valueString;						// short text value (up to 255 chars)
 	
-	@Column
+	@Column(columnDefinition="TEXT")
 	String valueText;						// long text value
 	
 	@Column
 	LocalDate valueDate;					// date value
 	
-	@Column(columnDefinition = "blob")
+	@Column
 	LocalDateTime valueTime;				// date with time value
+	
+	
+	@Transient
+	Object transientValue;					// value copied from dto object
  	
 	
 	public FeatureAttributeValue(int id) {
@@ -102,7 +104,7 @@ public class FeatureAttributeValue extends AbstractModifiableEntity {
 	public void setValue(Object value) {
 		switch(featureAttribute.getType()) {
 			case INT: 	 setValueInt((Integer) value);
-			case FLOAT:  setValueFloat((float) value);
+			case FLOAT:  setValueFloat((Float) value);
 			case DEC: 	 setValueDec((BigDecimal) value);
 			case BOOL: 	 setValueBool((Boolean) value);
 			case STRING: setValueString((String) value);

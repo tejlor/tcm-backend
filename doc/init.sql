@@ -157,10 +157,15 @@ CREATE TABLE repo.feature_attribute_value (
 	value_int int, 
 	value_float float,
 	value_dec decimal(10,2),
+	value_bool boolean,
 	value_string varchar(255),
-	value_text TEXT,
+	value_text text,
 	value_date date,
-	value_time timestamp
+	value_time timestamp,
+	created_time timestamp without time zone NOT NULL,
+    created_by_id integer NOT NULL REFERENCES adm.user(id),
+    modified_time timestamp without time zone,
+    modified_by_id integer REFERENCES adm.user(id)
 );
 ALTER TABLE repo.feature_attribute_value OWNER TO tcm;
 

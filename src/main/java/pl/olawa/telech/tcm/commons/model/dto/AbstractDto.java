@@ -21,6 +21,8 @@ import pl.olawa.telech.tcm.commons.utils.TUtilsBean;
 @FieldDefaults(level = PROTECTED)
 public abstract class AbstractDto implements Loggable {
 
+	public static final int MAPPING_FULL = 1;
+	
 	private static final BeanUtilsBean beanUtils = new TUtilsBean();
 	
 	Integer id; 
@@ -56,6 +58,27 @@ public abstract class AbstractDto implements Loggable {
 			Constructor<T> cons = dtoType.getDeclaredConstructor(modelType);
 			for (M model : models) {
 				newList.add(cons.newInstance(model));
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		return newList;
+	}
+	
+	protected static <M extends AbstractEntity, T extends AbstractDto> List<T> toDtoList(Class<M> modelType, Class<T> dtoType, Collection<M> models, int mode) {
+		if (models == null) {
+			return new ArrayList<T>();
+		}
+		
+		List<T> newList = new ArrayList<>();
+
+		try {
+			Constructor<T> cons = dtoType.getDeclaredConstructor(modelType, int.class);
+			for (M model : models) {
+				newList.add(cons.newInstance(model, mode));
 			}
 		}
 		catch (Exception e) {

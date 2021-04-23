@@ -76,7 +76,7 @@ public class UserGroupLogicImpl extends AbstractLogicImpl<UserGroup> implements 
 				.title("User Groups")
 				.column(new ExcelExporter.Column<UserGroup>("Id", UserGroup::getId))
 				.column(new ExcelExporter.Column<UserGroup>("Name", UserGroup::getName))
-				.dataSet(loadAllById())
+				.dataSet(loadAllOrderById())
 				.create();
 	}
 	

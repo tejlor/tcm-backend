@@ -31,25 +31,25 @@ import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 @Table(name = "feature", schema = "repo")
 public class Feature extends AbstractModifiableEntity {
 
+	public static final String PROP_NAME = "name";
 	public static final String PROP_CODE = "code";
 	public static final String PROP_ELEMENTS = "elements";
 	
 	@Column(length = 32, nullable = false)
-	String name;							// display name
+	String name;											// display name
 	
 	@Column(length = 32, nullable = false)
-	String code;							// short name
+	String code;											// short name
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "feature")
-	Set<FeatureAttribute> attributes;		// feature attributes
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "feature")
+	Set<FeatureAttribute> attributes = new HashSet<>();		// feature attributes
 	
 	@ManyToMany(mappedBy = "features")
-	Set<Element> elements;					// elements with this feature
+	Set<Element> elements = new HashSet<>();				// elements with this feature
  	
 	
 	public Feature(int id) {
 		super(id);
-		attributes = new HashSet<>();
 	}
 	
 	public void setAttributes(Collection<FeatureAttribute> attributes) {

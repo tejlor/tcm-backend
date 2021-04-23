@@ -8,19 +8,21 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.commons.controller.AbstractController;
+import pl.olawa.telech.tcm.commons.model.dto.TableDataDto;
+import pl.olawa.telech.tcm.commons.model.shared.TableParams;
 import pl.olawa.telech.tcm.commons.utils.TUtils;
 import pl.olawa.telech.tcm.repo.logic.FeatureLogicImpl;
 import pl.olawa.telech.tcm.repo.model.dto.FeatureDto;
+import pl.olawa.telech.tcm.repo.model.entity.feature.Feature;
 
 
 @RestController
@@ -41,12 +43,33 @@ public class FeatureController extends AbstractController {
 	}
 	
 	/*
-	 * Returns feature values by element id and feature code.
+	 * Returns all features for table.
 	 */
-	@RequestMapping(value = "", method = GET)
-	public List<FeatureDto> getAttributeValues() {
-
-		return FeatureDto.toDtoList(featureLogic.loadAll());
+	@RequestMapping(value = "/table", method = GET)
+	public TableDataDto<FeatureDto> getTable(
+		@RequestParam(required = false) Integer pageNo,
+		@RequestParam(required = false) Integer pageSize,
+		@RequestParam(required = false) String filter,
+		@RequestParam(required = false) String sortBy,
+		@RequestParam(required = false) Boolean sortAsc){
+		
+		var tableParams = new TableParams(pageNo, pageSize, filter, sortBy, sortAsc);		
+		Pair<List<Feature>, Integer> result = featureLogic.loadTable(tableParams); 	
+		var table = new TableDataDto<FeatureDto>(tableParams);
+		table.setRows(FeatureDto.toDtoList(result.getKey()));
+		table.setCount(result.getValue());		
+		return table;
+	}
+	
+	/*
+	 * Export all users to xlsx.
+	 */
+	@RequestMapping(value = "/xlsx", method = GET)
+	public ResponseEntity<ByteArrayResource> exportToXlsx() {
+		
+         byte[] bytes = featureLogic.exportToXlsx().toByteArray();
+         var resource = new ByteArrayResource(bytes);
+         return ResponseEntity.ok().body(resource);
 	}
 	
 	/*
@@ -70,7 +93,6 @@ public class FeatureController extends AbstractController {
 		TUtils.assertDtoId(id, feature);		
 		return new FeatureDto(featureLogic.update(id, feature.toModel()));
 	}
-	
 	
 	/*
 	 * Deletes feature.

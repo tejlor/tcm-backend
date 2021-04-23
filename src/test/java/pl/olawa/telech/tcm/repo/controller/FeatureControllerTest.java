@@ -60,9 +60,9 @@ public class FeatureControllerTest extends BaseTest {
 	public void create() {
 		// given
 		FeatureDto featureDto = setupFeatureDto("Important invoice", "invoice", 
-				setupFeatureAttribute("Number", FeatureAttributeType.STRING),
-				setupFeatureAttribute("Amount", FeatureAttributeType.DEC),
-				setupFeatureAttribute("Payment date", FeatureAttributeType.DATE));
+				setupFeatureAttributeDto("Number", FeatureAttributeType.STRING),
+				setupFeatureAttributeDto("Amount", FeatureAttributeType.DEC),
+				setupFeatureAttributeDto("Payment date", FeatureAttributeType.DATE));
 		flush();	
 		// when
 		FeatureDto result = featureController.create(featureDto);
@@ -70,7 +70,7 @@ public class FeatureControllerTest extends BaseTest {
 		// then
 		assertFeatureDto(result, featureDto);
 		
-		Feature createdFeature = load(Feature.class, featureDto.getId());
+		Feature createdFeature = load(Feature.class, result.getId());
 		assertFeature(result, createdFeature);
 	}
 	
@@ -95,7 +95,7 @@ public class FeatureControllerTest extends BaseTest {
 		
 		Feature createdFeature = load(Feature.class, feature.getId());
 		assertThat(createdFeature).isNotNull();
-		assertThat(createdFeature.getCode()).isNotEqualTo(feature.getCode()).isEqualTo("new_code");
+		assertThat(createdFeature.getCode()).isNotEqualTo("invoice").isEqualTo("new_code");
 		assertThat(createdFeature.getAttributes()).hasSize(4);
 	}
 	
@@ -168,11 +168,11 @@ public class FeatureControllerTest extends BaseTest {
 				.saveAndReload(entityManager);
 	}
 	
-	private FeatureDto setupFeatureDto(String name, String code, FeatureAttribute... attributes) {
+	private FeatureDto setupFeatureDto(String name, String code, FeatureAttributeDto... attributes) {
 		return new FeatureDto(new FeatureBuilder()
 				.name(name)
 				.code(code)
-				.attributes(Arrays.stream(attributes).collect(Collectors.toSet()))
+				.attributes(Arrays.stream(attributes).map(a -> a.toModel()).collect(Collectors.toSet()))
 				.build());
 	}
 	

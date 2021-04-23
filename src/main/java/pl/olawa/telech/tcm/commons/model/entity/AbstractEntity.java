@@ -80,7 +80,7 @@ public abstract class AbstractEntity implements Serializable {
 	
 	@Override
 	public int hashCode() {
-		return id.intValue();
+		return id != null ? id.intValue() : super.hashCode();
 	}
 	
 	@Override
@@ -88,7 +88,7 @@ public abstract class AbstractEntity implements Serializable {
 		if (other == null)
 			return false;
 
-		if (this.getClass() != other.getClass())
+		if (other.getClass().isAssignableFrom(this.getClass()))
 			return false;
 
 		AbstractEntity otherEntity = (AbstractEntity) other;

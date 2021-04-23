@@ -43,24 +43,24 @@ public class Element extends AbstractModifiableEntity {
 	public static final String PROP_CHILDREN_ASSOC = "childrenAssoc";
 	
 	@Column(nullable = false)
-	UUID ref;							// element unique reference
+	UUID ref;												// element unique reference
 	
 	@Column(length = 255, nullable = false)
-	String name;						// element name
+	String name;											// element name
 	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "childElementId")
-	Set<ContainsAssoc> parentsAssoc;		// parents of the element
+	Set<ContainsAssoc> parentsAssoc = new HashSet<>();		// parents of the element
 	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parentElementId")
-	Set<ContainsAssoc> childrenAssoc;		// children of the element
+	Set<ContainsAssoc> childrenAssoc = new HashSet<>();		// children of the element
 	
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "Element2Feature", schema = "repo",
 		joinColumns = { @JoinColumn(name = "element_id") }, 
 		inverseJoinColumns = { @JoinColumn(name ="feature_id") })
-	Set<Feature> features;
+	Set<Feature> features = new HashSet<>();				// element features
 	
 	@Transient
 	List<Element> childrenElements;
@@ -68,12 +68,14 @@ public class Element extends AbstractModifiableEntity {
 	
 	public Element(int id) {
 		super(id);
-		parentsAssoc = new HashSet<>();
-		childrenAssoc = new HashSet<>();
 	}
 	
 	public String getTypeName() {
 		return "Element";
+	}
+	
+	public void addFeature(Feature feature) {
+		features.add(feature);
 	}
 	
 	public Element getParentElement() {

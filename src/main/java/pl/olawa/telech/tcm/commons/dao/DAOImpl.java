@@ -26,7 +26,7 @@ import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
 @FieldDefaults(level = PRIVATE)
 public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, Integer> implements DAO<T> {
 
-	EntityManager entityManager;
+	EntityManager entityManager;	
 
 	public DAOImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager){
 		super(entityInformation, entityManager);
@@ -43,45 +43,38 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	@SuppressWarnings("unchecked")
 	public T findOne(String entityGraphName, Specification<T> ...spec) {
         TypedQuery<T> query = getQuery(conjunction(spec), Sort.unsorted());
-        if(entityGraphName != null)
-        	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
-        
+        addEntityGraph(query, entityGraphName);
         return query.getSingleResult();
     }
 	
 	@Override
-	public List<T> findAllById() {
+	public List<T> findAllOrderById() {
 		return getQuery(null, Sort.by("id")).getResultList();
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<T> findAll(Specification<T> ...spec) {
-	    return findAll(null, null, spec);
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<T> findAll(Pageable page, Specification<T> ...spec) {
-		 return findAll(null, page, spec);
+	    return findAll(null, Sort.unsorted(), spec);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<T> findAll(String entityGraphName, Specification<T> ...spec) {
-		 return findAll(entityGraphName, null, spec);
+		 return findAll(entityGraphName, Sort.unsorted(), spec);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<T> findAll(String entityGraphName, Pageable page, Specification<T> ...spec) {
-	    TypedQuery<T> query = getQuery(conjunction(spec), page);
-	    if(entityGraphName != null)
-	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
-	    
-	    query.setFirstResult((int)page.getOffset());
-	    query.setMaxResults(page.getPageSize());
-	    
+	public List<T> findAll(Sort sort, Specification<T> ...spec) {
+		 return findAll(null, sort, spec);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<T> findAll(String entityGraphName, Sort sort, Specification<T> ...spec) {
+		TypedQuery<T> query = getQuery(conjunction(spec), sort);
+		addEntityGraph(query, entityGraphName);
 	    return query.getResultList();
 	}
 	
@@ -96,25 +89,31 @@ public class DAOImpl<T extends AbstractEntity> extends SimpleJpaRepository<T, In
 	public Pair<List<T>, Integer> findAllWithCount(String entityGraphName, Pageable page, Specification<T> ...spec) {
 	    Specification<T> specSum = conjunction(spec);
 		TypedQuery<T> query = getQuery(specSum, page);
-	    if(entityGraphName != null)
-	    	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
-	    
-	    query.setFirstResult((int)page.getOffset());
+	    addEntityGraph(query, entityGraphName);
+	    query.setFirstResult((int) page.getOffset());
 	    query.setMaxResults(page.getPageSize());
 	    
 	    return Pair.of(query.getResultList(), (int) count(specSum));
-	}
-	
-	@SafeVarargs
-	private final Specification<T> conjunction(Specification<T> ...specs){
-		return Arrays.stream(specs)
-			.filter(s -> s != null)
-			.reduce(Specification::and)
-			.orElse(null);
 	}
 	
 	@Override
 	public void detach(T entity) {
         entityManager.detach(entity);
     }
+	
+	// ################################### PRIVATE #########################################################################
+	
+	private void addEntityGraph(TypedQuery<T> query, String entityGraphName) {
+		if(entityGraphName != null) {
+		  	query.setHint(EntityGraphType.FETCH.getKey(), entityManager.getEntityGraph(entityGraphName));
+		}
+	}
+	
+	@SafeVarargs
+	private Specification<T> conjunction(Specification<T> ...specs){
+		return Arrays.stream(specs)
+			.filter(s -> s != null)
+			.reduce(Specification::and)
+			.orElse(null);
+	}
 }

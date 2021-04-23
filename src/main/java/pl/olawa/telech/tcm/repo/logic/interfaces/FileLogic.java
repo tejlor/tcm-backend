@@ -7,9 +7,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import pl.olawa.telech.tcm.commons.logic.interfaces.AbstractLogic;
 import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
 
-public interface FileLogic {
+public interface FileLogic extends AbstractLogic<FileEl> {
 
 	FileEl loadByRef(UUID ref);
 

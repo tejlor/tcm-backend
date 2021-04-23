@@ -6,7 +6,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,7 @@ import pl.olawa.telech.tcm.commons.model.shared.Path;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
 import pl.olawa.telech.tcm.commons.utils.TUtils;
 import pl.olawa.telech.tcm.repo.logic.ElementLogicImpl;
+import pl.olawa.telech.tcm.repo.logic.FeatureAttributeValueLogicImpl;
 import pl.olawa.telech.tcm.repo.logic.FeatureLogicImpl;
 import pl.olawa.telech.tcm.repo.logic.interfaces.AccessRightLogic;
 import pl.olawa.telech.tcm.repo.model.dto.AccessRightDto;
@@ -42,6 +42,8 @@ public class ElementController extends AbstractController {
 	ElementLogicImpl elementLogic;
 	@Autowired
 	FeatureLogicImpl featureLogic;
+	@Autowired
+	FeatureAttributeValueLogicImpl featureAttributeValueLogic;
 	
 	/*
 	 * Returns element info.
@@ -107,17 +109,6 @@ public class ElementController extends AbstractController {
 		table.setCount(result.getValue());		
 		return table;
 	}
-
-	/*
-	 * Returns parents of element for tree.
-	 */
-	@RequestMapping(value = "/{ref:" + REF + "}/feature/{code:" + CODE +"}", method = GET)
-	public Set<FeatureAttributeValueDto> featureValues(
-		@PathVariable UUID ref,
-		@PathVariable String code){
-				
-		return FeatureAttributeValueDto.toDtoSet(featureLogic.loadValuesByElementFeature(ref, code));
-	}
 	
 	/*
 	 * Rename element.
@@ -164,6 +155,53 @@ public class ElementController extends AbstractController {
 		@PathVariable List<String> refs){
 				
 		elementLogic.remove(TUtils.parseUUIDs(refs));
+	}
+	
+	/*
+	 * Returns feature values.
+	 */
+	@RequestMapping(value = "/{ref:" + REF + "}/features/{code:" + CODE +"}", method = GET)
+	public List<FeatureAttributeValueDto> getFeatureValues(
+		@PathVariable UUID ref,
+		@PathVariable String code){
+				
+		return FeatureAttributeValueDto.toDtoList(featureLogic.loadValuesByElementFeature(ref, code));
+	}
+	
+	/*
+	 * Returns feature values.
+	 */
+	@RequestMapping(value = "/{ref:" + REF + "}/features/{id:" + ID +"}", method = GET)
+	public List<FeatureAttributeValueDto> getFeatureValues(
+		@PathVariable UUID ref,
+		@PathVariable int id){
+				
+		return FeatureAttributeValueDto.toDtoList(featureLogic.loadValuesByElementFeature(ref, id));
+	}
+	
+
+	/*
+	 * Returns feature values.
+	 */
+	@RequestMapping(value = "/{ref:" + REF + "}/features", method = POST)
+	public List<FeatureAttributeValueDto> saveFeatureValues(
+		@PathVariable UUID ref,
+		@RequestBody List<FeatureAttributeValueDto> featureValues){
+				
+		return FeatureAttributeValueDto.toDtoList(
+				featureAttributeValueLogic.save(ref, FeatureAttributeValueDto.toModelList(featureValues))
+		);
+	}
+	
+	/*
+	 * Adds new feature to the element.
+	 */
+	@RequestMapping(value = "/{ref:" + REF + "}/features/{id:" + ID +"}", method = POST)
+	public ElementDto addFeature(
+		@PathVariable UUID ref,
+		@PathVariable int id){
+				
+		return new ElementDto(elementLogic.addFeature(ref, id));
 	}
 	
 	/*

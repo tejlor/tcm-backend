@@ -20,14 +20,13 @@ import pl.olawa.telech.tcm.commons.logic.AbstractLogicImpl;
 import pl.olawa.telech.tcm.commons.model.shared.Path;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
 import pl.olawa.telech.tcm.commons.utils.TConstants;
+import pl.olawa.telech.tcm.commons.utils.TUtils;
 import pl.olawa.telech.tcm.repo.dao.ElementDAO;
-import pl.olawa.telech.tcm.repo.logic.interfaces.ContainsAssocLogic;
-import pl.olawa.telech.tcm.repo.logic.interfaces.ElementLogic;
-import pl.olawa.telech.tcm.repo.logic.interfaces.FileLogic;
-import pl.olawa.telech.tcm.repo.logic.interfaces.FolderLogic;
+import pl.olawa.telech.tcm.repo.logic.interfaces.*;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
 import pl.olawa.telech.tcm.repo.model.entity.element.FolderEl;
+import pl.olawa.telech.tcm.repo.model.entity.feature.Feature;
 
 
 @Service
@@ -43,6 +42,8 @@ public class ElementLogicImpl extends AbstractLogicImpl<Element> implements Elem
 	ContainsAssocLogic containsAssocLogic;
 	@Autowired
 	FileLogic fileLogic;
+	@Autowired
+	FeatureLogic featureLogic;
 	@Autowired
 	FolderLogic folderLogic;
 	@Autowired
@@ -140,6 +141,15 @@ public class ElementLogicImpl extends AbstractLogicImpl<Element> implements Elem
 	public void remove(List<UUID> refs) {
 		UUID trashRef = settingLogic.loadUUIDValue(Setting.TRASH_REF);
 		move(refs, trashRef);
+	}
+	
+	@Override
+	public Element addFeature(UUID ref, int featureId) {
+		Element element = dao.findByRef(ref);
+		Feature feature = featureLogic.loadById(featureId);
+		TUtils.assertEntityExists(feature);
+		element.addFeature(feature);
+		return save(element);
 	}
 	
 	@Override

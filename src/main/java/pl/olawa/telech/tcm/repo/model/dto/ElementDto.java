@@ -3,7 +3,6 @@ package pl.olawa.telech.tcm.repo.model.dto;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,17 +23,14 @@ public class ElementDto extends AbstractModifiableDto {
 	String name;
 	// out
 	String typeName;
-	List<String> featureNames;
+	List<FeatureDto> features;
 	// in
 	String parentRef; 
 	
 	public ElementDto(Element model) {
 		super(model);
 		typeName = model.getTypeName();
-		featureNames = model.getFeatures().stream()
-				.map(f -> f.getName())
-				.sorted()
-				.collect(Collectors.toList());
+		features = FeatureDto.toDtoList(model.getFeatures(), FeatureDto.MAPPING_SIMPLE);
 	}
 
 	@Override

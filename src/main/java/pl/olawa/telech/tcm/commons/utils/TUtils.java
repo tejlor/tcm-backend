@@ -36,10 +36,12 @@ public class TUtils {
 	}
 	
 	public static boolean isEqual(String a, String b) {
-		if(a == null)
+		if(a == null) {
 			a = "";
-		if(b == null)
+		}
+		if(b == null) {
 			b = "";
+		}
 		
 		return a.equals(b);
 	}
@@ -78,10 +80,12 @@ public class TUtils {
 	/* ################################################# Decimal #################################################################### */
 
 	public static boolean isZero(BigDecimal val){
-		if (val == null)
+		if (val == null) {
 			return true;
-		else
+		}
+		else {
 			return (val.compareTo(BigDecimal.ZERO) == 0);
+		}
 	}
 	
 	public static String formatDecimal(BigDecimal val){
@@ -119,7 +123,7 @@ public class TUtils {
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 	
-	public static <T> BigDecimal sum(List<T> list, Function<T, BigDecimal> mapper, Predicate<T> filter){
+	public static <T> BigDecimal sum(List<T> list, Predicate<T> filter, Function<T, BigDecimal> mapper){
 		return list.stream()
 				.filter(filter)
 				.map(mapper)
@@ -221,18 +225,21 @@ public class TUtils {
 	 * Checks if object id in body is the same as id in url (update methods - PUT).
 	 */
 	public static void assertDtoId(long id, AbstractDto dto) {
-		if(dto.getId() != null && id != dto.getId())
+		if(dto.getId() != null && id != dto.getId()) {
 			throw new TcmException("Object id is diferent than value of request parameter.");
+		}
 	}
 	
 	public static void assertEntityExists(AbstractEntity model) {
-		if(model == null)
+		if(model == null) {
 			throw new TcmException("Obejct with given id does not exists.");
+		}
 	}
 	
 	public static void assertResultExists(Object result) {
-		if(result == null)
+		if(result == null) {
 			throw new NotFoundException();
+		}
 	}
 	
 }

@@ -15,11 +15,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import lombok.experimental.FieldDefaults;
 import pl.olawa.telech.tcm.adm.builder.SettingBuilder;
-import pl.olawa.telech.tcm.adm.builder.UserBuilder;
 import pl.olawa.telech.tcm.adm.model.dto.SettingDto;
-import pl.olawa.telech.tcm.adm.model.dto.UserDto;
 import pl.olawa.telech.tcm.adm.model.entity.Setting;
-import pl.olawa.telech.tcm.adm.model.entity.User;
 import pl.olawa.telech.tcm.utils.BaseTest;
 
 @RunWith(SpringRunner.class)
