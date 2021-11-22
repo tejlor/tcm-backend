@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractModifiableEntity;
 
 /*
@@ -22,6 +23,7 @@ import pl.olawa.telech.tcm.commons.model.entity.AbstractModifiableEntity;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Table(name = "user_group", schema = "adm")
 public class UserGroup extends AbstractModifiableEntity {

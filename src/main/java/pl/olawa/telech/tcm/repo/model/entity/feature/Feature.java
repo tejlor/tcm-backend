@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractModifiableEntity;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 
@@ -27,13 +28,10 @@ import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Table(name = "feature", schema = "repo")
 public class Feature extends AbstractModifiableEntity {
-
-	public static final String PROP_NAME = "name";
-	public static final String PROP_CODE = "code";
-	public static final String PROP_ELEMENTS = "elements";
 	
 	@Column(length = 32, nullable = false)
 	String name;											// display name

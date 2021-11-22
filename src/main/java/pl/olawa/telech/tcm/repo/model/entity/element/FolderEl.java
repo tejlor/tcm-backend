@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 
 /*
  * Element with type Folder.
@@ -18,8 +19,9 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@FieldDefaults(level = PRIVATE)
+@FieldNameConstants
 @PrimaryKeyJoinColumn
+@FieldDefaults(level = PRIVATE)
 @Table(name = "folder", schema = "repo")
 public class FolderEl extends Element {
 

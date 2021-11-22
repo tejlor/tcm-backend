@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 
 /*
  * Element with type File.
@@ -18,8 +19,9 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@FieldDefaults(level = PRIVATE)
+@FieldNameConstants
 @PrimaryKeyJoinColumn
+@FieldDefaults(level = PRIVATE)
 @Table(name = "file", schema = "repo")
 public class FileEl extends Element {
 

@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import pl.olawa.telech.tcm.commons.dao.interfaces.DAO;
 import pl.olawa.telech.tcm.repo.model.entity.AccessRight;
+import pl.olawa.telech.tcm.repo.model.entity.AccessRight.Fields;
 
 
 public interface AccessRightDAO extends DAO<AccessRight>, JpaSpecificationExecutor<AccessRight> {
@@ -28,7 +29,7 @@ public interface AccessRightDAO extends DAO<AccessRight>, JpaSpecificationExecut
 
 	default Specification<AccessRight> isForElement(int elementRef){
         return (accessRight, cq, cb) -> {
-            return cb.equal(accessRight.get(AccessRight.PROP_ELEMENT_ID), elementRef);
+            return cb.equal(accessRight.get(Fields.elementId), elementRef);
         };
 	}
 }

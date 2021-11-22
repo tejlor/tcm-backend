@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractModifiableEntity;
 import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
 import pl.olawa.telech.tcm.repo.model.entity.feature.Feature;
@@ -33,14 +34,11 @@ import pl.olawa.telech.tcm.repo.model.entity.feature.Feature;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "element", schema = "repo")
 public class Element extends AbstractModifiableEntity {
-
-	public static final String PROP_NAME = "name";
-	public static final String PROP_PARENTS_ASSOC = "parentsAssoc";
-	public static final String PROP_CHILDREN_ASSOC = "childrenAssoc";
 	
 	@Column(nullable = false)
 	UUID ref;												// element unique reference

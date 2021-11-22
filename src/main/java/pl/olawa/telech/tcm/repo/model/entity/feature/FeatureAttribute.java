@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractModifiableEntity;
 import pl.olawa.telech.tcm.repo.model.enums.FeatureAttributeType;
 
@@ -24,12 +25,11 @@ import pl.olawa.telech.tcm.repo.model.enums.FeatureAttributeType;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Table(name = "feature_attribute", schema = "repo")
 public class FeatureAttribute extends AbstractModifiableEntity {
-	
-	public static final String PROP_FEATURE = "feature"; 
-	
+		
 	@Column(length = 32, nullable = false)
 	String name;							// display name
 	

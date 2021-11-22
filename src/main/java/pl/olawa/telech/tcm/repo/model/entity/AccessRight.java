@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.adm.model.entity.User;
 import pl.olawa.telech.tcm.adm.model.entity.UserGroup;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
@@ -18,13 +19,11 @@ import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Table(name = "access_right", schema = "repo")
 public class AccessRight extends AbstractEntity {
-	
-	public static final String PROP_ELEMENT_ID = "elementId";
-	public static final String PROP_ORDER = "order";
-	
+		
 	@Column(nullable = false)
 	int elementId;						// element's id
 	

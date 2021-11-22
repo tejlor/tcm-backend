@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
 
 /*
@@ -18,10 +19,11 @@ import pl.olawa.telech.tcm.commons.model.entity.AbstractEntity;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Table(name = "setting", schema = "adm")
 public class Setting extends AbstractEntity {
-
+	
 	public static final String ROOT_REF = "root_ref";
 	public static final String TRASH_REF = "trash_ref";
 	

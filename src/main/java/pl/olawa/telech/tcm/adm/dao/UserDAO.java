@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import pl.olawa.telech.tcm.adm.model.entity.User;
+import pl.olawa.telech.tcm.adm.model.entity.User.Fields;
 import pl.olawa.telech.tcm.commons.dao.interfaces.DAO;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
 
@@ -29,9 +30,9 @@ public interface UserDAO extends DAO<User>, JpaSpecificationExecutor<User> {
 	default Specification<User> isLike(String filter){
         return (element, cq, cb) -> {
         	return cb.or(
-        		cb.like(cb.lower(element.get(User.PROP_FIRST_NAME)), "%" + filter + "%"), 
-        		cb.like(cb.lower(element.get(User.PROP_LAST_NAME)), "%" + filter + "%"),
-        		cb.like(cb.lower(element.get(User.PROP_EMAIL)), "%" + filter + "%")
+        		cb.like(cb.lower(element.get(Fields.firstName)), "%" + filter + "%"), 
+        		cb.like(cb.lower(element.get(Fields.lastName)), "%" + filter + "%"),
+        		cb.like(cb.lower(element.get(Fields.email)), "%" + filter + "%")
         	);
         };
 	}

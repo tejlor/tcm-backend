@@ -7,6 +7,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractCreatableEntity;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 
@@ -16,6 +17,7 @@ import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 @Entity
 @Getter
 @NoArgsConstructor
+@FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.CHAR)

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import pl.olawa.telech.tcm.commons.dao.interfaces.DAO;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
 import pl.olawa.telech.tcm.repo.model.entity.feature.Feature;
+import pl.olawa.telech.tcm.repo.model.entity.feature.Feature.Fields;
 
 
 public interface FeatureDAO extends DAO<Feature>, JpaSpecificationExecutor<Feature> {
@@ -32,15 +33,15 @@ public interface FeatureDAO extends DAO<Feature>, JpaSpecificationExecutor<Featu
 	
 	default Specification<Feature> hasCode(String code){
         return (feature, cq, cb) -> {
-        	return cb.equal(feature.get(Feature.PROP_CODE), code);
+        	return cb.equal(feature.get(Fields.code), code);
         };
 	}
 	
 	default Specification<Feature> isLike(String filter){
         return (element, cq, cb) -> {
         	return cb.or(
-        		cb.like(cb.lower(element.get(Feature.PROP_NAME)), "%" + filter + "%"), 
-        		cb.like(cb.lower(element.get(Feature.PROP_CODE)), "%" + filter + "%")
+        		cb.like(cb.lower(element.get(Fields.name)), "%" + filter + "%"), 
+        		cb.like(cb.lower(element.get(Fields.code)), "%" + filter + "%")
         	);
         };
 	}

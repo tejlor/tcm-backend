@@ -169,6 +169,17 @@ public class ElementController extends AbstractController {
 	}
 	
 	/*
+	 * Adds new feature to the element.
+	 */
+	@RequestMapping(value = "/{ref:" + REF + "}/features/{id:" + ID +"}", method = POST)
+	public ElementDto addFeature(
+		@PathVariable UUID ref,
+		@PathVariable int id){
+				
+		return new ElementDto(elementLogic.addFeature(ref, id));
+	}
+	
+	/*
 	 * Returns feature values.
 	 */
 	@RequestMapping(value = "/{ref:" + REF + "}/features/{id:" + ID +"}", method = GET)
@@ -191,17 +202,6 @@ public class ElementController extends AbstractController {
 		return FeatureAttributeValueDto.toDtoList(
 				featureAttributeValueLogic.save(ref, FeatureAttributeValueDto.toModelList(featureValues))
 		);
-	}
-	
-	/*
-	 * Adds new feature to the element.
-	 */
-	@RequestMapping(value = "/{ref:" + REF + "}/features/{id:" + ID +"}", method = POST)
-	public ElementDto addFeature(
-		@PathVariable UUID ref,
-		@PathVariable int id){
-				
-		return new ElementDto(elementLogic.addFeature(ref, id));
 	}
 	
 	/*

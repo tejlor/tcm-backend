@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractModifiableEntity;
 
 /*
@@ -21,13 +22,10 @@ import pl.olawa.telech.tcm.commons.model.entity.AbstractModifiableEntity;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Table(name = "user", schema = "adm")
 public class User extends AbstractModifiableEntity implements UserDetails {
-		
-	public static final String PROP_FIRST_NAME = "firstName";
-	public static final String PROP_LAST_NAME = "lastName";
-	public static final String PROP_EMAIL = "email";
 	
 	@Column(length = 32, nullable = false)
 	String firstName;				// first name

@@ -25,14 +25,14 @@ public class FeatureAttributeValueDto extends AbstractModifiableDto {
 	
 	
 	public FeatureAttributeValueDto(FeatureAttributeValue model) {
-		super(model);
-		
+		super(model);	
 		attribute = new FeatureAttributeDto(model.getFeatureAttribute());
 	}
 
 	@Override
 	public FeatureAttributeValue toModel() {
 		var model = new FeatureAttributeValue();
+		model.setId(id);
 		model.setFeatureAttribute(new FeatureAttribute(attribute.getId()));
 		model.setElement(new Element(elementId));
 		model.setTransientValue(value); // I am not calling fillModel() because of this mapping

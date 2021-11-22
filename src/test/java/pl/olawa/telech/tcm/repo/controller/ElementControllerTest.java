@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,17 +39,21 @@ import pl.olawa.telech.tcm.repo.builder.AccessRightBuilder;
 import pl.olawa.telech.tcm.repo.builder.assoc.ContainsAssocBuilder;
 import pl.olawa.telech.tcm.repo.builder.element.FileElBuilder;
 import pl.olawa.telech.tcm.repo.builder.element.FolderElBuilder;
+import pl.olawa.telech.tcm.repo.builder.feature.FeatureAttributeBuilder;
+import pl.olawa.telech.tcm.repo.builder.feature.FeatureAttributeValueBuilder;
+import pl.olawa.telech.tcm.repo.builder.feature.FeatureBuilder;
 import pl.olawa.telech.tcm.repo.logic.FileLogicImpl;
 import pl.olawa.telech.tcm.repo.logic.service.DiskServiceImpl;
-import pl.olawa.telech.tcm.repo.model.dto.AccessRightDto;
-import pl.olawa.telech.tcm.repo.model.dto.ElementDto;
-import pl.olawa.telech.tcm.repo.model.dto.FileDto;
-import pl.olawa.telech.tcm.repo.model.dto.FolderDto;
+import pl.olawa.telech.tcm.repo.model.dto.*;
 import pl.olawa.telech.tcm.repo.model.entity.AccessRight;
 import pl.olawa.telech.tcm.repo.model.entity.assoc.ContainsAssoc;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 import pl.olawa.telech.tcm.repo.model.entity.element.FileEl;
 import pl.olawa.telech.tcm.repo.model.entity.element.FolderEl;
+import pl.olawa.telech.tcm.repo.model.entity.feature.Feature;
+import pl.olawa.telech.tcm.repo.model.entity.feature.FeatureAttribute;
+import pl.olawa.telech.tcm.repo.model.entity.feature.FeatureAttributeValue;
+import pl.olawa.telech.tcm.repo.model.enums.FeatureAttributeType;
 import pl.olawa.telech.tcm.utils.BaseTest;
 
 @RunWith(SpringRunner.class)
@@ -389,6 +394,48 @@ public class ElementControllerTest extends BaseTest {
 	
 	@Test
 	@Transactional
+	public void addFeature() {
+		// given
+		Element element = setupFileElement("Document.pdf");
+		FeatureAttribute numberAttribute = setupFeatureAttribute("Number", FeatureAttributeType.STRING);
+		FeatureAttribute amountAttribute = setupFeatureAttribute("Amount", FeatureAttributeType.DEC);
+		FeatureAttribute dateAttribute = setupFeatureAttribute("Payment date", FeatureAttributeType.DATE);
+		Feature feature = setupFeature("Important invoice", "invoice", numberAttribute, amountAttribute, dateAttribute);
+		flush();
+		// when
+		ElementDto result = elementController.addFeature(element.getRef(), feature.getId());
+		// then
+		assertThat(result).isNotNull();
+		assertThat(result.getRef()).isEqualTo(element.getRef().toString());
+		List<FeatureDto> elementFeatures = result.getFeatures(); 
+		assertThat(elementFeatures).hasSize(1);
+		assertThat(elementFeatures.get(0).getName()).isEqualTo(feature.getName());
+	}
+	
+	@Test
+	@Transactional
+	public void getFeatureValues() {
+		// given
+		Element element = setupFileElement("Document.pdf");
+		FeatureAttribute numberAttribute = setupFeatureAttribute("Number", FeatureAttributeType.STRING);
+		FeatureAttribute amountAttribute = setupFeatureAttribute("Amount", FeatureAttributeType.DEC);
+		FeatureAttribute dateAttribute = setupFeatureAttribute("Payment date", FeatureAttributeType.DATE);
+		Feature feature = setupFeature("Important invoice", "invoice", numberAttribute, amountAttribute, dateAttribute);
+		FeatureAttributeValue numberValue = setupFeatureAttributeValue(element, numberAttribute, "45778/8595/2011");
+		FeatureAttributeValue amountValue = setupFeatureAttributeValue(element, amountAttribute, new BigDecimal("1548.48"));
+		element.addFeature(feature);
+		flush();	
+		// when
+		List<FeatureAttributeValueDto> result = elementController.getFeatureValues(element.getRef(), feature.getId());
+		// then
+		assertThat(result).isNotEmpty();
+		assertFeatureAttributeValue(result.get(0), numberValue);
+		assertFeatureAttributeValue(result.get(1), amountValue);
+		assertFeatureAttributeValue(result.get(2), buildFeatureAttributeValue(element, dateAttribute));
+	}
+	
+	@Test
+	@Transactional
 	public void getAccessRights() {
 		// given
 		Element element = setupFileElement("Document.pdf");
@@ -396,7 +443,7 @@ public class ElementControllerTest extends BaseTest {
 		UserGroup userGroup = setupUserGroup("Pracownicy");
 		AccessRight accessRight0 = setupAccessRight(element.getId(), 0, Collections.emptySet(), Set.of(user), true, true, true ,true);
 		AccessRight accessRight1 = setupAccessRight(element.getId(), 1, Set.of(userGroup), Collections.emptySet(), false, true, false ,false);
-		AccessRight accessRight2 = setupAccessRight(element.getId(), 1, Collections.emptySet(), Collections.emptySet(), false, true, false ,false);
+		AccessRight accessRight2 = setupAccessRight(element.getId(), 2, Collections.emptySet(), Collections.emptySet(), false, true, false ,false);
 		// when
 		List<AccessRightDto> result = elementController.getAccessRights(element.getRef());
 		//then
@@ -482,6 +529,15 @@ public class ElementControllerTest extends BaseTest {
 		assertThat(copy.getIcon()).isEqualTo(original.getIcon());	
 	}
 	
+	private void assertFeatureAttributeValue(FeatureAttributeValueDto valueDto, FeatureAttributeValue value) {
+		assertThat(valueDto.getId()).isEqualTo(value.getId());
+		assertThat(valueDto.getElementId()).isEqualTo(value.getElementId());
+		assertThat(valueDto.getAttribute().getId()).isEqualTo(value.getFeatureAttributeId());
+		assertThat(valueDto.getAttribute().getName()).isEqualTo(value.getFeatureAttribute().getName());
+		assertThat(valueDto.getAttribute().getType()).isEqualTo(value.getFeatureAttribute().getType().name());
+		assertThat(valueDto.getValue()).isEqualTo(valueDto.getValue());
+	}
+	
 	private void assertAccessRight(AccessRightDto dto, AccessRight model) {
 		assertThat(dto.getId()).isEqualTo(model.getId());
 		assertThat(dto.getElementId()).isEqualTo(model.getElementId());
@@ -522,6 +578,36 @@ public class ElementControllerTest extends BaseTest {
 			.parentElement(parent)
 			.childElement(child)
 			.saveAndReload(entityManager);
+	}
+	
+	private Feature setupFeature(String name, String code, FeatureAttribute... attributes) {
+		return new FeatureBuilder()
+				.name(name)
+				.code(code)
+				.attributes(Arrays.stream(attributes).collect(Collectors.toSet()))
+				.saveAndReload(entityManager);
+	}
+	
+	private FeatureAttribute setupFeatureAttribute(String name, FeatureAttributeType type) {
+		return new FeatureAttributeBuilder()
+				.name(name)
+				.type(type)
+				.saveAndReload(entityManager);
+	}
+	
+	private FeatureAttributeValue setupFeatureAttributeValue(Element element, FeatureAttribute attribute, Object value) {
+		return new FeatureAttributeValueBuilder()
+				.element(element)
+				.attribute(attribute)
+				.value(value)
+				.saveAndReload(entityManager);
+	}
+	
+	private FeatureAttributeValue buildFeatureAttributeValue(Element element, FeatureAttribute attribute) {
+		return new FeatureAttributeValueBuilder()
+				.element(element)
+				.attribute(attribute)
+				.build();
 	}
 	
 	private Setting setupSetting(String name, Object value) {

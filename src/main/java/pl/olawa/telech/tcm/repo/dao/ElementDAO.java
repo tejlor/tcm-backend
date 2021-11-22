@@ -13,6 +13,7 @@ import pl.olawa.telech.tcm.commons.dao.interfaces.DAO;
 import pl.olawa.telech.tcm.commons.model.shared.TableParams;
 import pl.olawa.telech.tcm.repo.model.entity.assoc.Association;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
+import pl.olawa.telech.tcm.repo.model.entity.element.Element.Fields;
 
 
 public interface ElementDAO extends DAO<Element>, JpaSpecificationExecutor<Element> {
@@ -45,21 +46,21 @@ public interface ElementDAO extends DAO<Element>, JpaSpecificationExecutor<Eleme
 
 	default Specification<Element> isChildOf(Integer parentId){
         return (element, cq, cb) -> {
-        	Join<Element, Association> assoc = element.join(Element.PROP_PARENTS_ASSOC);
+        	Join<Element, Association> assoc = element.join(Fields.parentsAssoc);
             return cb.equal(assoc.get(Association.PROP_PARENT_ELEMENT_ID), parentId);
         };
 	}
 	
 	default Specification<Element> isParentOf(Integer childId){
         return (element, cq, cb) -> {
-        	Join<Element, Association> assoc = element.join(Element.PROP_CHILDREN_ASSOC);
+        	Join<Element, Association> assoc = element.join(Fields.childrenAssoc);
             return cb.equal(assoc.get(Association.PROP_CHILD_ELEMENT_ID), childId);
         };
 	}
 	
 	default Specification<Element> isLike(String filter){
         return (element, cq, cb) -> {
-        	return cb.like(cb.lower(element.get(Element.PROP_NAME)), "%" + filter + "%");
+        	return cb.like(cb.lower(element.get(Fields.name)), "%" + filter + "%");
         };
 	}
 }

@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.commons.model.entity.AbstractModifiableEntity;
 import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 
@@ -22,12 +23,11 @@ import pl.olawa.telech.tcm.repo.model.entity.element.Element;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@FieldNameConstants
 @FieldDefaults(level = PRIVATE)
 @Table(name = "feature_attribute_value", schema = "repo")
 public class FeatureAttributeValue extends AbstractModifiableEntity {
-	
-	public static final String PROP_FEATURE_ATTRIBUTE = "featureAttribute";
-	
+		
 	@Setter(value = AccessLevel.NONE)
 	@Column(insertable = false, updatable = false)
 	Integer featureAttributeId;
@@ -103,14 +103,14 @@ public class FeatureAttributeValue extends AbstractModifiableEntity {
 	
 	public void setValue(Object value) {
 		switch(featureAttribute.getType()) {
-			case INT: 	 setValueInt((Integer) value);
-			case FLOAT:  setValueFloat((Float) value);
-			case DEC: 	 setValueDec((BigDecimal) value);
-			case BOOL: 	 setValueBool((Boolean) value);
-			case STRING: setValueString((String) value);
-			case TEXT: 	 setValueText((String) value);
-			case DATE: 	 setValueDate((LocalDate) value);
-			case TIME: 	 setValueTime((LocalDateTime) value);
+			case INT: 	 setValueInt((Integer) value); break;
+			case FLOAT:  setValueFloat((Float) value); break;
+			case DEC: 	 setValueDec((BigDecimal) value); break;
+			case BOOL: 	 setValueBool((Boolean) value); break;
+			case STRING: setValueString((String) value); break;
+			case TEXT: 	 setValueText((String) value); break;
+			case DATE: 	 setValueDate((LocalDate) value); break;
+			case TIME: 	 setValueTime((LocalDateTime) value); break;
 			default:	 throw new IllegalArgumentException();
 		}
 	}

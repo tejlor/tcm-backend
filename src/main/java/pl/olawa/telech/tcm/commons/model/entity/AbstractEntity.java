@@ -18,18 +18,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.commons.utils.TConstants;
 
 /*
  * Base class for all enity classes.
  */
 @Getter @Setter
-@NoArgsConstructor
-@FieldDefaults(level = PRIVATE)
 @MappedSuperclass
+@NoArgsConstructor
+@FieldNameConstants
+@FieldDefaults(level = PRIVATE)
 public abstract class AbstractEntity implements Serializable {
-
-	public static final String PROP_ID = "id";
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

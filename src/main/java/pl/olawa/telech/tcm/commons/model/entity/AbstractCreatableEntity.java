@@ -14,15 +14,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import pl.olawa.telech.tcm.adm.model.entity.User;
 
 /*
  * Base class for enity classes with columns createdTime and createdBy.
  */
 @Getter
-@NoArgsConstructor
-@FieldDefaults(level = PRIVATE)
 @MappedSuperclass
+@NoArgsConstructor
+@FieldNameConstants
+@FieldDefaults(level = PRIVATE)
 public abstract class AbstractCreatableEntity extends AbstractEntity {
 
 	@Column(nullable = false, insertable = false, updatable = false)
